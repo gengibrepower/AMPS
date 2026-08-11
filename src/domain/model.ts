@@ -54,4 +54,4 @@ export interface Vehicle {
   readonly dimensions: Dimensions;
 }
 
-export type Occupancy = ReadonlySet<NodeId>;
+export type Occupancy = ReadonlySet<NodeId>
