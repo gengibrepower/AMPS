@@ -49,3 +49,9 @@ export interface ParkingGraph {
   readonly nodes: readonly GraphNode[];
   readonly edges: readonly Edge[];
 }
+
+export interface Vehicle {
+  readonly dimensions: Dimensions;
+}
+
+export type Occupancy = ReadonlySet<NodeId>;
