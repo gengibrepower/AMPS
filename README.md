@@ -17,7 +17,7 @@ O sistema é organizado em torno de um **núcleo de domínio puro** cercado por 
 - **Núcleo** — modelo do grafo, pathfinding, scoring e isolamento multi-tenant. JS puro, testável sem subir infraestrutura.
 - **Persistência (poliglota)** — **Neo4j** guarda a topologia (vagas, vias e arestas — o grafo que o Dijkstra caminha); **MySQL** guarda o tabular (auth, usuários dono + cliente, metadados do estacionamento, histórico).
 - **API** — Express como casca fina: os controllers só traduzem HTTP e chamam o domínio. Essa API é o contrato que o front consome.
-- **Front** — editor e mapa do cliente em Konva, consumindo o mesmo contrato `{slots, edges}`.
+- **Front** — editor e mapa do cliente em Konva, consumindo o mesmo contrato `{nodes, edges}`.
 
 O isolamento **multi-tenant** (cada estacionamento é isolado) vive na fronteira da camada de repositório, num lugar só, em vez de espalhado por queries pelo código.
 
