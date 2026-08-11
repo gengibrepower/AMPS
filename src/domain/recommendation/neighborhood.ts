@@ -1,4 +1,4 @@
-import type { Occupancy, ParkingGraph, SlotNode, Vec2 } from "../model.ts";
+import type { Occupancy, ParkingGraph, SlotNode, Vec2 } from "../model.js";
 
 export function neighborhoodOccupancy(
 	graph: ParkingGraph,
