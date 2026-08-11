@@ -4,6 +4,7 @@
   "description": "Sistema de gerenciamento de estacionamento baseado em grafo: mapeia o pátio como um grafo de vagas e vias, localiza o cliente e recomenda a melhor vaga livre com roteamento por caminho mínimo.",
   "type": "module",
   "scripts": {
+    "pretest": "tsc -noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
@@ -14,13 +15,16 @@
   },
   "keywords": [],
   "author": "",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/gengibrepower/AMPS/issues"
   },
   "homepage": "https://github.com/gengibrepower/AMPS#readme",
   "devDependencies": {
-    "typescript": "^5.6.3",
+    "typescript": "^5.9.3",
     "vitest": "^2.1.8"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
   }
 }
