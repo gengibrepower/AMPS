@@ -1,4 +1,4 @@
-import type { NodeId, ParkingGraph, TenantId } from './model.js';
+import type { Dimensions, NodeId, ParkingGraph, TenantId } from './model.js';
 
 export interface Path {
   readonly nodes: readonly NodeId[];
@@ -11,4 +11,8 @@ export interface PathfindingService {
 
 export interface SlotRepository {
   loadGraph(tenantId: TenantId): Promise<ParkingGraph>;
+}
+
+export interface VehicleCatalog {
+  resolve(model: string, year?: number): Promise<Dimensions | null>;
 }

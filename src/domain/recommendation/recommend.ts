@@ -4,6 +4,7 @@ import type { PathfindingService } from "../ports.js";
 import { eligibleSlots } from "./eligibility.js";
 import { neighborhoodOccupancy } from "./neighborhood.js";
 import { walkingDistanceToPoi } from "./poiDistance.js";
+import { occupancyWeight } from "./sizeBias.js";
 
 const DEFAULT_RADIUS_FACTOR = 2;
 const DRIVING_WEIGHT = 0.1;
@@ -48,12 +49,13 @@ export function recommend (
 	const poiNorm = normalizer(scored.map((s) => s.poi));
 	const occNorm = normalizer(scored.map((s) => s.occupancy));
 	const driveNorm = normalizer(scored.map((s) => s.driving ?? 0));
+	const occWeight = occupancyWeight(input.vehicle);
 	
 	const ranked = scored
 		.map((s) => ({
 			slot: s.slot,
 			occupancy: s.occupancy,
-			cost: poiNorm(s.poi) + occNorm(s.occupancy) + (withDriving ? DRIVING_WEIGHT * driveNorm(s.driving ?? 0) : 0),
+			cost: poiNorm(s.poi) + occWeight * occNorm(s.occupancy) + (withDriving ? DRIVING_WEIGHT * driveNorm(s.driving ?? 0) : 0),
 		}))
 		.sort((a, b) => a.cost - b.cost || a.occupancy - b.occupancy || (a.slot.id < b.slot.id ? -1:1));
 
