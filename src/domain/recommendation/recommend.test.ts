@@ -83,4 +83,29 @@ describe('recommend', () => {
     };
     expect(recommend({ graph, vehicle, occupancy: new Set<string>(), poiId: 'p', entranceId: 'E' })?.id).toBe('A');
   });
+
+  it('RN-14: veículo grande foge de vizinhança cheia (mesmo grafo, escolha muda)', () => {
+    const big = { width: 2.5, length: 5.5 };
+    const popular: Vehicle = { dimensions: { width: 1.7, length: 3.9 } };
+    const pickup: Vehicle = { dimensions: { width: 1.95, length: 5.25 } };
+
+    const graph: ParkingGraph = {
+      nodes: [
+        { kind: 'poi', id: 'p', position: { x: 0, y: 0 }, label: 'L' },
+        { kind: 'slot', id: 'A', position: { x: 4, y: 0 }, dimensions: big },
+        { kind: 'slot', id: 'B', position: { x: 30, y: 0 }, dimensions: big },
+        { kind: 'slot', id: 'C', position: { x: 0, y: 40 }, dimensions: big },
+        { kind: 'slot', id: 'oa1', position: { x: 4, y: 2 }, dimensions: big },
+        { kind: 'slot', id: 'oa2', position: { x: 6, y: 0 }, dimensions: big },
+        { kind: 'slot', id: 'sa', position: { x: 4, y: -3 }, dimensions: { width: 1, length: 2 } },
+        { kind: 'slot', id: 'oc1', position: { x: 0, y: 42 }, dimensions: big },
+        { kind: 'slot', id: 'oc2', position: { x: 2, y: 40 }, dimensions: big },
+      ],
+      edges: [],
+    };
+    const occupancy = new Set(['oa1', 'oa2', 'oc1', 'oc2']);
+
+    expect(recommend({ graph, vehicle: popular, occupancy, poiId: 'p' })?.id).toBe('A');
+    expect(recommend({ graph, vehicle: pickup, occupancy, poiId: 'p' })?.id).toBe('B');
+  });
 })
