@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "Sistema de gerenciamento de estacionamento baseado em grafo: mapeia o pátio como um grafo de vagas e vias, localiza o cliente e recomenda a melhor vaga livre com roteamento por caminho mínimo.",
   "type": "module",
+  "private": true,
+  "workspaces": ["packages/*"],
   "scripts": {
-    "pretest": "tsc -noEmit",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "pretest": "npm run typecheck",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
