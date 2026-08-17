@@ -50,3 +50,28 @@ permanece puro e determinístico.
   com branch protection (GitHub rulesets).
 - Projeto de time: outros membros contribuem. Relicenciar/privatizar depois
   exigiria consentimento de todos os contribuidores.
+
+## Modelo Neo4j — passo 3 (RNF-06)
+
+Materializa a topologia sob o contrato `{ nodes, edges }` (RNF-07). O adapter de
+leitura (`SlotRepository`) traduz o grafo do banco pro contrato; o núcleo não
+conhece Neo4j.
+
+### Nós
+Um label por tipo, espelhando o discriminante `kind` do contrato: `:Slot`,
+`:Waypoint`, `:Entrance`, `:Poi`. Propriedades comuns: `id`, `tenantId`, `x`, `y`.
+`:Slot` acrescenta `width` e `length`; `:Poi` acrescenta `label`. O adapter
+reconstrói `kind` a partir do label e **não** propaga `tenantId` pro contrato
+(é dado de fronteira, não de domínio).
+
+### Arestas
+Relacionamento direcionado `:VIA` com propriedade `weight`. Mão única = 1 `:VIA`;
+mão dupla = 2 `:VIA`, uma por sentido, cada uma com seu `weight` (RN-07). O núcleo
+já lê adjacência só no sentido `from→to`, então mão dupla não exige nada além da
+segunda aresta.
+
+### Isolamento multi-tenant (RNF-01, RN-02, RN-10)
+Por propriedade `tenantId` em todo nó, filtrada numa fronteira só:
+`SlotRepository.loadGraph(tenantId)`, com todo `MATCH` carregando
+`WHERE n.tenantId = $tenantId`. Sem isolamento físico agora; banco-por-tenant
+(multi-db do Neo4j 5) fica no roadmap se surgir necessidade de isolamento duro.
