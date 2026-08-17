@@ -11,7 +11,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "pretest": "npm run typecheck",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   "homepage": "https://github.com/gengibrepower/AMPS#readme",
   "devDependencies": {
     "@types/node": "^26.2.0",
+    "dotenv": "^17.4.2",
     "typescript": "^5.9.3",
     "vitest": "^2.1.8"
   },
