@@ -79,4 +79,4 @@ function normalizer (values: readonly number[]): (value: number) => number {
 	if (max === min) return () => 0;
 	return (value) => (value - min) / (max - min);
 }
-		
+	

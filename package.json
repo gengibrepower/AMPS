@@ -4,7 +4,9 @@
   "description": "Sistema de gerenciamento de estacionamento baseado em grafo: mapeia o pátio como um grafo de vagas e vias, localiza o cliente e recomenda a melhor vaga livre com roteamento por caminho mínimo.",
   "type": "module",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "typecheck": "npm run typecheck --workspaces --if-present",
     "pretest": "npm run typecheck",
@@ -23,6 +25,7 @@
   },
   "homepage": "https://github.com/gengibrepower/AMPS#readme",
   "devDependencies": {
+    "@types/node": "^26.2.0",
     "typescript": "^5.9.3",
     "vitest": "^2.1.8"
   },
