@@ -1,30 +1,41 @@
 # AMPS — Contexto e Visão
- 
+
 ## Problema
- 
+
 Procurar vaga em estacionamento grande (shopping, faculdade, parque) desperdiça
 tempo: o motorista circula sem saber onde há vaga livre nem qual fica mais perto
 de onde ele realmente quer ir. E quem tem carro grande sofre um problema extra —
 achar vaga onde o carro caiba. O AMPS elimina essa busca recomendando a vaga
 ideal com base na **ocupação atual** do estacionamento, na **distância até o
 ponto de interesse (POI)** do motorista e nas **dimensões do veículo**.
- 
+
 ## Visão
- 
+
 Site/app que, dado um estacionamento e um POI, recomenda e roteia o motorista
 até a melhor vaga livre que comporte o carro dele — e que dá ao dono do
 estacionamento um editor pra modelar o layout (vagas, ruas com sentido, POIs)
 que alimenta esse cálculo.
- 
+
+## Fronteira do sistema (recomendação/roteamento é externo)
+
+> Decisão de arquitetura (ver `04-plano.md`, RNF-09). O cálculo de recomendação
+> e de rota **não** vive dentro do AMPS: é um **motor externo, stateless e
+> documentado**, consumido por HTTP. O AMPS é um **consumidor** desse motor —
+> guarda a topologia e a ocupação, monta a requisição (`{ nodes, edges }` +
+> ocupação + veículo) e recebe a vaga recomendada e/ou a rota. O AMPS continua
+> dono da autoria (editor), da renderização (Konva), da persistência, da auth e
+> do isolamento multi-tenant; o motor só computa.
+
 ## Atores
- 
+
 - **Cliente (motorista)** — busca estacionamento, informa um POI, recebe a
   recomendação e a rota. Cadastra dados pessoais e do veículo (modelo, placa).
 - **Dono de estacionamento** — cadastra estabelecimentos (via CNPJ), modela o
   layout no editor e publica pra uso dos clientes.
 - **Administrador do sistema** — *ainda não descrito* (ver Questões em aberto).
+
 ## Conceitos do domínio (glossário)
- 
+
 - **Estacionamento (tenant)** — unidade isolada; pertence a um dono. Toda
   ocupação, layout e busca é escopada por estacionamento.
 - **Vaga (slot)** — posição estacionável, com dimensão e tipo/tamanho.
@@ -46,8 +57,16 @@ que alimenta esse cálculo.
 - **Rota (path)** — caminho dirigível da entrada até a vaga.
 - **Score / vaga ideal** — critério que ordena as vagas livres compatíveis; a de
   maior score é a recomendada.
+- **Papel funcional (role)** vs **rótulo de domínio (kind)** — o motor externo
+  raciocina sobre quatro *papéis* fixos (`candidate`, `attractor`, `source`,
+  `transit`), não sobre nomes de domínio. Os tipos de nó do AMPS mapeiam 1:1
+  para eles: vaga→`candidate`, POI→`attractor`, entrada→`source`,
+  waypoint→`transit`. O `kind` (Slot/Waypoint/Entrance/Poi) é o vocabulário do
+  AMPS; o `role` é o que o motor entende. O mapeamento acontece na borda do
+  cliente HTTP, ao montar a requisição pro motor.
+
 ## Fluxo do cliente
- 
+
 1. Entra no site e faz login/cadastro (e-mail, senha, modelo do carro, placa).
 2. Pesquisa o estacionamento de destino (shopping, faculdade, parque).
 3. É levado à página de mapa, onde informa o POI pra fechar o cálculo.
@@ -57,18 +76,20 @@ que alimenta esse cálculo.
 5. Ao chegar, o cliente faz check-in informando a entrada. O sistema reserva a
    vaga e traça a rota a partir dela. Se a vaga provisória tiver sido ocupada
    durante o standby, o sistema recalcula antes de reservar.
+
 ## Fluxo do dono
- 
+
 1. Entra no site e faz login/cadastro (e-mail, senha, CNPJ).
 2. Registra os dados básicos dos seus estacionamentos (nome, local, dono...).
 3. Entra num estacionamento e escolhe adicionar o layout.
 4. No editor, posiciona vagas, ruas (com sentido), POIs e as dimensões de tudo.
 5. Com dados básicos + layout preenchidos, libera o estacionamento pro cliente;
    dados como número de vagas são inferidos do editor.
+
 ## Questões em aberto
- 
+
 Pontos que ainda mudam a modelagem ou o produto:
- 
+
 1. **Definição de "vaga sem carros ao redor"** — vizinhança por adjacência no
    grafo ou por proximidade espacial (raio)? Afeta o modelo. *Lean: proximidade
    espacial.* RESOLVIDO: proximidade espacial. Vizinhança = vagas dentro de raio radiusFactor (2) × comprimento da vaga.
