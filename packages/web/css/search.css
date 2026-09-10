@@ -1,0 +1,250 @@
+@import url(vars.css);
+
+@font-face {
+    font-family: "Baunk";
+    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px;
+}
+
+#menu-button {
+    display: flex;
+    flex-shrink: 0;
+    border: none;
+    background-color: transparent;
+    color: var(--text-primary);
+    padding: 8px;
+    cursor: pointer;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#logo-text {
+    font-family: var(--font-logo);
+    font-size: 1.5rem;
+}
+
+#logo-holder {
+    width: 32px;
+    height: 32px;
+}
+
+.login-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--btn-green-border);
+    background-color: var(--btn-green-bg);
+    color: var(--text-primary);
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Sidebar */
+.sidebar-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.sidebar {
+    position: relative;
+    width: 100%;
+    max-height: 80vh;
+    background-color: var(--card-bg);
+    padding: 2rem 1.5rem;
+    border-radius: 24px 24px 0 0;
+}
+
+#close-sidebar-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 3rem;
+}
+
+.nav-item a,
+.nav-item button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.disabled {
+    display: none;
+}
+
+/* Main */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 20px 24px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--search-border);
+    background-color: var(--search-bg);
+    padding: 6px 18px;
+}
+
+.search-box .material-symbols-outlined {
+    color: var(--text-primary);
+    opacity: 0.75;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.search-box input::placeholder {
+    color: var(--text-primary);
+    opacity: 0.6;
+}
+
+main > h2 {
+    align-self: flex-start;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.result-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.result-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+}
+
+.result-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background-color: var(--search-bg);
+}
+
+.result-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 20px;
+}
+
+.result-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.result-card-location,
+.result-card-price {
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+@media (min-width: 768px) {
+    header {
+        padding: 32px 48px;
+    }
+
+    main {
+        width: 80%;
+        margin: 0 auto;
+        padding: 24px 48px 64px;
+        gap: 24px;
+    }
+
+    .result-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .sidebar-nav {
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+
+    .sidebar {
+        width: 280px;
+        max-height: 100%;
+        border-radius: 0;
+    }
+}
+
+@media (min-width: 1200px) {
+    .result-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
