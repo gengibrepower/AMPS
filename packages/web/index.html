@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu,search,chevron_right,home,grid_view,account_circle,my_location,local_fire_department,bookmark"/>
+</head>
+<body>
+    <header>
+        <button id="menu-button" aria-label="Abrir menu"><span class="material-symbols-outlined">menu</span></button>
+        <div class="logo">
+            <img id="logo-holder" src="assets/images/logo_holder.png" alt="AMPS">
+            <h1 id="logo-text">AMPS</h1>
+        </div>
+    </header>
+
+    <nav class="sidebar-nav disabled">
+        <div class="sidebar">
+            <button id="close-sidebar-button" aria-label="Fechar menu">X</button>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="">Home</a></li>
+                <li class="nav-item"><a href="">Estacionamentos</a></li>
+                <li class="nav-item"><a href="">Configurações</a></li>
+                <li class="nav-item"><a href="">Sobre</a></li>
+                <li class="nav-item"><a href="">Contato</a></li>
+                <li class="nav-item nav-item-account">
+                    <button type="button" id="sidebarAccountBtn" aria-label="Conta">
+                        <span class="material-symbols-outlined">account_circle</span>
+                        <span id="sidebarAccountLabel">Entrar</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+ 
+    <main>
+        <form action="search.html" method="GET" class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
+        </form>
+ 
+        <div class="filters">
+            <button type="button" class="filter-pill">
+                <span class="material-symbols-outlined">my_location</span>
+                Localização Atual
+            </button>
+            <button type="button" class="filter-pill">
+                <span class="material-symbols-outlined">local_fire_department</span>
+                Recomendados
+            </button>
+            <button type="button" class="filter-pill">
+                <span class="material-symbols-outlined">bookmark</span>
+                Salvos
+            </button>
+        </div>
+ 
+        <h2>Ver histórico ></h2>
+        <ul class="parking-list">
+            <li class="parking-card">
+                <a href="" class="parking-card-link">
+                    <div class="parking-card-info">
+                        <div class="parking-card-title-row">
+                            <h2 class="parking-card-title">Estacionamento A</h2>
+                            <span class="rating"><span class="star-icon">★</span>4.8</span>
+                        </div>
+                        <p class="parking-card-location">Localização</p>
+                        <p class="parking-card-price">R$ 15,00</p>
+                    </div>
+                    <div class="parking-card-status">
+                        <span class="status-dot available"></span>
+                        <span>26 vagas</span>
+                    </div>
+                    <span class="material-symbols-outlined chevron">chevron_right</span>
+                </a>
+            </li>
+            <li class="parking-card">
+                <a href="" class="parking-card-link">
+                    <div class="parking-card-info">
+                        <div class="parking-card-title-row">
+                            <h2 class="parking-card-title">Estacionamento B</h2>
+                            <span class="rating"><span class="star-icon">★</span>4,9</span>
+                        </div>
+                    </div>
+                    <div class="parking-card-status">
+                        <span class="status-dot full"></span>
+                        <span>3 vagas</span>
+                    </div>
+                    <span class="material-symbols-outlined chevron">chevron_right</span>
+                </a>
+            </li>
+        </ul>
+    </main>
+ 
+    <div class="login disabled" id="accountPanel">
+        <div class="login-box">
+            <button id="closeLogin" aria-label="Fechar conta">X</button>
+
+            <!-- Login -->
+            <div id="accountLoggedOut" class="account-view">
+                <div class="accountLogin">
+                    <h2>Acessar Conta</h2>
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" id="email" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="senha">Senha</label>
+                                <input type="password" id="senha" required />
+                            </div>
+                            <button type="submit" class="btn-primary">Entrar</button>
+                        </form>
+                    <div id="login-msg" class="message"></div>
+                        <div class="links">
+                            <a href="#" id="linkForgotPassword">Esqueci minha senha</a>
+                            <a href="#" id="linkRegisterClient">Criar conta</a>
+                        </div>
+                </div>
+            </div>
+
+            <!-- Logado -->
+            <div id="accountLoggedIn" class="account-view disabled">
+                <p>Logado como <strong id="accountEmail"></strong></p>
+                <button type="button" id="logoutBtn">Sair</button>
+            </div>
+
+            <!-- Esqueci a senha -->
+            <div id="accountForgotPassword" class="account-view disabled">
+                <div class="accountLogin">
+                    <h2>Recuperar Senha</h2>
+                    <form id="forgot-form">
+                        <div class="form-group">
+                            <label for="email-recuperacao">Digite seu e-mail cadastrado</label>
+                            <input type="email" id="email-recuperacao" required />
+                        </div>
+                        <button type="submit" class="btn-primary">Enviar Link de Recuperação</button>
+                    </form>
+                    <div id="forgot-msg" class="message"></div>
+                    <div class="links">
+                        <a href="#" id="linkBackToLoginFromForgot">Voltar para o Login</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Criar conta -->
+            <div id="accountRegisterClient" class="account-view disabled">
+                <div class="accountLogin">
+                    <h2>Criar Conta</h2>
+                    <form id="client-form">
+                        <div class="form-group">
+                            <label for="nome-cli">Nome Completo</label>
+                            <input type="text" id="nome-cli" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email-cli">E-mail</label>
+                            <input type="email" id="email-cli" placeholder="seu.email@gmail.com" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="cpf-cli">CPF</label>
+                            <input type="text" id="cpf-cli" placeholder="000.000.000-00" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="senha-cli">Senha</label>
+                            <input type="password" id="senha-cli" required />
+                        </div>
+                        <button type="submit" class="btn-primary">Cadastrar Cliente</button>
+                    </form>
+                    <div id="client-msg" class="message"></div>
+                    <div class="links">
+                        <a href="#" id="linkBackToLoginFromRegister">Já tem uma conta? Faça login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <nav class="bottom-nav">
+        <button class="nav-btn" id="navHome" aria-label="Home">
+            <span class="material-symbols-outlined">home</span>
+            <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-btn" id="navList" aria-label="Categorias">
+            <span class="material-symbols-outlined">grid_view</span>
+            <span class="nav-label">Editor</span>
+        </button>
+        <button class="nav-btn active" id="navConta" aria-label="Conta">
+            <span class="material-symbols-outlined">account_circle</span>
+            <span class="nav-label">Conta</span>
+        </button>
+    </nav>
+ 
+    <script type="module" src="src/script.ts"></script>
+    <script type="module" src="src/login.ts"></script>
+    <script type="module" src="src/cadastro_cliente.ts"></script>
+    <script type="module" src="src/esqueci_senha.ts"></script>
+</body>
+</html>
+ 
+
+

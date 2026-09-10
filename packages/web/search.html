@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estacionamentos - AMPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/search.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu,search"/>
+</head>
+<body>
+    <header>
+        <button id="menu-button" aria-label="Abrir menu"><span class="material-symbols-outlined">menu</span></button>
+        <div class="logo">
+            <img id="logo-holder" src="assets/images/logo_holder.png" alt="AMPS">
+            <h1 id="logo-text">AMPS</h1>
+        </div>
+        <a href="index.html" class="login-link">Entrar</a>
+    </header>
+
+    <nav class="sidebar-nav disabled">
+        <div class="sidebar">
+            <button id="close-sidebar-button" aria-label="Fechar menu">X</button>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html">Home</a></li>
+                <li class="nav-item"><a href="">Estacionamentos</a></li>
+                <li class="nav-item"><a href="">Configurações</a></li>
+                <li class="nav-item"><a href="">Sobre</a></li>
+                <li class="nav-item"><a href="">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <form action="search.html" method="GET" class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
+        </form>
+
+        <h2>Resultados para: </h2>
+
+        <ul class="result-list">
+            <li class="result-card">
+                <img src="assets/images/deafault-img.png" alt="">
+                <div class="result-card-body">
+                    <h3 class="result-card-title">Título</h3>
+                    <p class="result-card-location">Localização</p>
+                    <p class="result-card-price">Preço: </p>
+                </div>
+            </li>
+            <li class="result-card">
+                <img src="assets/images/deafault-img.png" alt="">
+                <div class="result-card-body">
+                    <h3 class="result-card-title">Título</h3>
+                    <p class="result-card-location">Localização</p>
+                    <p class="result-card-price">Preço: </p>
+                </div>
+            </li>
+            <li class="result-card">
+                <img src="assets/images/deafault-img.png" alt="">
+                <div class="result-card-body">
+                    <h3 class="result-card-title">Título</h3>
+                    <p class="result-card-location">Localização</p>
+                    <p class="result-card-price">Preço: </p>
+                </div>
+            </li>
+        </ul>
+    </main>
+
+    <script type="module" src="src/script.ts"></script>
+</body>
+</html>

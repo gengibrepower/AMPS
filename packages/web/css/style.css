@@ -1,0 +1,477 @@
+@import url(vars.css);
+
+@font-face {
+    font-family: "Baunk";
+    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 84px;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+/* Header */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+#menu-button {
+    display: flex;
+    border: none;
+    background-color: transparent;
+    color: var(--text-primary);
+    padding: 8px;
+    cursor: pointer;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#logo-text {
+    font-family: var(--font-logo);
+    font-size: 1.5rem;
+}
+
+#logo-holder {
+    width: 32px;
+    height: 32px;
+}
+
+/* Main */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 20px 24px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--search-border);
+    background-color: var(--search-bg);
+    padding: 6px 18px;
+}
+
+.search-box .material-symbols-outlined {
+    color: var(--text-primary);
+    opacity: 0.75;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.search-box input::placeholder {
+    color: var(--text-primary);
+    opacity: 0.6;
+}
+
+.filters {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-pill {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 16px;
+    white-space: nowrap;
+    background-color: var(--btn-green-bg);
+    border: 1px solid var(--btn-green-border);
+    border-radius: var(--radius-pill);
+    color: var(--btn-green-border);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.filter-pill .material-symbols-outlined {
+    font-size: 18px;
+}
+
+main > h2 {
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+.parking-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    margin-top: 1.2rem;
+}
+
+.parking-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-card);
+    height: 180px;
+}
+
+.parking-card-link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 20px 44px 20px 20px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.parking-card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.parking-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    min-width: 0;
+}
+
+.parking-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.parking-card-location,
+.parking-card-price {
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.star-icon {
+    color: var(--star-color);
+}
+
+.parking-card-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+}
+
+.status-dot.available {
+    border-color: var(--status-available);
+}
+
+.status-dot.full {
+    border-color: var(--status-full);
+}
+
+.chevron {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    opacity: 0.6;
+}
+
+/* Bottom nav (mobile) */
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: var(--card-bg);
+    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+}
+
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: none;
+    background: transparent;
+    color: var(--btn-green-border);
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.nav-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* Sidebar */
+.sidebar-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.sidebar {
+    position: relative;
+    width: 100%;
+    max-height: 80vh;
+    background-color: var(--card-bg);
+    padding: 2rem 1.5rem;
+    border-radius: 24px 24px 0 0;
+}
+
+#close-sidebar-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 3rem;
+}
+
+.nav-item a,
+.nav-item button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.nav-item-account {
+    display: none;
+    margin-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(1px);
+}
+
+.login-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(512px, 60vw);
+    padding: 3rem 4rem;
+    background-color: var(--card-bg);
+    border-radius: 20px;
+}
+
+.login h1 {
+    font-family: var(--font-logo);
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+}
+
+#closeLogin {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.login form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 6px;
+}
+
+.login label {
+    margin-top: 10px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.login input {
+    padding: 12px 14px;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.login button {
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--btn-green-border);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.login p {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.account-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.login .account-action {
+    display: block;
+    margin-top: 20px;
+    padding: 14px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--btn-green-border);
+    color: var(--text-primary);
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.disabled {
+    display: none;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    body {
+        padding-bottom: 0;
+    }
+
+    header {
+        padding: 32px 48px;
+    }
+
+    main {
+        width: 80%;
+        margin: 0 auto;
+        padding: 24px 48px 64px;
+        gap: 24px;
+    }
+
+    .parking-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .bottom-nav {
+        display: none;
+    }
+
+    .nav-item-account {
+        display: block;
+    }
+
+    .sidebar-nav {
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+
+    .sidebar {
+        width: 280px;
+        max-height: 100%;
+        border-radius: 0;
+    }
+}
+
+@media (min-width: 1200px) {
+    .parking-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

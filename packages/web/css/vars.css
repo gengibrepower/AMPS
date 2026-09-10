@@ -1,0 +1,22 @@
+:root {
+    --bg-color: #101113;
+    --text-primary: #E8E8E9;
+ 
+    --btn-green-bg: rgba(15, 89, 58, 0.1);
+    --btn-green-border: #17724C;
+ 
+    --card-bg: #141517;
+ 
+    --search-bg: rgba(34, 36, 39, 0.44);
+    --search-border: rgba(255, 255, 255, 0.14);
+ 
+    --status-available: #17724C;
+    --status-full: #D64545;
+    --star-color: #F4B400;
+
+    --font-main: "Montserrat", sans-serif;
+    --font-logo: "Baunk", sans-serif;
+ 
+    --radius-pill: 999px;
+    --radius-card: 20px;
+}
