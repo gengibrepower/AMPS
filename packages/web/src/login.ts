@@ -1,8 +1,6 @@
 import { saveSession } from './auth';
 import { renderAccountPanel } from './script';
 
-// Login: confere se e-mail e senha foram preenchidos, salva a sessão e
-// atualiza o painel de conta pra mostrar a tela de logado.
 const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
 const emailInput = document.getElementById('email') as HTMLInputElement | null;
 const senhaInput = document.getElementById('senha') as HTMLInputElement | null;

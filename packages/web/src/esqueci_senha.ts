@@ -1,5 +1,3 @@
-// Esqueci a senha: mostra uma mensagem confirmando o envio do link de
-// recuperação pro e-mail digitado.
 const forgotForm = document.getElementById('forgot-form') as HTMLFormElement | null;
 const emailRecuperacaoInput = document.getElementById('email-recuperacao') as HTMLInputElement | null;
 const forgotMsg = document.getElementById('forgot-msg') as HTMLDivElement | null;
