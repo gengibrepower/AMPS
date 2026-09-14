@@ -1,11 +1,9 @@
 import { getSession, clearSession } from './auth';
 
-// Definição de elementos da sidebar
 export const menuButton = document.getElementById('menu-button') as HTMLButtonElement | null;
 export const closeSidebarButton = document.getElementById('close-sidebar-button') as HTMLButtonElement | null;
 const sidebarNav = document.querySelector('nav.sidebar-nav');
 
-// Interação da sidebar
 export function toggleSidebar(): void {
     document.body.classList.toggle('navBar');
     sidebarNav?.classList.toggle('disabled');
@@ -14,7 +12,6 @@ export function toggleSidebar(): void {
 menuButton?.addEventListener('click', toggleSidebar);
 closeSidebarButton?.addEventListener('click', toggleSidebar);
 
-// Definição de elementos para painel de conta
 const bottomAccountButton = document.getElementById('navConta') as HTMLButtonElement | null;
 const sidebarAccountButton = document.getElementById('sidebarAccountBtn') as HTMLButtonElement | null;
 const sidebarAccountLabel = document.getElementById('sidebarAccountLabel') as HTMLElement | null;
@@ -30,7 +27,6 @@ const viewLoggedIn = document.getElementById('accountLoggedIn');
 const viewForgot = document.getElementById('accountForgotPassword');
 const viewRegisterClient = document.getElementById('accountRegisterClient');
 
-// Exibe apenas a tela selecionada no painel
 export function showAccountView(view: AccountView): void {
     viewLogin?.classList.add('disabled');
     viewLoggedIn?.classList.add('disabled');
@@ -48,8 +44,6 @@ export function showAccountView(view: AccountView): void {
     }
 }
 
-// Verifica sessão salva, caso exista, exibe os dados
-// Caso não exista, exibe tela de login
 export function renderAccountPanel(): void {
     const session = getSession();
 
@@ -68,10 +62,8 @@ function toggleAccountContent(): void {
     accountContent?.classList.toggle('disabled');
 }
 
-// Botão mobile
 bottomAccountButton?.addEventListener('click', toggleAccountContent);
 
-// Botão desktop
 sidebarAccountButton?.addEventListener('click', () => {
     toggleSidebar();
     toggleAccountContent();
@@ -86,7 +78,6 @@ logoutButton?.addEventListener('click', () => {
     window.location.reload();
 });
 
-// Define links para trocar telas dentro do painel
 const linkForgotPassword = document.getElementById('linkForgotPassword') as HTMLAnchorElement | null;
 const linkRegisterClient = document.getElementById('linkRegisterClient') as HTMLAnchorElement | null;
 const linkBackToLoginFromForgot = document.getElementById('linkBackToLoginFromForgot') as HTMLAnchorElement | null;

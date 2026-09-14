@@ -1,6 +1,4 @@
-// Sessão simples baseada em localStorage, usada tanto pela tela de login
-// quanto pelo app (web/new-web v2) para saber se há um usuário logado.
-// Não há backend ainda: isto é um "mock" de autenticação client-side.
+// Não há backend ainda: isto é um mock de autenticação client-side.
 
 export interface Session {
     email: string;
