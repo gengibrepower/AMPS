@@ -1,0 +1,153 @@
+@import url(vars.css);
+
+:root {
+    /* Paleta do login, derivada das cores do app (css/vars.css) */
+    --bg-body: var(--bg-color);
+    --bg-container: var(--card-bg);
+    --text-main: var(--text-primary);
+    --text-muted: color-mix(in srgb, var(--text-primary) 60%, transparent);
+    --input-bg: var(--search-bg);
+    --input-border: var(--search-border);
+    --primary-color: var(--btn-green-border);
+    --primary-hover: color-mix(in srgb, var(--btn-green-border) 80%, white);
+    --link-color: var(--btn-green-border);
+    --link-hover: color-mix(in srgb, var(--btn-green-border) 70%, white);
+    --success-color: var(--status-available);
+    --info-color: var(--star-color);
+    --error-color: var(--status-full);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.auth-page {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    background-color: var(--bg-container);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); /* Sombra mais difusa e escura */
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Borda sutil para destacar do fundo */
+}
+
+.container h2,
+.accountLogin h2 {
+    text-align: center;
+    color: var(--text-main);
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input::placeholder {
+    color: var(--text-muted);
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 25%, transparent); /* Efeito de brilho no foco */
+}
+
+/* Ajuste de ícones caso o navegador aplique autofill no input */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+}
+
+button.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: var(--text-main);
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+button.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.links {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.links a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.links a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+.message {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Classes para mensagens de sucesso/informação via TS */
+.msg-success {
+    color: var(--success-color);
+}
+
+.msg-info {
+    color: var(--info-color);
+}
+
+.msg-error {
+    color: var(--error-color);
+}
