@@ -8,8 +8,6 @@
     "dev": "tsx --env-file=../../.env src/main.ts"
   },
   "dependencies": {
-    "@amps/contracts": "*",
-    "@amps/core": "*",
     "@node-rs/argon2": "^2.2.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
