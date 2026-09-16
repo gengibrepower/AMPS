@@ -24,3 +24,43 @@ export function loadNeo4jConfig(): Neo4jConfig {
 	};
 }
 
+export interface MysqlConfig {
+	readonly host: string;
+	readonly port: number;
+	readonly user: string;
+	readonly password: string;
+	readonly database: string;
+}
+
+export interface AuthConfig {
+	readonly jwtSecret: string;
+}
+
+function port(key: string, fallback: number): number {
+	const value = process.env[key];
+	if (value === undefined || value === '') {
+		return fallback;
+	}
+	const parsed = Number(value);
+	if (!Number.isInteger(parsed) || parsed <= 0) {
+		throw new Error(`variavel de ambiente ${key} invalida: ${value}`);
+	}
+	return parsed;
+}
+
+export function loadMysqlConfig(): MysqlConfig {
+	return {
+		host: process.env['MYSQL_HOST'] ?? 'localhost',
+		port: port('MYSQL_PORT', 3306),
+		user: process.env['MYSQL_USER'] ?? 'root',
+		password: required('MYSQL_PASSWORD'),
+		database: process.env['MYSQL_DATABASE'] ?? 'parking_system',
+	};
+}
+
+export function loadAuthConfig(): AuthConfig {
+	return {
+		jwtSecret: required('AUTH_JWT_SECRET'),
+	};
+}
+
