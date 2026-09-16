@@ -64,3 +64,15 @@ export function loadAuthConfig(): AuthConfig {
 	};
 }
 
+export interface ServerConfig {
+	readonly port: number;
+	readonly corsOrigin: string;
+}
+
+export function loadServerConfig(): ServerConfig {
+	return {
+		port: port('PORT', 3000),
+		corsOrigin: process.env['CORS_ORIGIN'] ?? 'http://localhost:5173',
+	};
+}
+
