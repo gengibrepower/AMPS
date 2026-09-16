@@ -1,17 +1,4 @@
 services:
-  neo4j:
-    image: neo4j:5
-    container_name: amps-neo4j
-    restart: unless-stopped
-    ports:
-      - "7474:7474"   # web UI (http://localhost:7474)
-      - "7687:7687"   # bolt (os adaptadores conectam aqui)
-    environment:
-      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD}
-    volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-
   mysql:
     image: mysql:8.0
     container_name: amps-mysql
@@ -23,8 +10,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./infra/mysql/init:/docker-entrypoint-initdb.d:ro
 
 volumes:
-  neo4j_data:
-  neo4j_logs:
   mysql_data:
