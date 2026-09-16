@@ -42,6 +42,6 @@ parênteses apontam pras regras de negócio em `03-regras-de-negocio.md`.
 - **RNF-03** — Núcleo de domínio puro, sem I/O: pathfinding e scoring testáveis sem banco e substituíveis sem tocar nos adaptadores. Atendido por extração — o núcleo vive no [Merlian](https://github.com/gengibrepower/Merlian), repositório à parte e stateless, e o AMPS o consome como serviço.
 - **RNF-04** — Segurança: senhas com hash forte, autenticação por sessão/token, autorização escopada por tenant.
 - **RNF-05** — Proteção de dados pessoais (placa, modelo, e-mail, CNPJ) conforme LGPD.
-- **RNF-06** — Persistência em MySQL: auth, dono, cliente, modelos, metadados e vagas. O armazenamento da topologia (nós e arestas) está em aberto desde a saída do Neo4j — ver `04-plano.md`.
+- **RNF-06** — Persistência em MySQL: auth, dono, cliente, modelos, metadados e vagas. A topologia fica em `topologias.grafo` (coluna JSON) na forma de wire do Merlian — ver `04-plano.md`.
 - **RNF-07** — API como casca fina sobre o núcleo; contrato `{ nodes, edges }` estável entre back-end e front-end.
 - **RNF-08** — Fonte de ocupação plugável: hoje check-in no app; integração com sensores depois, sem mudar o núcleo. (RN-17)
