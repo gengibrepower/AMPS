@@ -1,13 +1,20 @@
-// Não há backend ainda: isto é um mock de autenticação client-side.
+import type { LoginResposta, UsuarioWire } from './api';
 
-export interface Session {
-    email: string;
+export type Session = LoginResposta;
+
+const STORAGE_KEY = 'amps:session';
+
+function pareceSessao(valor: unknown): valor is Session {
+    const s = valor as Session | null;
+    return (
+        typeof s === 'object' && s !== null &&
+        typeof s.token === 'string' &&
+        typeof s.usuario === 'object' && s.usuario !== null &&
+        typeof s.usuario.email === 'string'
+    );
 }
 
-const STORAGE_KEY = "amps:session";
-
-export function saveSession(email: string): void {
-    const session: Session = { email };
+export function saveSession(session: Session): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
 }
 
@@ -16,7 +23,9 @@ export function getSession(): Session | null {
     if (!raw) return null;
 
     try {
-        return JSON.parse(raw) as Session;
+        const valor: unknown = JSON.parse(raw);
+        // Sessões gravadas pela versão antiga (só { email }) não têm token: descarta.
+        return pareceSessao(valor) ? valor : null;
     } catch {
         return null;
     }
@@ -28,4 +37,13 @@ export function clearSession(): void {
 
 export function isLoggedIn(): boolean {
     return getSession() !== null;
+}
+
+export function usuarioAtual(): UsuarioWire | null {
+    return getSession()?.usuario ?? null;
+}
+
+export function authHeader(): Record<string, string> {
+    const session = getSession();
+    return session ? { Authorization: `Bearer ${session.token}` } : {};
 }

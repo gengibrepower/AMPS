@@ -20,27 +20,18 @@ const closeLoginButton = document.getElementById('closeLogin') as HTMLButtonElem
 const accountEmail = document.getElementById('accountEmail') as HTMLElement | null;
 const logoutButton = document.getElementById('logoutBtn') as HTMLButtonElement | null;
 
-type AccountView = 'login' | 'loggedIn' | 'forgot' | 'registerClient';
+export type AccountView = 'login' | 'loggedIn' | 'forgot' | 'registerClient';
 
-const viewLogin = document.getElementById('accountLoggedOut');
-const viewLoggedIn = document.getElementById('accountLoggedIn');
-const viewForgot = document.getElementById('accountForgotPassword');
-const viewRegisterClient = document.getElementById('accountRegisterClient');
+const views: Record<AccountView, HTMLElement | null> = {
+    login: document.getElementById('accountLoggedOut'),
+    loggedIn: document.getElementById('accountLoggedIn'),
+    forgot: document.getElementById('accountForgotPassword'),
+    registerClient: document.getElementById('accountRegisterClient'),
+};
 
 export function showAccountView(view: AccountView): void {
-    viewLogin?.classList.add('disabled');
-    viewLoggedIn?.classList.add('disabled');
-    viewForgot?.classList.add('disabled');
-    viewRegisterClient?.classList.add('disabled');
-
-    if (view === 'login') {
-        viewLogin?.classList.remove('disabled');
-    } else if (view === 'loggedIn') {
-        viewLoggedIn?.classList.remove('disabled');
-    } else if (view === 'forgot') {
-        viewForgot?.classList.remove('disabled');
-    } else if (view === 'registerClient') {
-        viewRegisterClient?.classList.remove('disabled');
+    for (const [nome, elemento] of Object.entries(views)) {
+        elemento?.classList.toggle('disabled', nome !== view);
     }
 }
 
@@ -48,8 +39,9 @@ export function renderAccountPanel(): void {
     const session = getSession();
 
     if (session) {
-        if (accountEmail) accountEmail.textContent = session.email;
-        if (sidebarAccountLabel) sidebarAccountLabel.textContent = session.email;
+        const email = session.usuario.email;
+        if (accountEmail) accountEmail.textContent = email;
+        if (sidebarAccountLabel) sidebarAccountLabel.textContent = email;
         showAccountView('loggedIn');
     } else {
         if (sidebarAccountLabel) sidebarAccountLabel.textContent = 'Entrar';
@@ -78,29 +70,18 @@ logoutButton?.addEventListener('click', () => {
     window.location.reload();
 });
 
-const linkForgotPassword = document.getElementById('linkForgotPassword') as HTMLAnchorElement | null;
-const linkRegisterClient = document.getElementById('linkRegisterClient') as HTMLAnchorElement | null;
-const linkBackToLoginFromForgot = document.getElementById('linkBackToLoginFromForgot') as HTMLAnchorElement | null;
-const linkBackToLoginFromRegister = document.getElementById('linkBackToLoginFromRegister') as HTMLAnchorElement | null;
+const navegacao: ReadonlyArray<readonly [string, AccountView]> = [
+    ['linkForgotPassword', 'forgot'],
+    ['linkRegisterClient', 'registerClient'],
+    ['linkBackToLoginFromForgot', 'login'],
+    ['linkBackToLoginFromRegister', 'login'],
+];
 
-linkForgotPassword?.addEventListener('click', (evento: Event) => {
-    evento.preventDefault();
-    showAccountView('forgot');
-});
-
-linkRegisterClient?.addEventListener('click', (evento: Event) => {
-    evento.preventDefault();
-    showAccountView('registerClient');
-});
-
-linkBackToLoginFromForgot?.addEventListener('click', (evento: Event) => {
-    evento.preventDefault();
-    showAccountView('login');
-});
-
-linkBackToLoginFromRegister?.addEventListener('click', (evento: Event) => {
-    evento.preventDefault();
-    showAccountView('login');
-});
+for (const [id, destino] of navegacao) {
+    document.getElementById(id)?.addEventListener('click', (evento: Event) => {
+        evento.preventDefault();
+        showAccountView(destino);
+    });
+}
 
 renderAccountPanel();
