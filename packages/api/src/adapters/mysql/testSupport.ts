@@ -13,12 +13,22 @@ export function createTestPool(): Pool {
 	});
 }
 
-// Ordem obrigatória: carros referencia modelos e donos referencia usuarios.
+// Filhos antes dos pais, senão a FK barra: vagas e topologias apontam para
+// estacionamentos, estacionamentos para donos, carros para modelos.
+const TABELAS_EM_ORDEM_DE_LIMPEZA = [
+	'vagas',
+	'topologias',
+	'estacionamentos',
+	'carros',
+	'modelos',
+	'donos',
+	'usuarios',
+] as const;
+
 export async function wipe(pool: Pool): Promise<void> {
-	await pool.execute('DELETE FROM carros');
-	await pool.execute('DELETE FROM modelos');
-	await pool.execute('DELETE FROM donos');
-	await pool.execute('DELETE FROM usuarios');
+	for (const tabela of TABELAS_EM_ORDEM_DE_LIMPEZA) {
+		await pool.execute(`DELETE FROM ${tabela}`);
+	}
 }
 
 // Registra o ciclo de vida do pool e devolve um acessor: o pool só existe a
