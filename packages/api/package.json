@@ -4,11 +4,24 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx --env-file=../../.env src/main.ts"
   },
   "dependencies": {
     "@amps/contracts": "*",
     "@amps/core": "*",
+    "@node-rs/argon2": "^2.2.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jose": "^6.2.12",
+    "mysql2": "^3.24.4",
     "neo4j-driver": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.2.2",
+    "tsx": "^4.23.13"
   }
 }
