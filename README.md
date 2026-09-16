@@ -12,10 +12,10 @@ Três capacidades que formam o fluxo de ponta a ponta:
 
 ## Arquitetura
 
-O sistema é organizado em torno de um **núcleo de domínio puro** cercado por **adaptadores plugáveis**. O núcleo — modelo `{slots, edges}`, Dijkstra, scoring e regras de tenant — não conhece banco, HTTP nem UI; tudo isso é I/O empurrado pras bordas.
+O sistema é organizado em torno de **adaptadores plugáveis** sobre um motor de grafo que vive fora deste repositório. O AMPS é a aplicação — auth, cadastro, persistência e UI; o motor — modelo `{nodes, edges}`, Dijkstra e scoring — é o [Merlian](https://github.com/gengibrepower/Merlian), consumido como serviço.
 
-- **Núcleo** — modelo do grafo, pathfinding, scoring e isolamento multi-tenant. JS puro, testável sem subir infraestrutura.
-- **Persistência (poliglota)** — **Neo4j** guarda a topologia (vagas, vias e arestas — o grafo que o Dijkstra caminha); **MySQL** guarda o tabular (auth, usuários dono + cliente, metadados do estacionamento, histórico).
+- **Motor de grafo** — pathfinding, scoring e recomendação vivem no [Merlian](https://github.com/gengibrepower/Merlian), repositório à parte, stateless e consumido por HTTP.
+- **Persistência** — **MySQL** guarda usuários, donos, modelos, carros, metadados do estacionamento e vagas.
 - **API** — Express como casca fina: os controllers só traduzem HTTP e chamam o domínio. Essa API é o contrato que o front consome.
 - **Front** — editor e mapa do cliente em Konva, consumindo o mesmo contrato `{nodes, edges}`.
 
@@ -26,7 +26,7 @@ O isolamento **multi-tenant** (cada estacionamento é isolado) vive na fronteira
 | Camada | Tecnologia |
 | --- | --- |
 | Backend | Node.js · Express |
-| Grafo / pathfinding | Neo4j |
+| Grafo / pathfinding | [Merlian](https://github.com/gengibrepower/Merlian) (serviço à parte) |
 | Relacional | MySQL |
 | Front (editor + mapa) | Konva |
 
@@ -37,9 +37,9 @@ Em **reconstrução do zero** (greenfield). O código legado serve apenas como r
 Ordem de construção:
 
 1. Esqueleto + contratos do domínio (tipos do modelo, interfaces de repositório e de pathfinding)
-2. Núcleo puro *test-driven* (Dijkstra + scoring, contra fakes em memória)
-3. Adaptadores de persistência (Neo4j + MySQL)
-4. API fina (Express)
+2. Motor de grafo extraído para o Merlian (Dijkstra + scoring), repositório à parte
+3. Adaptador de persistência (MySQL)
+4. API fina (Express) — cadastro, login e carros
 5. Front (Konva) + ingestão de plantas
 
 ## Roadmap
