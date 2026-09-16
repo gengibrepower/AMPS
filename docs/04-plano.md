@@ -83,17 +83,34 @@ adapter, ao montar `vehicle.dimensions`.
 
 ### O que o banco garante, e o que não garante
 
-A CHECK `grafo_no_formato_do_merlian` usa `JSON_SCHEMA_VALID` replicando o
-`strictObject`, `additionalProperties` incluso: um grafo que o Merlian recusaria
-na requisição **não entra no banco**. Verificado nos dois lados — o mesmo grafo
-com chave extra, com `role: 'slot'` ou com peso negativo é recusado pela CHECK e
-pelo zod do Merlian.
+A integridade vem em duas camadas.
 
-O que o JSON custa, comparado a tabelas relacionais de nós e arestas: o banco
-**não** garante que `from`/`to` apontem para nós existentes, que os ids sejam
-únicos dentro do grafo, nem que `vagas.no_id` case com algum nó. Isso passa a ser
-responsabilidade de quem grava. A validação da RN-11 (conectividade para publicar)
-também é da aplicação — o `POST /v1/reachability` do Merlian serve para isso.
+**Forma** — a CHECK `grafo_no_formato_do_merlian` usa `JSON_SCHEMA_VALID`
+replicando o `strictObject`, `additionalProperties` incluso: um grafo que o
+Merlian recusaria na requisição **não entra no banco**. Verificado nos dois lados
+— o mesmo grafo com chave extra, com `role: 'slot'` ou com peso negativo é
+recusado pela CHECK e pelo zod do Merlian.
+
+**Integridade referencial dentro do documento** — JSON Schema não cruza elementos
+de array, então isso fica em triggers (`03_integridade.sql`), que barram:
+
+- aresta apontando para nó que não existe no grafo
+- dois nós com o mesmo id
+- `candidate` sem `dimensions`
+- `vagas.no_id` apontando para nó inexistente ou que não é `candidate`
+- update do grafo removendo nó que ainda tem vaga
+
+Com isso o JSON deixa de custar integridade em relação a tabelas relacionais de
+nós e arestas. O que ele custa de fato:
+
+- **Ordem de gravação**: a topologia tem que existir antes das vagas.
+- **Lógica fora do TypeScript**: os erros chegam como `SQLSTATE 45000` com
+  mensagem, e o adapter precisa traduzir para HTTP — como o `asConflict` já faz
+  para o `errno 1062`.
+- **Só testável por integração**, já que vive no banco.
+
+A validação da RN-11 (conectividade para publicar) continua sendo da aplicação —
+o `POST /v1/reachability` do Merlian devolve `unreachableSlotIds` e serve para isso.
 
 ### Reconstrução do mapa
 
