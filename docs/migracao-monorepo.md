@@ -1,5 +1,13 @@
 # Tarefa: migrar AMPS de pacote único para monorepo com workspaces
 
+> **Registro histórico — concluído e parcialmente revertido.**
+> Esta tarefa foi executada e entregue. Depois disso, `packages/core` e
+> `packages/contracts` foram removidos do repositório: o núcleo de domínio
+> passou a viver no [Merlian](https://github.com/gengibrepower/Merlian), e o
+> adapter Neo4j saiu junto. Os workspaces atuais são `api` e `web`.
+> O texto abaixo está preservado como registro do que foi pedido na época —
+> não descreve a estrutura atual. Para o estado corrente, ver `04-plano.md`.
+
 Você vai reestruturar o repositório `gengibrepower/AMPS` de um pacote único
 (`src/domain/**`) para um monorepo npm workspaces com os pacotes `contracts`,
 `core`, `api` e `web`. Os três primeiros recebem código de verdade; o `web` entra
