@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, beforeEach } from 'vitest';
 import mysql, { type Pool } from 'mysql2/promise';
 
 export function createTestPool(): Pool {
@@ -18,4 +19,25 @@ export async function wipe(pool: Pool): Promise<void> {
 	await pool.execute('DELETE FROM modelos');
 	await pool.execute('DELETE FROM donos');
 	await pool.execute('DELETE FROM usuarios');
+}
+
+// Registra o ciclo de vida do pool e devolve um acessor: o pool só existe a
+// partir do beforeAll, então não dá para expor a referência direto.
+// Um beforeEach declarado depois desta chamada roda depois do wipe.
+export function usarBancoDeTeste(): () => Pool {
+	let pool: Pool;
+
+	beforeAll(() => {
+		pool = createTestPool();
+	});
+
+	afterAll(async () => {
+		await pool.end();
+	});
+
+	beforeEach(async () => {
+		await wipe(pool);
+	});
+
+	return () => pool;
 }

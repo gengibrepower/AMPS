@@ -1,23 +1,16 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import type { Express } from 'express';
-import type { Pool, ResultSetHeader } from 'mysql2/promise';
-import { createTestPool, wipe } from '../adapters/mysql/testSupport.js';
-import { MysqlCarroRepository } from '../adapters/mysql/mysqlCarroRepository.js';
-import { MysqlDonoRepository } from '../adapters/mysql/mysqlDonoRepository.js';
-import { MysqlModeloRepository } from '../adapters/mysql/mysqlModeloRepository.js';
-import { MysqlUsuarioRepository } from '../adapters/mysql/mysqlUsuarioRepository.js';
+import type { ResultSetHeader } from 'mysql2/promise';
+import { usarBancoDeTeste } from '../adapters/mysql/testSupport.js';
 import { createTokenService } from '../security/jwt.js';
-import { AuthService } from '../services/authService.js';
-import { CarroService } from '../services/carroService.js';
-import { DonoService } from '../services/donoService.js';
-import { ModeloService } from '../services/modeloService.js';
-import { UsuarioService } from '../services/usuarioService.js';
-import { createApp } from './app.js';
+import { montarApp } from '../composition.js';
 
-let pool: Pool;
+const db = usarBancoDeTeste();
 let app: Express;
 let modeloId: number;
+
+const SEGREDO = 'segredo-de-teste';
 
 const CADASTRO = {
 	nome: 'Ana',
@@ -27,28 +20,15 @@ const CADASTRO = {
 };
 
 beforeAll(() => {
-	pool = createTestPool();
-	const usuarios = new MysqlUsuarioRepository(pool);
-	const tokenService = createTokenService('segredo-de-teste');
-
-	app = createApp({
-		usuarioService: new UsuarioService(usuarios),
-		donoService: new DonoService(new MysqlDonoRepository(pool)),
-		authService: new AuthService(usuarios, tokenService),
-		modeloService: new ModeloService(new MysqlModeloRepository(pool)),
-		carroService: new CarroService(new MysqlCarroRepository(pool), usuarios),
-		tokenService,
+	app = montarApp({
+		pool: db(),
+		jwtSecret: SEGREDO,
 		corsOrigin: 'http://localhost:5173',
 	});
 });
 
-afterAll(async () => {
-	await pool.end();
-});
-
 beforeEach(async () => {
-	await wipe(pool);
-	const [result] = await pool.execute<ResultSetHeader>(
+	const [result] = await db().execute<ResultSetHeader>(
 		'INSERT INTO modelos (marca, nome, largura_mm, comprimento_mm) VALUES (?, ?, ?, ?)',
 		['Fiat', 'Mobi', 1640, 3570],
 	);

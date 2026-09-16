@@ -1,11 +1,11 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Pool, RowDataPacket } from 'mysql2/promise';
+import { describe, expect, it } from 'vitest';
+import type { RowDataPacket } from 'mysql2/promise';
 import { ConflictError } from '../../errors.js';
 import type { Dono, NovoUsuario } from '../../ports.js';
 import { MysqlDonoRepository } from './mysqlDonoRepository.js';
-import { createTestPool, wipe } from './testSupport.js';
+import { usarBancoDeTeste } from './testSupport.js';
 
-let pool: Pool;
+const db = usarBancoDeTeste();
 
 const USUARIO: NovoUsuario = {
 	nome: 'Ana',
@@ -18,25 +18,13 @@ const USUARIO: NovoUsuario = {
 const DONO: Dono = { razao: 'Ana Estacionamentos LTDA', cnpj: '12.345.678/0001-99' };
 
 async function contarUsuarios(): Promise<number> {
-	const [rows] = await pool.execute<RowDataPacket[]>('SELECT COUNT(*) AS total FROM usuarios');
+	const [rows] = await db().execute<RowDataPacket[]>('SELECT COUNT(*) AS total FROM usuarios');
 	return Number(rows[0]?.['total'] ?? 0);
 }
 
-beforeAll(() => {
-	pool = createTestPool();
-});
-
-afterAll(async () => {
-	await pool.end();
-});
-
-beforeEach(async () => {
-	await wipe(pool);
-});
-
 describe('MysqlDonoRepository (integração)', () => {
 	it('cria usuario e dono na mesma transação', async () => {
-		const repo = new MysqlDonoRepository(pool);
+		const repo = new MysqlDonoRepository(db());
 
 		const criado = await repo.create(USUARIO, DONO);
 
@@ -46,10 +34,10 @@ describe('MysqlDonoRepository (integração)', () => {
 	});
 
 	it('liga o dono ao usuario criado', async () => {
-		const repo = new MysqlDonoRepository(pool);
+		const repo = new MysqlDonoRepository(db());
 		const criado = await repo.create(USUARIO, DONO);
 
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await db().execute<RowDataPacket[]>(
 			'SELECT usuario_id, razao, cnpj FROM donos WHERE usuario_id = ?',
 			[criado.usuario.id],
 		);
@@ -62,7 +50,7 @@ describe('MysqlDonoRepository (integração)', () => {
 	});
 
 	it('acusa conflito de cnpj duplicado', async () => {
-		const repo = new MysqlDonoRepository(pool);
+		const repo = new MysqlDonoRepository(db());
 		await repo.create(USUARIO, DONO);
 
 		const duplicado = repo.create(
@@ -75,7 +63,7 @@ describe('MysqlDonoRepository (integração)', () => {
 	});
 
 	it('faz rollback do usuario quando o dono falha', async () => {
-		const repo = new MysqlDonoRepository(pool);
+		const repo = new MysqlDonoRepository(db());
 		await repo.create(USUARIO, DONO);
 		const antes = await contarUsuarios();
 

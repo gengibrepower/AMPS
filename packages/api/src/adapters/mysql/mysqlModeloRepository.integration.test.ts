@@ -1,21 +1,11 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Pool } from 'mysql2/promise';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { MysqlModeloRepository } from './mysqlModeloRepository.js';
-import { createTestPool, wipe } from './testSupport.js';
+import { usarBancoDeTeste } from './testSupport.js';
 
-let pool: Pool;
-
-beforeAll(() => {
-	pool = createTestPool();
-});
-
-afterAll(async () => {
-	await pool.end();
-});
+const db = usarBancoDeTeste();
 
 beforeEach(async () => {
-	await wipe(pool);
-	await pool.execute(
+	await db().execute(
 		`INSERT INTO modelos (marca, nome, largura_mm, comprimento_mm) VALUES
 		 ('Volkswagen', 'Gol', 1660, 3900),
 		 ('Fiat', 'Toro', 1840, 4920),
@@ -25,7 +15,7 @@ beforeEach(async () => {
 
 describe('MysqlModeloRepository (integração)', () => {
 	it('lista os modelos ordenados por marca e nome', async () => {
-		const repo = new MysqlModeloRepository(pool);
+		const repo = new MysqlModeloRepository(db());
 
 		const modelos = await repo.listAll();
 
@@ -37,7 +27,7 @@ describe('MysqlModeloRepository (integração)', () => {
 	});
 
 	it('não expõe as dimensões no wire', async () => {
-		const repo = new MysqlModeloRepository(pool);
+		const repo = new MysqlModeloRepository(db());
 
 		const [primeiro] = await repo.listAll();
 
@@ -45,8 +35,8 @@ describe('MysqlModeloRepository (integração)', () => {
 	});
 
 	it('devolve lista vazia quando não há modelos', async () => {
-		await pool.execute('DELETE FROM modelos');
-		const repo = new MysqlModeloRepository(pool);
+		await db().execute('DELETE FROM modelos');
+		const repo = new MysqlModeloRepository(db());
 
 		expect(await repo.listAll()).toEqual([]);
 	});

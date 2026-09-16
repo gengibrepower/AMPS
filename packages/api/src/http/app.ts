@@ -1,4 +1,4 @@
-import express, { type Express } from 'express';
+import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
 import type { AuthService } from '../services/authService.js';
 import type { CarroService } from '../services/carroService.js';
@@ -6,6 +6,7 @@ import type { DonoService } from '../services/donoService.js';
 import type { ModeloService } from '../services/modeloService.js';
 import type { UsuarioService } from '../services/usuarioService.js';
 import type { TokenService } from '../security/jwt.js';
+import type { Usuario } from '../ports.js';
 import { autenticar } from './authMiddleware.js';
 import { errorHandler } from './errorHandler.js';
 
@@ -19,15 +20,45 @@ export interface AppDeps {
 	readonly corsOrigin: string;
 }
 
-type Body = Record<string, unknown>;
-
-function texto(body: Body, campo: string): string | null {
+function texto(body: Record<string, unknown>, campo: string): string | null {
 	const valor = body[campo];
 	return typeof valor === 'string' && valor.trim() !== '' ? valor : null;
 }
 
-function faltantes(body: Body, campos: readonly string[]): readonly string[] {
-	return campos.filter((campo) => texto(body, campo) === null);
+// Devolve os campos já validados como string, ou responde 400 e devolve null —
+// quem chama só precisa de `if (dados === null) return;`.
+function exigir<C extends string>(
+	req: Request,
+	res: Response,
+	campos: readonly C[],
+): Record<C, string> | null {
+	const body = (req.body ?? {}) as Record<string, unknown>;
+	const valores = {} as Record<C, string>;
+	const ausentes: C[] = [];
+
+	for (const campo of campos) {
+		const valor = texto(body, campo);
+		if (valor === null) {
+			ausentes.push(campo);
+		} else {
+			valores[campo] = valor;
+		}
+	}
+
+	if (ausentes.length > 0) {
+		res.status(400).json({ erro: 'campos obrigatorios ausentes', campos: ausentes });
+		return null;
+	}
+	return valores;
+}
+
+function usuarioWire(usuario: Usuario): Record<string, unknown> {
+	return {
+		id: usuario.id,
+		nome: usuario.nome,
+		email: usuario.email,
+		tipo_conta: usuario.tipoConta,
+	};
 }
 
 export function createApp(deps: AppDeps): Express {
@@ -37,66 +68,29 @@ export function createApp(deps: AppDeps): Express {
 	app.use(express.json());
 
 	app.post('/usuarios', async (req, res) => {
-		const body = req.body as Body;
-		const ausentes = faltantes(body, ['nome', 'email', 'cpf', 'senha']);
-		if (ausentes.length > 0) {
-			res.status(400).json({ erro: 'campos obrigatorios ausentes', campos: ausentes });
-			return;
-		}
+		const dados = exigir(req, res, ['nome', 'email', 'cpf', 'senha']);
+		if (dados === null) return;
 
-		const usuario = await deps.usuarioService.cadastrar({
-			nome: String(body['nome']),
-			email: String(body['email']),
-			cpf: String(body['cpf']),
-			senha: String(body['senha']),
-		});
-
-		res.status(201).json({
-			id: usuario.id,
-			nome: usuario.nome,
-			email: usuario.email,
-			tipo_conta: usuario.tipoConta,
-		});
+		const usuario = await deps.usuarioService.cadastrar(dados);
+		res.status(201).json(usuarioWire(usuario));
 	});
 
 	app.post('/donos', async (req, res) => {
-		const body = req.body as Body;
-		const ausentes = faltantes(body, ['nome', 'email', 'cpf', 'senha', 'razao', 'cnpj']);
-		if (ausentes.length > 0) {
-			res.status(400).json({ erro: 'campos obrigatorios ausentes', campos: ausentes });
-			return;
-		}
+		const dados = exigir(req, res, ['nome', 'email', 'cpf', 'senha', 'razao', 'cnpj']);
+		if (dados === null) return;
 
-		const { usuario, dono } = await deps.donoService.cadastrar({
-			nome: String(body['nome']),
-			email: String(body['email']),
-			cpf: String(body['cpf']),
-			senha: String(body['senha']),
-			razao: String(body['razao']),
-			cnpj: String(body['cnpj']),
-		});
-
+		const { usuario, dono } = await deps.donoService.cadastrar(dados);
 		res.status(201).json({
-			id: usuario.id,
-			nome: usuario.nome,
-			email: usuario.email,
-			tipo_conta: usuario.tipoConta,
+			...usuarioWire(usuario),
 			dono: { razao: dono.razao, cnpj: dono.cnpj },
 		});
 	});
 
 	app.post('/auth/login', async (req, res) => {
-		const body = req.body as Body;
-		const ausentes = faltantes(body, ['email', 'senha']);
-		if (ausentes.length > 0) {
-			res.status(400).json({ erro: 'campos obrigatorios ausentes', campos: ausentes });
-			return;
-		}
+		const dados = exigir(req, res, ['email', 'senha']);
+		if (dados === null) return;
 
-		const autenticado = await deps.authService.login(
-			String(body['email']),
-			String(body['senha']),
-		);
+		const autenticado = await deps.authService.login(dados.email, dados.senha);
 		if (autenticado === null) {
 			res.status(401).json({ erro: 'credenciais invalidas' });
 			return;
@@ -104,12 +98,7 @@ export function createApp(deps: AppDeps): Express {
 
 		res.status(200).json({
 			token: autenticado.token,
-			usuario: {
-				id: autenticado.usuario.id,
-				nome: autenticado.usuario.nome,
-				email: autenticado.usuario.email,
-				tipo_conta: autenticado.usuario.tipoConta,
-			},
+			usuario: usuarioWire(autenticado.usuario),
 		});
 	});
 
@@ -127,16 +116,16 @@ export function createApp(deps: AppDeps): Express {
 			return;
 		}
 
-		const body = req.body as Body;
-		const placa = texto(body, 'placa');
-		const modeloId = Number(body['modelo_id']);
-		if (placa === null || !Number.isInteger(modeloId)) {
-			res.status(400).json({ erro: 'placa e modelo_id sao obrigatorios' });
+		const dados = exigir(req, res, ['placa']);
+		if (dados === null) return;
+
+		const modeloId = Number((req.body as Record<string, unknown>)['modelo_id']);
+		if (!Number.isInteger(modeloId)) {
+			res.status(400).json({ erro: 'campos obrigatorios ausentes', campos: ['modelo_id'] });
 			return;
 		}
 
-		const carro = await deps.carroService.cadastrar(auth.sub, { placa, modeloId });
-
+		const carro = await deps.carroService.cadastrar(auth.sub, { placa: dados.placa, modeloId });
 		res.status(201).json({
 			id: carro.id,
 			placa: carro.placa,
