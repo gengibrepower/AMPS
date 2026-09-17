@@ -77,6 +77,11 @@ export interface NovoEstacionamento {
 	readonly endereco: Endereco;
 }
 
+export interface Topologia {
+	readonly estacionamentoId: number;
+	readonly versao: number;
+}
+
 export interface UsuarioRepository {
 	create(novo: NovoUsuario): Promise<Usuario>;
 	findById(id: number): Promise<Usuario | null>;
@@ -99,4 +104,9 @@ export interface CarroRepository {
 export interface EstacionamentoRepository {
 	create(novo: NovoEstacionamento): Promise<Estacionamento>;
 	listByDono(donoId: number): Promise<readonly Estacionamento[]>;
+	findById(id: number): Promise<Estacionamento | null>;
+}
+
+export interface TopologiaRepository {
+	save(estacionamentoId: number, grafo: unknown): Promise<Topologia>;
 }

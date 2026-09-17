@@ -5,6 +5,7 @@ import type { CarroService } from '../services/carroService.js';
 import type { DonoService } from '../services/donoService.js';
 import type { EstacionamentoService } from '../services/estacionamentoService.js';
 import type { ModeloService } from '../services/modeloService.js';
+import type { TopologiaService } from '../services/topologiaService.js';
 import type { UsuarioService } from '../services/usuarioService.js';
 import type { TokenService } from '../security/jwt.js';
 import type { Endereco, Estacionamento, Usuario } from '../ports.js';
@@ -18,6 +19,7 @@ export interface AppDeps {
 	readonly modeloService: ModeloService;
 	readonly carroService: CarroService;
 	readonly estacionamentoService: EstacionamentoService;
+	readonly topologiaService: TopologiaService;
 	readonly tokenService: TokenService;
 	readonly corsOrigin: string;
 }
@@ -190,6 +192,34 @@ export function createApp(deps: AppDeps): Express {
 
 		const estacionamentos = await deps.estacionamentoService.listarDoDono(auth.sub);
 		res.status(200).json(estacionamentos.map(estacionamentoWire));
+	});
+
+	app.put('/estacionamentos/:id/topologia', autenticar(deps.tokenService), async (req, res) => {
+		const auth = req.auth;
+		if (auth === undefined) {
+			res.status(401).json({ erro: 'token ausente' });
+			return;
+		}
+
+		const id = Number(req.params['id']);
+		if (!Number.isInteger(id)) {
+			res.status(400).json({ erro: 'id invalido' });
+			return;
+		}
+
+		// O corpo é o grafo, na mesma forma que vai para o Merlian: quem edita
+		// manda o objeto que já tem. A validação do conteúdo é do banco.
+		const grafo: unknown = req.body;
+		if (typeof grafo !== 'object' || grafo === null || Array.isArray(grafo)) {
+			res.status(400).json({ erro: 'corpo deve ser o grafo { nodes, edges }' });
+			return;
+		}
+
+		const topologia = await deps.topologiaService.salvar(auth.sub, id, grafo);
+		res.status(200).json({
+			estacionamento_id: topologia.estacionamentoId,
+			versao: topologia.versao,
+		});
 	});
 
 	app.use(errorHandler);

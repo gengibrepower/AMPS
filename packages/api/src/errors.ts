@@ -18,3 +18,10 @@ export class ForbiddenError extends Error {
 		this.name = 'ForbiddenError';
 	}
 }
+
+export class UnprocessableError extends Error {
+	constructor(readonly motivo: string) {
+		super(motivo);
+		this.name = 'UnprocessableError';
+	}
+}

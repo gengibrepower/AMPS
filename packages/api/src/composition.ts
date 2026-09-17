@@ -4,13 +4,16 @@ import { MysqlCarroRepository } from './adapters/mysql/mysqlCarroRepository.js';
 import { MysqlDonoRepository } from './adapters/mysql/mysqlDonoRepository.js';
 import { MysqlEstacionamentoRepository } from './adapters/mysql/mysqlEstacionamentoRepository.js';
 import { MysqlModeloRepository } from './adapters/mysql/mysqlModeloRepository.js';
+import { MysqlTopologiaRepository } from './adapters/mysql/mysqlTopologiaRepository.js';
 import { MysqlUsuarioRepository } from './adapters/mysql/mysqlUsuarioRepository.js';
 import { createTokenService } from './security/jwt.js';
+import { AcessoDono } from './services/acessoDono.js';
 import { AuthService } from './services/authService.js';
 import { CarroService } from './services/carroService.js';
 import { DonoService } from './services/donoService.js';
 import { EstacionamentoService } from './services/estacionamentoService.js';
 import { ModeloService } from './services/modeloService.js';
+import { TopologiaService } from './services/topologiaService.js';
 import { UsuarioService } from './services/usuarioService.js';
 import { createApp } from './http/app.js';
 
@@ -23,6 +26,8 @@ export interface MontagemApp {
 export function montarApp({ pool, jwtSecret, corsOrigin }: MontagemApp): Express {
 	const usuarios = new MysqlUsuarioRepository(pool);
 	const donos = new MysqlDonoRepository(pool);
+	const estacionamentos = new MysqlEstacionamentoRepository(pool);
+	const acessoDono = new AcessoDono(donos, estacionamentos);
 	const tokenService = createTokenService(jwtSecret);
 
 	return createApp({
@@ -31,10 +36,8 @@ export function montarApp({ pool, jwtSecret, corsOrigin }: MontagemApp): Express
 		authService: new AuthService(usuarios, tokenService),
 		modeloService: new ModeloService(new MysqlModeloRepository(pool)),
 		carroService: new CarroService(new MysqlCarroRepository(pool), usuarios),
-		estacionamentoService: new EstacionamentoService(
-			new MysqlEstacionamentoRepository(pool),
-			donos,
-		),
+		estacionamentoService: new EstacionamentoService(estacionamentos, acessoDono),
+		topologiaService: new TopologiaService(new MysqlTopologiaRepository(pool), acessoDono),
 		tokenService,
 		corsOrigin,
 	});

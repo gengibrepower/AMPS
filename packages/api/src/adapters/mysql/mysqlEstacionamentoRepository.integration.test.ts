@@ -82,6 +82,21 @@ describe('MysqlEstacionamentoRepository (integração)', () => {
 		expect(meus.map((e) => e.nome)).toEqual(['Pátio Centro']);
 	});
 
+	it('acha pelo id, com o dono junto para a checagem de propriedade', async () => {
+		const repo = new MysqlEstacionamentoRepository(db());
+		const criado = await repo.create({ donoId, nome: 'Pátio Centro', endereco: SEM_ENDERECO });
+
+		const achado = await repo.findById(criado.id);
+
+		expect(achado).toEqual(criado);
+	});
+
+	it('devolve null para id inexistente', async () => {
+		const repo = new MysqlEstacionamentoRepository(db());
+
+		expect(await repo.findById(999999)).toBeNull();
+	});
+
 	it('recusa dono inexistente', async () => {
 		const repo = new MysqlEstacionamentoRepository(db());
 

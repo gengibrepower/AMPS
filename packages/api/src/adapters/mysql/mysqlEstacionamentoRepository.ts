@@ -34,6 +34,13 @@ WHERE dono_id = ?
 ORDER BY id
 `;
 
+const SELECT_BY_ID = `
+SELECT id, dono_id, nome_estacionamento, publicado,
+	   cep, logradouro, numero, bairro, complemento, cidade, estado
+FROM estacionamentos
+WHERE id = ?
+`;
+
 function toEstacionamento(row: EstacionamentoRow): Estacionamento {
 	return {
 		id: row.id,
@@ -83,5 +90,11 @@ export class MysqlEstacionamentoRepository implements EstacionamentoRepository {
 	async listByDono(donoId: number): Promise<readonly Estacionamento[]> {
 		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_BY_DONO, [donoId]);
 		return rows.map(toEstacionamento);
+	}
+
+	async findById(id: number): Promise<Estacionamento | null> {
+		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_BY_ID, [id]);
+		const row = rows[0];
+		return row === undefined ? null : toEstacionamento(row);
 	}
 }

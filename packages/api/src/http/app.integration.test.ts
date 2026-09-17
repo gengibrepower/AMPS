@@ -340,3 +340,142 @@ describe('estacionamentos', () => {
 		expect(resposta.body.campos).toEqual(['nome']);
 	});
 });
+
+describe('PUT /estacionamentos/:id/topologia', () => {
+	const DONO = { ...CADASTRO, razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' };
+
+	const OUTRO_DONO = {
+		nome: 'Bruno',
+		email: 'bruno@ex.com',
+		cpf: '555.666.777-88',
+		senha: 'outra-senha',
+		razao: 'Bruno LTDA',
+		cnpj: '98.765.432/0001-11',
+	};
+
+	const GRAFO = {
+		nodes: [
+			{ id: 'e1', role: 'source', position: { x: 0, y: 0 } },
+			{
+				id: 's1',
+				role: 'candidate',
+				position: { x: 2, y: 0 },
+				dimensions: { width: 2.5, length: 5 },
+			},
+		],
+		edges: [{ from: 'e1', to: 's1', weight: 2 }],
+	};
+
+	async function tokenDeDono(dono = DONO): Promise<string> {
+		await request(app).post('/donos').send(dono);
+		const login = await request(app)
+			.post('/auth/login')
+			.send({ email: dono.email, senha: dono.senha });
+		return login.body.token as string;
+	}
+
+	async function criarEstacionamento(token: string): Promise<number> {
+		const resposta = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+		return resposta.body.id as number;
+	}
+
+	it('grava o grafo e devolve a versao', async () => {
+		const token = await tokenDeDono();
+		const id = await criarEstacionamento(token);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}/topologia`)
+			.set('Authorization', `Bearer ${token}`)
+			.send(GRAFO);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toEqual({ estacionamento_id: id, versao: 1 });
+	});
+
+	it('sobe a versao a cada regravacao', async () => {
+		const token = await tokenDeDono();
+		const id = await criarEstacionamento(token);
+		await request(app)
+			.put(`/estacionamentos/${id}/topologia`)
+			.set('Authorization', `Bearer ${token}`)
+			.send(GRAFO);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}/topologia`)
+			.set('Authorization', `Bearer ${token}`)
+			.send({ ...GRAFO, edges: [] });
+
+		expect(resposta.body.versao).toBe(2);
+	});
+
+	it('devolve 422 com a mensagem do trigger para grafo incoerente', async () => {
+		const token = await tokenDeDono();
+		const id = await criarEstacionamento(token);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}/topologia`)
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nodes: GRAFO.nodes, edges: [{ from: 'e1', to: 'fantasma', weight: 1 }] });
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toBe('grafo: aresta aponta para no inexistente');
+	});
+
+	it('devolve 422 para no com chave que o Merlian nao aceita', async () => {
+		const token = await tokenDeDono();
+		const id = await criarEstacionamento(token);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}/topologia`)
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nodes: [{ id: 'w1', role: 'transit', position: { x: 0, y: 0 }, cor: 'azul' }], edges: [] });
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toContain('grafo_no_formato_do_merlian');
+	});
+
+	it('devolve 403 para estacionamento de outro dono', async () => {
+		const token = await tokenDeDono();
+		const id = await criarEstacionamento(token);
+		const tokenDoBruno = await tokenDeDono(OUTRO_DONO);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}/topologia`)
+			.set('Authorization', `Bearer ${tokenDoBruno}`)
+			.send(GRAFO);
+
+		expect(resposta.status).toBe(403);
+	});
+
+	it('devolve 404 para estacionamento inexistente', async () => {
+		const token = await tokenDeDono();
+
+		const resposta = await request(app)
+			.put('/estacionamentos/999999/topologia')
+			.set('Authorization', `Bearer ${token}`)
+			.send(GRAFO);
+
+		expect(resposta.status).toBe(404);
+	});
+
+	it('devolve 401 sem token', async () => {
+		const resposta = await request(app).put('/estacionamentos/1/topologia').send(GRAFO);
+
+		expect(resposta.status).toBe(401);
+	});
+
+	it('devolve 400 quando o corpo nao e o grafo', async () => {
+		const token = await tokenDeDono();
+		const id = await criarEstacionamento(token);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}/topologia`)
+			.set('Authorization', `Bearer ${token}`)
+			.send([]);
+
+		expect(resposta.status).toBe(400);
+	});
+});
