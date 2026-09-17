@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { RowDataPacket } from 'mysql2/promise';
+import type { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { ConflictError } from '../../errors.js';
 import type { Dono, NovoUsuario } from '../../ports.js';
 import { MysqlDonoRepository } from './mysqlDonoRepository.js';
@@ -60,6 +60,26 @@ describe('MysqlDonoRepository (integração)', () => {
 
 		await expect(duplicado).rejects.toBeInstanceOf(ConflictError);
 		await expect(duplicado).rejects.toMatchObject({ campo: 'cnpj' });
+	});
+
+	it('acha o dono pelo usuario do token', async () => {
+		const repo = new MysqlDonoRepository(db());
+		const criado = await repo.create(USUARIO, DONO);
+
+		const dono = await repo.findByUsuarioId(criado.usuario.id);
+
+		expect(dono).toMatchObject({ razao: DONO.razao, cnpj: DONO.cnpj });
+		expect(dono?.id).toBeGreaterThan(0);
+	});
+
+	it('devolve null para usuario que nao e dono', async () => {
+		const repo = new MysqlDonoRepository(db());
+		const [result] = await db().execute<ResultSetHeader>(
+			'INSERT INTO usuarios (nome, email, cpf, senha, tipo_conta) VALUES (?, ?, ?, ?, ?)',
+			['Bruno', 'bruno@ex.com', '555.666.777-88', '$argon2id$fake', 'common_user'],
+		);
+
+		expect(await repo.findByUsuarioId(result.insertId)).toBeNull();
 	});
 
 	it('faz rollback do usuario quando o dono falha', async () => {

@@ -25,6 +25,10 @@ export interface Dono {
 	readonly cnpj: string;
 }
 
+export interface DonoRegistrado extends Dono {
+	readonly id: number;
+}
+
 export interface UsuarioComDono {
 	readonly usuario: Usuario;
 	readonly dono: Dono;
@@ -49,6 +53,30 @@ export interface NovoCarro {
 	readonly proprietario: string;
 }
 
+export interface Endereco {
+	readonly cep: string | null;
+	readonly logradouro: string | null;
+	readonly numero: string | null;
+	readonly bairro: string | null;
+	readonly complemento: string | null;
+	readonly cidade: string | null;
+	readonly estado: string | null;
+}
+
+export interface Estacionamento {
+	readonly id: number;
+	readonly donoId: number;
+	readonly nome: string;
+	readonly publicado: boolean;
+	readonly endereco: Endereco;
+}
+
+export interface NovoEstacionamento {
+	readonly donoId: number;
+	readonly nome: string;
+	readonly endereco: Endereco;
+}
+
 export interface UsuarioRepository {
 	create(novo: NovoUsuario): Promise<Usuario>;
 	findById(id: number): Promise<Usuario | null>;
@@ -57,6 +85,7 @@ export interface UsuarioRepository {
 
 export interface DonoRepository {
 	create(usuario: NovoUsuario, dono: Dono): Promise<UsuarioComDono>;
+	findByUsuarioId(usuarioId: number): Promise<DonoRegistrado | null>;
 }
 
 export interface ModeloRepository {
@@ -65,4 +94,9 @@ export interface ModeloRepository {
 
 export interface CarroRepository {
 	create(novo: NovoCarro): Promise<Carro>;
+}
+
+export interface EstacionamentoRepository {
+	create(novo: NovoEstacionamento): Promise<Estacionamento>;
+	listByDono(donoId: number): Promise<readonly Estacionamento[]>;
 }

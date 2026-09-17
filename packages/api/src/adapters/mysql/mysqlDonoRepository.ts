@@ -1,5 +1,11 @@
-import type { Pool, ResultSetHeader } from 'mysql2/promise';
-import type { Dono, DonoRepository, NovoUsuario, UsuarioComDono } from '../../ports.js';
+import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import type {
+	Dono,
+	DonoRegistrado,
+	DonoRepository,
+	NovoUsuario,
+	UsuarioComDono,
+} from '../../ports.js';
 import { asConflict } from './duplicate.js';
 
 const INSERT_USUARIO = `
@@ -11,6 +17,18 @@ const INSERT_DONO = `
 INSERT INTO donos (usuario_id, razao, cnpj)
 VALUES (?, ?, ?)
 `;
+
+const SELECT_BY_USUARIO = `
+SELECT id, razao, cnpj
+FROM donos
+WHERE usuario_id = ?
+`;
+
+interface DonoRow extends RowDataPacket {
+	id: number;
+	razao: string;
+	cnpj: string;
+}
 
 export class MysqlDonoRepository implements DonoRepository {
 	constructor(private readonly pool: Pool) {}
@@ -45,5 +63,11 @@ export class MysqlDonoRepository implements DonoRepository {
 		} finally {
 			connection.release();
 		}
+	}
+
+	async findByUsuarioId(usuarioId: number): Promise<DonoRegistrado | null> {
+		const [rows] = await this.pool.execute<DonoRow[]>(SELECT_BY_USUARIO, [usuarioId]);
+		const row = rows[0];
+		return row === undefined ? null : { id: row.id, razao: row.razao, cnpj: row.cnpj };
 	}
 }

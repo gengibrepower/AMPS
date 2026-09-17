@@ -227,3 +227,116 @@ describe('fluxo cadastro -> login -> POST /carros', () => {
 		expect(resposta.body.campo).toBe('placa');
 	});
 });
+
+describe('estacionamentos', () => {
+	const DONO = { ...CADASTRO, razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' };
+
+	const OUTRO_DONO = {
+		nome: 'Bruno',
+		email: 'bruno@ex.com',
+		cpf: '555.666.777-88',
+		senha: 'outra-senha',
+		razao: 'Bruno LTDA',
+		cnpj: '98.765.432/0001-11',
+	};
+
+	async function login(email: string, senha: string): Promise<string> {
+		const resposta = await request(app).post('/auth/login').send({ email, senha });
+		return resposta.body.token as string;
+	}
+
+	async function tokenDeDono(dono = DONO): Promise<string> {
+		await request(app).post('/donos').send(dono);
+		return login(dono.email, dono.senha);
+	}
+
+	async function tokenDeUsuarioComum(): Promise<string> {
+		await request(app).post('/usuarios').send(CADASTRO);
+		return login(CADASTRO.email, CADASTRO.senha);
+	}
+
+	it('cadastra para o dono do token e nasce nao publicado', async () => {
+		const token = await tokenDeDono();
+
+		const resposta = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro', cidade: 'Blumenau', estado: 'SC' });
+
+		expect(resposta.status).toBe(201);
+		expect(resposta.body).toMatchObject({ nome: 'Pátio Centro', publicado: false });
+		expect(resposta.body.id).toBeGreaterThan(0);
+		expect(resposta.body.endereco).toMatchObject({
+			cidade: 'Blumenau',
+			estado: 'SC',
+			cep: null,
+		});
+	});
+
+	it('lista so os estacionamentos do dono do token', async () => {
+		const token = await tokenDeDono();
+		await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+
+		const tokenDoBruno = await tokenDeDono(OUTRO_DONO);
+		await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${tokenDoBruno}`)
+			.send({ nome: 'Pátio do Bruno' });
+
+		const resposta = await request(app)
+			.get('/estacionamentos')
+			.set('Authorization', `Bearer ${tokenDoBruno}`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body.map((e: { nome: string }) => e.nome)).toEqual(['Pátio do Bruno']);
+	});
+
+	it('lista vazia para dono sem estacionamento', async () => {
+		const token = await tokenDeDono();
+
+		const resposta = await request(app)
+			.get('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toEqual([]);
+	});
+
+	it('devolve 403 para usuario comum, que nao tem linha em donos', async () => {
+		const token = await tokenDeUsuarioComum();
+
+		const criacao = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+		const listagem = await request(app)
+			.get('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`);
+
+		expect(criacao.status).toBe(403);
+		expect(listagem.status).toBe(403);
+	});
+
+	it('devolve 401 sem token', async () => {
+		const criacao = await request(app).post('/estacionamentos').send({ nome: 'Pátio Centro' });
+		const listagem = await request(app).get('/estacionamentos');
+
+		expect(criacao.status).toBe(401);
+		expect(listagem.status).toBe(401);
+	});
+
+	it('devolve 400 quando falta o nome', async () => {
+		const token = await tokenDeDono();
+
+		const resposta = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ cidade: 'Blumenau' });
+
+		expect(resposta.status).toBe(400);
+		expect(resposta.body.campos).toEqual(['nome']);
+	});
+});

@@ -11,3 +11,10 @@ export class NotFoundError extends Error {
 		this.name = 'NotFoundError';
 	}
 }
+
+export class ForbiddenError extends Error {
+	constructor(readonly motivo: string) {
+		super(motivo);
+		this.name = 'ForbiddenError';
+	}
+}

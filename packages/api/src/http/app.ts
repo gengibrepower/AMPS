@@ -3,10 +3,11 @@ import cors from 'cors';
 import type { AuthService } from '../services/authService.js';
 import type { CarroService } from '../services/carroService.js';
 import type { DonoService } from '../services/donoService.js';
+import type { EstacionamentoService } from '../services/estacionamentoService.js';
 import type { ModeloService } from '../services/modeloService.js';
 import type { UsuarioService } from '../services/usuarioService.js';
 import type { TokenService } from '../security/jwt.js';
-import type { Usuario } from '../ports.js';
+import type { Endereco, Estacionamento, Usuario } from '../ports.js';
 import { autenticar } from './authMiddleware.js';
 import { errorHandler } from './errorHandler.js';
 
@@ -16,6 +17,7 @@ export interface AppDeps {
 	readonly authService: AuthService;
 	readonly modeloService: ModeloService;
 	readonly carroService: CarroService;
+	readonly estacionamentoService: EstacionamentoService;
 	readonly tokenService: TokenService;
 	readonly corsOrigin: string;
 }
@@ -50,6 +52,34 @@ function exigir<C extends string>(
 		return null;
 	}
 	return valores;
+}
+
+const CAMPOS_ENDERECO = [
+	'cep',
+	'logradouro',
+	'numero',
+	'bairro',
+	'complemento',
+	'cidade',
+	'estado',
+] as const;
+
+function endereco(req: Request): Endereco {
+	const body = (req.body ?? {}) as Record<string, unknown>;
+	const valores = {} as Record<(typeof CAMPOS_ENDERECO)[number], string | null>;
+	for (const campo of CAMPOS_ENDERECO) {
+		valores[campo] = texto(body, campo);
+	}
+	return valores;
+}
+
+function estacionamentoWire(estacionamento: Estacionamento): Record<string, unknown> {
+	return {
+		id: estacionamento.id,
+		nome: estacionamento.nome,
+		publicado: estacionamento.publicado,
+		endereco: estacionamento.endereco,
+	};
 }
 
 function usuarioWire(usuario: Usuario): Record<string, unknown> {
@@ -132,6 +162,34 @@ export function createApp(deps: AppDeps): Express {
 			modelo_id: carro.modeloId,
 			proprietario: carro.proprietario,
 		});
+	});
+
+	app.post('/estacionamentos', autenticar(deps.tokenService), async (req, res) => {
+		const auth = req.auth;
+		if (auth === undefined) {
+			res.status(401).json({ erro: 'token ausente' });
+			return;
+		}
+
+		const dados = exigir(req, res, ['nome']);
+		if (dados === null) return;
+
+		const estacionamento = await deps.estacionamentoService.cadastrar(auth.sub, {
+			nome: dados.nome,
+			endereco: endereco(req),
+		});
+		res.status(201).json(estacionamentoWire(estacionamento));
+	});
+
+	app.get('/estacionamentos', autenticar(deps.tokenService), async (req, res) => {
+		const auth = req.auth;
+		if (auth === undefined) {
+			res.status(401).json({ erro: 'token ausente' });
+			return;
+		}
+
+		const estacionamentos = await deps.estacionamentoService.listarDoDono(auth.sub);
+		res.status(200).json(estacionamentos.map(estacionamentoWire));
 	});
 
 	app.use(errorHandler);

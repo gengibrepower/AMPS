@@ -1,9 +1,13 @@
 import type { ErrorRequestHandler } from 'express';
-import { ConflictError, NotFoundError } from '../errors.js';
+import { ConflictError, ForbiddenError, NotFoundError } from '../errors.js';
 
 export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
 	if (error instanceof ConflictError) {
 		res.status(409).json({ erro: error.message, campo: error.campo });
+		return;
+	}
+	if (error instanceof ForbiddenError) {
+		res.status(403).json({ erro: error.message });
 		return;
 	}
 	if (error instanceof NotFoundError) {
