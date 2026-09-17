@@ -39,9 +39,8 @@ export function renderAccountPanel(): void {
     const session = getSession();
 
     if (session) {
-        const email = session.usuario.email;
-        if (accountEmail) accountEmail.textContent = email;
-        if (sidebarAccountLabel) sidebarAccountLabel.textContent = email;
+        if (accountEmail) accountEmail.textContent = session.usuario.email;
+        if (sidebarAccountLabel) sidebarAccountLabel.textContent = session.usuario.nome;
         showAccountView('loggedIn');
     } else {
         if (sidebarAccountLabel) sidebarAccountLabel.textContent = 'Entrar';

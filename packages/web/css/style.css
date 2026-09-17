@@ -324,6 +324,25 @@ main > h2 {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Nome e email tem tamanho imprevisivel e a sidebar tem 280px fixos. Sem
+   min-width: 0 o span nao encolhe (padrao de item flex) e empurra o botao
+   para fora; sem flex-shrink: 0 o icone e que seria esmagado. */
+#sidebarAccountLabel {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.nav-item button .material-symbols-outlined {
+    flex-shrink: 0;
+}
+
+/* Email nao tem espaco para quebrar sozinho. */
+#accountEmail {
+    overflow-wrap: anywhere;
+}
+
 .login {
     position: fixed;
     inset: 0;
