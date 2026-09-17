@@ -58,3 +58,12 @@ export function loadServerConfig(): ServerConfig {
 	};
 }
 
+export interface MerlianConfig {
+	readonly baseUrl: string;
+}
+
+export function loadMerlianConfig(): MerlianConfig {
+	return {
+		baseUrl: process.env['MERLIAN_URL'] ?? 'http://localhost:3000',
+	};
+}

@@ -6,6 +6,7 @@ import type { DonoService } from '../services/donoService.js';
 import type { EstacionamentoService } from '../services/estacionamentoService.js';
 import type { MapaService } from '../services/mapaService.js';
 import type { ModeloService } from '../services/modeloService.js';
+import type { PublicacaoService } from '../services/publicacaoService.js';
 import type { TopologiaService } from '../services/topologiaService.js';
 import type { VagaService } from '../services/vagaService.js';
 import type { UsuarioService } from '../services/usuarioService.js';
@@ -24,6 +25,7 @@ export interface AppDeps {
 	readonly topologiaService: TopologiaService;
 	readonly vagaService: VagaService;
 	readonly mapaService: MapaService;
+	readonly publicacaoService: PublicacaoService;
 	readonly tokenService: TokenService;
 	readonly corsOrigin: string;
 }
@@ -352,6 +354,32 @@ export function createApp(deps: AppDeps): Express {
 			vagas: mapa.vagas.map(vagaWire),
 		});
 	});
+
+	app.post('/estacionamentos/:id/publicacao', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		const estacionamento = await deps.publicacaoService.publicar(auth.sub, id);
+		res.status(200).json(estacionamentoWire(estacionamento));
+	});
+
+	app.delete(
+		'/estacionamentos/:id/publicacao',
+		autenticar(deps.tokenService),
+		async (req, res) => {
+			const auth = autenticado(req, res);
+			if (auth === null) return;
+
+			const id = idDaRota(req, res);
+			if (id === null) return;
+
+			const estacionamento = await deps.publicacaoService.despublicar(auth.sub, id);
+			res.status(200).json(estacionamentoWire(estacionamento));
+		},
+	);
 
 	app.use(errorHandler);
 

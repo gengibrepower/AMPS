@@ -2,6 +2,8 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import type { Express } from 'express';
 import type { ResultSetHeader } from 'mysql2/promise';
+import { UnavailableError } from '../errors.js';
+import type { Alcancabilidade, MotorDeGrafo } from '../ports.js';
 import { usarBancoDeTeste } from '../adapters/mysql/testSupport.js';
 import { createTokenService } from '../security/jwt.js';
 import { montarApp } from '../composition.js';
@@ -11,6 +13,22 @@ let app: Express;
 let modeloId: number;
 
 const SEGREDO = 'segredo-de-teste';
+
+const TUDO_ALCANCAVEL: Alcancabilidade = {
+	porEntrada: [{ entradaId: 'e1', vagasAlcancaveis: ['s1', 's2'] }],
+	vagasInalcancaveis: [],
+};
+
+// O Merlian de verdade é um serviço à parte; aqui a resposta é combinada por teste.
+const merlian = {
+	resposta: TUDO_ALCANCAVEL,
+	erro: null as Error | null,
+	alcancabilidade(): Promise<Alcancabilidade> {
+		return merlian.erro === null
+			? Promise.resolve(merlian.resposta)
+			: Promise.reject(merlian.erro);
+	},
+} satisfies MotorDeGrafo & Record<string, unknown>;
 
 const CADASTRO = {
 	nome: 'Ana',
@@ -24,10 +42,14 @@ beforeAll(() => {
 		pool: db(),
 		jwtSecret: SEGREDO,
 		corsOrigin: 'http://localhost:5173',
+		motorDeGrafo: merlian,
 	});
 });
 
 beforeEach(async () => {
+	merlian.resposta = TUDO_ALCANCAVEL;
+	merlian.erro = null;
+
 	const [result] = await db().execute<ResultSetHeader>(
 		'INSERT INTO modelos (marca, nome, largura_mm, comprimento_mm) VALUES (?, ?, ?, ?)',
 		['Fiat', 'Mobi', 1640, 3570],
@@ -708,5 +730,178 @@ describe('vagas e mapa', () => {
 
 		expect(mapa.status).toBe(401);
 		expect(gravacao.status).toBe(401);
+	});
+});
+
+describe('publicacao', () => {
+	const DONO = { ...CADASTRO, razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' };
+
+	const OUTRO_DONO = {
+		nome: 'Bruno',
+		email: 'bruno@ex.com',
+		cpf: '555.666.777-88',
+		senha: 'outra-senha',
+		razao: 'Bruno LTDA',
+		cnpj: '98.765.432/0001-11',
+	};
+
+	const GRAFO = {
+		nodes: [
+			{ id: 'e1', role: 'source', position: { x: 0, y: 0 } },
+			{
+				id: 's1',
+				role: 'candidate',
+				position: { x: 2, y: 0 },
+				dimensions: { width: 2.5, length: 5 },
+			},
+		],
+		edges: [{ from: 'e1', to: 's1', weight: 2 }],
+	};
+
+	let token: string;
+	let estacionamentoId: number;
+
+	function comAutorizacao(metodo: 'put' | 'post' | 'delete', rota: string) {
+		return request(app)[metodo](rota).set('Authorization', `Bearer ${token}`);
+	}
+
+	beforeEach(async () => {
+		await request(app).post('/donos').send(DONO);
+		const entrada = await request(app)
+			.post('/auth/login')
+			.send({ email: DONO.email, senha: DONO.senha });
+		token = entrada.body.token as string;
+
+		const criado = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+		estacionamentoId = criado.body.id as number;
+	});
+
+	async function comLayout(): Promise<void> {
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/topologia`).send(GRAFO);
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01' },
+		]);
+	}
+
+	it('publica quando toda vaga alcanca uma entrada', async () => {
+		await comLayout();
+
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toMatchObject({ id: estacionamentoId, publicado: true });
+	});
+
+	it('recusa quando alguma vaga nao tem caminho ate a entrada (RN-11)', async () => {
+		await comLayout();
+		merlian.resposta = {
+			porEntrada: [{ entradaId: 'e1', vagasAlcancaveis: [] }],
+			vagasInalcancaveis: ['s1'],
+		};
+
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toBe('vagas sem caminho ate uma entrada: A-01');
+	});
+
+	it('ignora candidate do grafo que ainda nao virou vaga', async () => {
+		await comLayout();
+		merlian.resposta = {
+			porEntrada: [{ entradaId: 'e1', vagasAlcancaveis: ['s1'] }],
+			vagasInalcancaveis: ['s9'],
+		};
+
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(200);
+	});
+
+	it('recusa grafo sem entrada', async () => {
+		await comLayout();
+		merlian.resposta = { porEntrada: [], vagasInalcancaveis: [] };
+
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toBe('grafo sem entrada');
+	});
+
+	it('recusa estacionamento sem topologia', async () => {
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toBe('estacionamento sem topologia');
+	});
+
+	it('recusa estacionamento sem vagas', async () => {
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/topologia`).send(GRAFO);
+
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toBe('estacionamento sem vagas');
+	});
+
+	it('devolve 503 quando o merlian esta fora', async () => {
+		await comLayout();
+		merlian.erro = new UnavailableError('merlian');
+
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(503);
+		expect(resposta.body.erro).toBe('merlian indisponivel');
+	});
+
+	it('despublica sem consultar o merlian', async () => {
+		await comLayout();
+		await comAutorizacao('post', `/estacionamentos/${estacionamentoId}/publicacao`);
+		merlian.erro = new UnavailableError('merlian');
+
+		const resposta = await comAutorizacao(
+			'delete',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body.publicado).toBe(false);
+	});
+
+	it('devolve 403 ao publicar patio de outro dono', async () => {
+		await comLayout();
+		await request(app).post('/donos').send(OUTRO_DONO);
+		const entrada = await request(app)
+			.post('/auth/login')
+			.send({ email: OUTRO_DONO.email, senha: OUTRO_DONO.senha });
+
+		const resposta = await request(app)
+			.post(`/estacionamentos/${estacionamentoId}/publicacao`)
+			.set('Authorization', `Bearer ${entrada.body.token as string}`);
+
+		expect(resposta.status).toBe(403);
 	});
 });

@@ -25,3 +25,10 @@ export class UnprocessableError extends Error {
 		this.name = 'UnprocessableError';
 	}
 }
+
+export class UnavailableError extends Error {
+	constructor(readonly servico: string) {
+		super(`${servico} indisponivel`);
+		this.name = 'UnavailableError';
+	}
+}

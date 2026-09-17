@@ -110,6 +110,21 @@ export interface VagaDoEditor {
 	readonly sensor: string | null;
 }
 
+export interface EntradaAlcancavel {
+	readonly entradaId: string;
+	readonly vagasAlcancaveis: readonly string[];
+}
+
+export interface Alcancabilidade {
+	readonly porEntrada: readonly EntradaAlcancavel[];
+	readonly vagasInalcancaveis: readonly string[];
+}
+
+// O motor de grafo vive no Merlian. Aqui é só a fronteira.
+export interface MotorDeGrafo {
+	alcancabilidade(grafo: unknown): Promise<Alcancabilidade>;
+}
+
 export interface UsuarioRepository {
 	create(novo: NovoUsuario): Promise<Usuario>;
 	findById(id: number): Promise<Usuario | null>;
@@ -133,6 +148,7 @@ export interface EstacionamentoRepository {
 	create(novo: NovoEstacionamento): Promise<Estacionamento>;
 	listByDono(donoId: number): Promise<readonly Estacionamento[]>;
 	findById(id: number): Promise<Estacionamento | null>;
+	setPublicado(id: number, publicado: boolean): Promise<Estacionamento>;
 }
 
 export interface TopologiaRepository {

@@ -1,5 +1,11 @@
 import type { ErrorRequestHandler } from 'express';
-import { ConflictError, ForbiddenError, NotFoundError, UnprocessableError } from '../errors.js';
+import {
+	ConflictError,
+	ForbiddenError,
+	NotFoundError,
+	UnavailableError,
+	UnprocessableError,
+} from '../errors.js';
 
 export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
 	if (error instanceof ConflictError) {
@@ -16,6 +22,10 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
 	}
 	if (error instanceof UnprocessableError) {
 		res.status(422).json({ erro: error.message });
+		return;
+	}
+	if (error instanceof UnavailableError) {
+		res.status(503).json({ erro: error.message });
 		return;
 	}
 	res.status(500).json({ erro: 'erro interno' });

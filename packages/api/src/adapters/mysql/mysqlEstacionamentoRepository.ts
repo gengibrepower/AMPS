@@ -4,6 +4,7 @@ import type {
 	EstacionamentoRepository,
 	NovoEstacionamento,
 } from '../../ports.js';
+import { NotFoundError } from '../../errors.js';
 import { asConflict } from './duplicate.js';
 
 interface EstacionamentoRow extends RowDataPacket {
@@ -38,6 +39,12 @@ const SELECT_BY_ID = `
 SELECT id, dono_id, nome_estacionamento, publicado,
 	   cep, logradouro, numero, bairro, complemento, cidade, estado
 FROM estacionamentos
+WHERE id = ?
+`;
+
+const UPDATE_PUBLICADO = `
+UPDATE estacionamentos
+SET publicado = ?
 WHERE id = ?
 `;
 
@@ -96,5 +103,14 @@ export class MysqlEstacionamentoRepository implements EstacionamentoRepository {
 		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_BY_ID, [id]);
 		const row = rows[0];
 		return row === undefined ? null : toEstacionamento(row);
+	}
+
+	async setPublicado(id: number, publicado: boolean): Promise<Estacionamento> {
+		await this.pool.execute(UPDATE_PUBLICADO, [publicado, id]);
+		const atualizado = await this.findById(id);
+		if (atualizado === null) {
+			throw new NotFoundError('estacionamento');
+		}
+		return atualizado;
 	}
 }

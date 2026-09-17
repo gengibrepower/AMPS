@@ -1,5 +1,6 @@
 import type { Express } from 'express';
 import type { Pool } from 'mysql2/promise';
+import type { MotorDeGrafo } from './ports.js';
 import { MysqlCarroRepository } from './adapters/mysql/mysqlCarroRepository.js';
 import { MysqlDonoRepository } from './adapters/mysql/mysqlDonoRepository.js';
 import { MysqlEstacionamentoRepository } from './adapters/mysql/mysqlEstacionamentoRepository.js';
@@ -14,6 +15,7 @@ import { CarroService } from './services/carroService.js';
 import { DonoService } from './services/donoService.js';
 import { EstacionamentoService } from './services/estacionamentoService.js';
 import { MapaService } from './services/mapaService.js';
+import { PublicacaoService } from './services/publicacaoService.js';
 import { ModeloService } from './services/modeloService.js';
 import { TopologiaService } from './services/topologiaService.js';
 import { UsuarioService } from './services/usuarioService.js';
@@ -24,9 +26,10 @@ export interface MontagemApp {
 	readonly pool: Pool;
 	readonly jwtSecret: string;
 	readonly corsOrigin: string;
+	readonly motorDeGrafo: MotorDeGrafo;
 }
 
-export function montarApp({ pool, jwtSecret, corsOrigin }: MontagemApp): Express {
+export function montarApp({ pool, jwtSecret, corsOrigin, motorDeGrafo }: MontagemApp): Express {
 	const usuarios = new MysqlUsuarioRepository(pool);
 	const donos = new MysqlDonoRepository(pool);
 	const estacionamentos = new MysqlEstacionamentoRepository(pool);
@@ -45,6 +48,13 @@ export function montarApp({ pool, jwtSecret, corsOrigin }: MontagemApp): Express
 		topologiaService: new TopologiaService(topologias, acessoDono),
 		vagaService: new VagaService(vagas, acessoDono),
 		mapaService: new MapaService(topologias, vagas, acessoDono),
+		publicacaoService: new PublicacaoService(
+			estacionamentos,
+			topologias,
+			vagas,
+			motorDeGrafo,
+			acessoDono,
+		),
 		tokenService,
 		corsOrigin,
 	});
