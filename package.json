@@ -12,7 +12,8 @@
     "pretest": "npm run typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:integration": "vitest run --config vitest.integration.config.ts"
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "dev": "trap 'kill 0' EXIT INT TERM; npm run dev -w @amps/api & npm run dev -w @amps/web & wait"
   },
   "repository": {
     "type": "git",
