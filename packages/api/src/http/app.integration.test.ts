@@ -479,3 +479,234 @@ describe('PUT /estacionamentos/:id/topologia', () => {
 		expect(resposta.status).toBe(400);
 	});
 });
+
+describe('vagas e mapa', () => {
+	const DONO = { ...CADASTRO, razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' };
+
+	const OUTRO_DONO = {
+		nome: 'Bruno',
+		email: 'bruno@ex.com',
+		cpf: '555.666.777-88',
+		senha: 'outra-senha',
+		razao: 'Bruno LTDA',
+		cnpj: '98.765.432/0001-11',
+	};
+
+	const GRAFO = {
+		nodes: [
+			{ id: 'e1', role: 'source', position: { x: 0, y: 0 } },
+			{
+				id: 's1',
+				role: 'candidate',
+				position: { x: 2, y: 0 },
+				dimensions: { width: 2.5, length: 5 },
+			},
+			{
+				id: 's2',
+				role: 'candidate',
+				position: { x: 5, y: 0 },
+				dimensions: { width: 2.5, length: 5 },
+			},
+		],
+		edges: [
+			{ from: 'e1', to: 's1', weight: 2 },
+			{ from: 'e1', to: 's2', weight: 5 },
+		],
+	};
+
+	let token: string;
+	let estacionamentoId: number;
+
+	async function tokenDeDono(dono = DONO): Promise<string> {
+		await request(app).post('/donos').send(dono);
+		const entrada = await request(app)
+			.post('/auth/login')
+			.send({ email: dono.email, senha: dono.senha });
+		return entrada.body.token as string;
+	}
+
+	// Sem async: o encadeamento do supertest (.send) se perde ao virar Promise.
+	function comAutorizacao(metodo: 'put' | 'get' | 'delete', rota: string) {
+		return request(app)[metodo](rota).set('Authorization', `Bearer ${token}`);
+	}
+
+	beforeEach(async () => {
+		token = await tokenDeDono();
+		const criado = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+		estacionamentoId = criado.body.id as number;
+	});
+
+	async function comTopologia(): Promise<void> {
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/topologia`).send(GRAFO);
+	}
+
+	it('grava as vagas e devolve a lista inteira', async () => {
+		await comTopologia();
+
+		const resposta = await comAutorizacao(
+			'put',
+			`/estacionamentos/${estacionamentoId}/vagas`,
+		).send([
+			{ no_id: 's1', numero: 'A-01' },
+			{ no_id: 's2', numero: 'A-02', tipo: 'pcd', rotacao_graus: 90, sensor: 'sensor-2' },
+		]);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toHaveLength(2);
+		expect(resposta.body[0]).toMatchObject({
+			no_id: 's1',
+			numero: 'A-01',
+			tipo: 'comum',
+			rotacao_graus: 0,
+			sensor: null,
+			status: 'livre',
+			carro_id: null,
+		});
+		expect(resposta.body[1]).toMatchObject({ tipo: 'pcd', rotacao_graus: 90 });
+	});
+
+	it('devolve 422 quando a vaga vem antes da topologia', async () => {
+		const resposta = await comAutorizacao(
+			'put',
+			`/estacionamentos/${estacionamentoId}/vagas`,
+		).send([{ no_id: 's1', numero: 'A-01' }]);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toBe('vaga: no_id nao e um candidate do grafo');
+	});
+
+	it('devolve 409 para numero ja usado por outra vaga', async () => {
+		await comTopologia();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01' },
+		]);
+
+		const resposta = await comAutorizacao(
+			'put',
+			`/estacionamentos/${estacionamentoId}/vagas`,
+		).send([{ no_id: 's2', numero: 'A-01' }]);
+
+		expect(resposta.status).toBe(409);
+		expect(resposta.body.campo).toBe('numero');
+	});
+
+	it('devolve 400 para tipo fora do enum', async () => {
+		await comTopologia();
+
+		const resposta = await comAutorizacao(
+			'put',
+			`/estacionamentos/${estacionamentoId}/vagas`,
+		).send([{ no_id: 's1', numero: 'A-01', tipo: 'helicoptero' }]);
+
+		expect(resposta.status).toBe(400);
+	});
+
+	it('devolve 400 para no_id repetido no corpo', async () => {
+		await comTopologia();
+
+		const resposta = await comAutorizacao(
+			'put',
+			`/estacionamentos/${estacionamentoId}/vagas`,
+		).send([
+			{ no_id: 's1', numero: 'A-01' },
+			{ no_id: 's1', numero: 'A-02' },
+		]);
+
+		expect(resposta.status).toBe(400);
+		expect(resposta.body.erro).toContain('no_id');
+	});
+
+	it('apaga a vaga e libera o no para sair do grafo', async () => {
+		await comTopologia();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01' },
+		]);
+
+		const remocao = await comAutorizacao(
+			'delete',
+			`/estacionamentos/${estacionamentoId}/vagas/s1`,
+		);
+		const semONo = await comAutorizacao(
+			'put',
+			`/estacionamentos/${estacionamentoId}/topologia`,
+		).send({ nodes: [GRAFO.nodes[0]], edges: [] });
+
+		expect(remocao.status).toBe(204);
+		expect(semONo.status).toBe(200);
+	});
+
+	it('devolve 404 ao apagar vaga inexistente', async () => {
+		await comTopologia();
+
+		const resposta = await comAutorizacao(
+			'delete',
+			`/estacionamentos/${estacionamentoId}/vagas/s1`,
+		);
+
+		expect(resposta.status).toBe(404);
+	});
+
+	it('recusa apagar vaga que nao esta livre', async () => {
+		await comTopologia();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01' },
+		]);
+		await db().execute(
+			"UPDATE vagas SET status = 'reservada' WHERE estacionamento_id = ? AND no_id = ?",
+			[estacionamentoId, 's1'],
+		);
+
+		const resposta = await comAutorizacao(
+			'delete',
+			`/estacionamentos/${estacionamentoId}/vagas/s1`,
+		);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toContain('reservada');
+	});
+
+	it('abre o mapa vazio num estacionamento sem topologia', async () => {
+		const resposta = await comAutorizacao('get', `/estacionamentos/${estacionamentoId}/mapa`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toEqual({ versao: 0, grafo: { nodes: [], edges: [] }, vagas: [] });
+	});
+
+	it('devolve grafo e vagas juntos, casados pelo no_id', async () => {
+		await comTopologia();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01' },
+		]);
+
+		const resposta = await comAutorizacao('get', `/estacionamentos/${estacionamentoId}/mapa`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body.versao).toBe(1);
+		expect(resposta.body.grafo).toEqual(GRAFO);
+		expect(resposta.body.vagas).toHaveLength(1);
+		expect(resposta.body.vagas[0].no_id).toBe('s1');
+	});
+
+	it('devolve 403 no mapa de outro dono', async () => {
+		const tokenDoBruno = await tokenDeDono(OUTRO_DONO);
+
+		const resposta = await request(app)
+			.get(`/estacionamentos/${estacionamentoId}/mapa`)
+			.set('Authorization', `Bearer ${tokenDoBruno}`);
+
+		expect(resposta.status).toBe(403);
+	});
+
+	it('devolve 401 sem token', async () => {
+		const mapa = await request(app).get(`/estacionamentos/${estacionamentoId}/mapa`);
+		const gravacao = await request(app)
+			.put(`/estacionamentos/${estacionamentoId}/vagas`)
+			.send([{ no_id: 's1', numero: 'A-01' }]);
+
+		expect(mapa.status).toBe(401);
+		expect(gravacao.status).toBe(401);
+	});
+});

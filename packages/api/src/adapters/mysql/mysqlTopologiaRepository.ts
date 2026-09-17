@@ -1,9 +1,13 @@
 import type { Pool, RowDataPacket } from 'mysql2/promise';
-import type { Topologia, TopologiaRepository } from '../../ports.js';
+import type { Topologia, TopologiaComGrafo, TopologiaRepository } from '../../ports.js';
 import { asRegraDoBanco } from './integridade.js';
 
 interface VersaoRow extends RowDataPacket {
 	versao: number;
+}
+
+interface TopologiaRow extends VersaoRow {
+	grafo: unknown;
 }
 
 // estacionamento_id e UNIQUE, entao a mesma sentença cria a topologia ou troca o
@@ -16,6 +20,12 @@ ON DUPLICATE KEY UPDATE grafo = novo.grafo, versao = topologias.versao + 1
 
 const SELECT_VERSAO = `
 SELECT versao
+FROM topologias
+WHERE estacionamento_id = ?
+`;
+
+const SELECT_GRAFO = `
+SELECT versao, grafo
 FROM topologias
 WHERE estacionamento_id = ?
 `;
@@ -38,5 +48,13 @@ export class MysqlTopologiaRepository implements TopologiaRepository {
 		} finally {
 			connection.release();
 		}
+	}
+
+	async findByEstacionamento(estacionamentoId: number): Promise<TopologiaComGrafo | null> {
+		const [rows] = await this.pool.execute<TopologiaRow[]>(SELECT_GRAFO, [estacionamentoId]);
+		const row = rows[0];
+		return row === undefined
+			? null
+			: { estacionamentoId, versao: row.versao, grafo: row.grafo };
 	}
 }

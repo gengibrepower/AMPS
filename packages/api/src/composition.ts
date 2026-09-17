@@ -6,15 +6,18 @@ import { MysqlEstacionamentoRepository } from './adapters/mysql/mysqlEstacioname
 import { MysqlModeloRepository } from './adapters/mysql/mysqlModeloRepository.js';
 import { MysqlTopologiaRepository } from './adapters/mysql/mysqlTopologiaRepository.js';
 import { MysqlUsuarioRepository } from './adapters/mysql/mysqlUsuarioRepository.js';
+import { MysqlVagaRepository } from './adapters/mysql/mysqlVagaRepository.js';
 import { createTokenService } from './security/jwt.js';
 import { AcessoDono } from './services/acessoDono.js';
 import { AuthService } from './services/authService.js';
 import { CarroService } from './services/carroService.js';
 import { DonoService } from './services/donoService.js';
 import { EstacionamentoService } from './services/estacionamentoService.js';
+import { MapaService } from './services/mapaService.js';
 import { ModeloService } from './services/modeloService.js';
 import { TopologiaService } from './services/topologiaService.js';
 import { UsuarioService } from './services/usuarioService.js';
+import { VagaService } from './services/vagaService.js';
 import { createApp } from './http/app.js';
 
 export interface MontagemApp {
@@ -28,6 +31,8 @@ export function montarApp({ pool, jwtSecret, corsOrigin }: MontagemApp): Express
 	const donos = new MysqlDonoRepository(pool);
 	const estacionamentos = new MysqlEstacionamentoRepository(pool);
 	const acessoDono = new AcessoDono(donos, estacionamentos);
+	const topologias = new MysqlTopologiaRepository(pool);
+	const vagas = new MysqlVagaRepository(pool);
 	const tokenService = createTokenService(jwtSecret);
 
 	return createApp({
@@ -37,7 +42,9 @@ export function montarApp({ pool, jwtSecret, corsOrigin }: MontagemApp): Express
 		modeloService: new ModeloService(new MysqlModeloRepository(pool)),
 		carroService: new CarroService(new MysqlCarroRepository(pool), usuarios),
 		estacionamentoService: new EstacionamentoService(estacionamentos, acessoDono),
-		topologiaService: new TopologiaService(new MysqlTopologiaRepository(pool), acessoDono),
+		topologiaService: new TopologiaService(topologias, acessoDono),
+		vagaService: new VagaService(vagas, acessoDono),
+		mapaService: new MapaService(topologias, vagas, acessoDono),
 		tokenService,
 		corsOrigin,
 	});

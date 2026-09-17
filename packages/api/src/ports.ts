@@ -82,6 +82,34 @@ export interface Topologia {
 	readonly versao: number;
 }
 
+export interface TopologiaComGrafo extends Topologia {
+	readonly grafo: unknown;
+}
+
+export type TipoVaga = 'comum' | 'pcd' | 'idoso' | 'moto' | 'eletrico';
+
+export type StatusVaga = 'livre' | 'ocupada' | 'reservada';
+
+export interface Vaga {
+	readonly id: number;
+	readonly noId: string;
+	readonly numero: string;
+	readonly tipo: TipoVaga;
+	readonly rotacaoGraus: number;
+	readonly sensor: string | null;
+	readonly status: StatusVaga;
+	readonly carroId: number | null;
+}
+
+// O que o editor controla. status e carro_id sao da operação e não entram aqui.
+export interface VagaDoEditor {
+	readonly noId: string;
+	readonly numero: string;
+	readonly tipo: TipoVaga;
+	readonly rotacaoGraus: number;
+	readonly sensor: string | null;
+}
+
 export interface UsuarioRepository {
 	create(novo: NovoUsuario): Promise<Usuario>;
 	findById(id: number): Promise<Usuario | null>;
@@ -109,4 +137,12 @@ export interface EstacionamentoRepository {
 
 export interface TopologiaRepository {
 	save(estacionamentoId: number, grafo: unknown): Promise<Topologia>;
+	findByEstacionamento(estacionamentoId: number): Promise<TopologiaComGrafo | null>;
+}
+
+export interface VagaRepository {
+	upsertAll(estacionamentoId: number, vagas: readonly VagaDoEditor[]): Promise<readonly Vaga[]>;
+	listByEstacionamento(estacionamentoId: number): Promise<readonly Vaga[]>;
+	findByNoId(estacionamentoId: number, noId: string): Promise<Vaga | null>;
+	deleteByNoId(estacionamentoId: number, noId: string): Promise<void>;
 }
