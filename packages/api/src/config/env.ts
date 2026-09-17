@@ -53,7 +53,7 @@ export interface ServerConfig {
 
 export function loadServerConfig(): ServerConfig {
 	return {
-		port: port('PORT', 3000),
+		port: port('PORT', 3001),
 		corsOrigin: process.env['CORS_ORIGIN'] ?? 'http://localhost:5173',
 	};
 }
