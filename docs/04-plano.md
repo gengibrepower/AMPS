@@ -22,8 +22,9 @@ Núcleo de domínio **puro** (modelo do grafo, Dijkstra, scoring), sem nenhuma
 dependência de I/O — extraído para o [Merlian](https://github.com/gengibrepower/Merlian),
 repositório à parte e stateless. O AMPS é a aplicação em volta:
 - **Persistência** — MySQL para auth, dono, cliente, modelos, metadados e vagas.
-  O catálogo modelo→dimensões é a tabela `modelos`. Onde a topologia (nós e
-  arestas) passa a ser guardada é questão em aberto — ver abaixo.
+  O catálogo modelo→dimensões é a tabela `modelos`. A topologia (nós e arestas)
+  também mora aqui, em coluna JSON de `topologias`: o Merlian é stateless e
+  recebe o grafo inteiro em cada requisição — ver abaixo.
 - **API** — Express como casca fina: controllers só traduzem HTTP e chamam o domínio.
 - **Front** — editor e mapa do cliente em Konva, consumindo o mesmo contrato.
 
@@ -119,13 +120,28 @@ comum, com `LEFT JOIN vagas` trazendo número, tipo, rotação e status por vaga
 `rotacao_graus` existe porque o contrato do Merlian não tem orientação e sem ela
 não dá para desenhar a vaga inclinada.
 
+### Como o AMPS consome o Merlian
+
+Por **HTTP**, com o Merlian como ele está hoje: repositório à parte, stateless,
+topologia inteira em cada requisição. Transformá-lo em biblioteca continua sendo a
+intenção — falta `declaration`, entry point (`main`/`exports`/`types`) e tirar o
+`express` das `dependencies` —, mas é mudança no outro repositório e não bloqueia
+nada aqui. Quando acontecer, só o adapter do AMPS muda.
+
+O `PORT` default do Merlian é 3000, então a API do AMPS passou a ouvir na **3001**.
+
+As três rotas (`/v1/recommendations`, `/v1/paths`, `/v1/reachability`) recusam de
+dois jeitos diferentes, e o editor precisa distinguir: **400 `malformed_request`**
+é o zod reprovando a forma (chave a mais, `role` desconhecido), **422
+`invalid_graph`** é o grafo incoerente (id duplicado, aresta órfã, `poiId` que não
+é `attractor`). Os dois trazem `issues` com `path` e `message`.
+
+O `graphVersion` do contrato é opcional, string, e hoje nenhum código do Merlian o
+lê — é chave de cache, não número de versão. `topologias.versao` não o preenche.
+
 ### Ainda em aberto
 
 - **Isolamento multi-tenant (RNF-01, RN-02, RN-10).** `estacionamentos.dono_id`
   agora é FK para `donos`, o que sustenta a RN-10. Como o grafo é um documento por
   estacionamento, não há como uma aresta cruzar pátios — mas isso vale porque o
   documento é por linha, não porque o banco verifique.
-- **Como consumir o Merlian.** Ele não está publicado em registry e não expõe
-  entry point de biblioteca (sem `main`, `exports` ou `types`; `express` é
-  dependência de runtime). Ou o AMPS fala com ele por HTTP, ou o Merlian vira
-  lib antes — mudança no outro repositório.
