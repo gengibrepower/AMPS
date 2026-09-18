@@ -8,6 +8,12 @@ import type {
 } from '../ports.js';
 import type { AcessoDono } from './acessoDono.js';
 
+// 'source' e 'attractor' sao os nomes de entrada e POI no wire do Merlian.
+function contaPapel(grafo: unknown, papel: string): number {
+	const nos = (grafo as { nodes?: readonly { role?: string }[] }).nodes ?? [];
+	return nos.filter((no) => no.role === papel).length;
+}
+
 export class PublicacaoService {
 	constructor(
 		private readonly estacionamentos: EstacionamentoRepository,
@@ -17,8 +23,8 @@ export class PublicacaoService {
 		private readonly acesso: AcessoDono,
 	) {}
 
-	// RN-11: só publica layout em que toda vaga tem caminho até alguma entrada.
-	// Quem responde isso é o Merlian, que enxerga o grafo inteiro.
+	// RN-11: entrada, vaga e POI o AMPS confere sozinho; a conectividade é com o
+	// Merlian, que enxerga o grafo inteiro.
 	async publicar(usuarioId: number, estacionamentoId: number): Promise<Estacionamento> {
 		const estacionamento = await this.acesso.estacionamento(usuarioId, estacionamentoId);
 
@@ -32,10 +38,15 @@ export class PublicacaoService {
 			throw new UnprocessableError('estacionamento sem vagas');
 		}
 
-		const alcance = await this.motor.alcancabilidade(topologia.grafo);
-		if (alcance.porEntrada.length === 0) {
-			throw new UnprocessableError('grafo sem entrada');
+		if (contaPapel(topologia.grafo, 'source') === 0) {
+			throw new UnprocessableError('estacionamento sem entrada');
 		}
+
+		if (contaPapel(topologia.grafo, 'attractor') === 0) {
+			throw new UnprocessableError('estacionamento sem ponto de interesse');
+		}
+
+		const alcance = await this.motor.alcancabilidade(topologia.grafo);
 
 		// O Merlian responde sobre todo candidate do grafo; aqui só importam os
 		// que viraram vaga de verdade.

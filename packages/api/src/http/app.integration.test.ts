@@ -745,17 +745,21 @@ describe('publicacao', () => {
 		cnpj: '98.765.432/0001-11',
 	};
 
+	const ENTRADA = { id: 'e1', role: 'source', position: { x: 0, y: 0 } };
+	const POI = { id: 'p1', role: 'attractor', position: { x: 4, y: 4 } };
+	const VAGA = {
+		id: 's1',
+		role: 'candidate',
+		position: { x: 2, y: 0 },
+		dimensions: { width: 2.5, length: 5 },
+	};
+
 	const GRAFO = {
-		nodes: [
-			{ id: 'e1', role: 'source', position: { x: 0, y: 0 } },
-			{
-				id: 's1',
-				role: 'candidate',
-				position: { x: 2, y: 0 },
-				dimensions: { width: 2.5, length: 5 },
-			},
+		nodes: [ENTRADA, VAGA, POI],
+		edges: [
+			{ from: 'e1', to: 's1', weight: 2 },
+			{ from: 's1', to: 'p1', weight: 4 },
 		],
-		edges: [{ from: 'e1', to: 's1', weight: 2 }],
 	};
 
 	let token: string;
@@ -829,9 +833,12 @@ describe('publicacao', () => {
 		expect(resposta.status).toBe(200);
 	});
 
-	it('recusa grafo sem entrada', async () => {
+	it('recusa layout sem entrada', async () => {
 		await comLayout();
-		merlian.resposta = { porEntrada: [], vagasInalcancaveis: [] };
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/topologia`).send({
+			nodes: [VAGA, POI],
+			edges: [{ from: 's1', to: 'p1', weight: 4 }],
+		});
 
 		const resposta = await comAutorizacao(
 			'post',
@@ -839,7 +846,23 @@ describe('publicacao', () => {
 		);
 
 		expect(resposta.status).toBe(422);
-		expect(resposta.body.erro).toBe('grafo sem entrada');
+		expect(resposta.body.erro).toBe('estacionamento sem entrada');
+	});
+
+	it('recusa layout sem POI, que deixaria o patio sem recomendacao (RN-11)', async () => {
+		await comLayout();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/topologia`).send({
+			nodes: [ENTRADA, VAGA],
+			edges: [{ from: 'e1', to: 's1', weight: 2 }],
+		});
+
+		const resposta = await comAutorizacao(
+			'post',
+			`/estacionamentos/${estacionamentoId}/publicacao`,
+		);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.erro).toBe('estacionamento sem ponto de interesse');
 	});
 
 	it('recusa estacionamento sem topologia', async () => {

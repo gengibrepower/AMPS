@@ -15,7 +15,7 @@ A API do editor está completa. Falta o desenho.
 | `PUT /estacionamentos/:id/vagas` | upsert em lote pelo `no_id`; nunca apaga |
 | `DELETE /estacionamentos/:id/vagas/:noId` | 422 se a vaga não estiver livre |
 | `GET /estacionamentos/:id/mapa` | `{ versao, grafo, vagas }` |
-| `POST`/`DELETE /estacionamentos/:id/publicacao` | publica validando a RN-11 no Merlian |
+| `POST`/`DELETE /estacionamentos/:id/publicacao` | RN-11: entrada, vaga e POI conferidos aqui; alcançabilidade no Merlian |
 
 No front existe só `owner/estacionamentos.html` (lista e cadastro). As pastas
 do editor estão criadas e vazias desde o PR #8: `src/editor/`,
