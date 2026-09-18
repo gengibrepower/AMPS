@@ -1,0 +1,295 @@
+@import url(vars.css);
+
+@font-face {
+    font-family: "Baunk";
+    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
+}
+
+:root {
+    --linha: rgba(255, 255, 255, 0.12);
+    --apagado: rgba(232, 232, 233, 0.65);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--linha);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.logo img {
+    width: 28px;
+    height: 28px;
+}
+
+#logo-text {
+    font-family: var(--font-logo);
+    font-size: 1.35rem;
+}
+
+.conta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--apagado);
+}
+
+main {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 20px 64px;
+}
+
+.titulo-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.titulo-linha h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.botao-primario {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--btn-green-border);
+    background-color: var(--btn-green-bg);
+    color: var(--text-primary);
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.botao-primario:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.botao-primario .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.botao-texto {
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    background: transparent;
+    color: var(--apagado);
+    padding: 8px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.botao-texto:hover {
+    color: var(--text-primary);
+}
+
+/* Formulário de criação */
+.formulario {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 16px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Uma linha por bloco do endereço: CEP + rua, número + bairro + complemento,
+   cidade + UF. */
+.campo-nome {
+    grid-column: 1 / -1;
+}
+
+.campo-logradouro,
+.campo-cidade {
+    grid-column: span 2;
+}
+
+.campo label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--apagado);
+}
+
+.campo input {
+    border: 1px solid var(--search-border);
+    border-radius: 8px;
+    background-color: var(--search-bg);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    outline: none;
+}
+
+.campo input:focus {
+    border-color: var(--btn-green-border);
+}
+
+#estado {
+    text-transform: uppercase;
+}
+
+.formulario-acoes {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* Lista */
+.lista {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 16px 18px;
+}
+
+.item-nome {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.item-endereco {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: var(--apagado);
+}
+
+.etiqueta {
+    flex-shrink: 0;
+    border: 1px solid var(--linha);
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--apagado);
+}
+
+.etiqueta-publicado {
+    border-color: var(--status-available);
+    color: var(--status-available);
+}
+
+.vazio {
+    color: var(--apagado);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Bloqueio e mensagens */
+.bloqueio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.bloqueio h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.bloqueio p {
+    font-size: 0.9rem;
+    color: var(--apagado);
+    line-height: 1.5;
+}
+
+.message {
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.message:empty {
+    margin-bottom: 0;
+}
+
+.msg-success {
+    color: var(--status-available);
+}
+
+.msg-error {
+    color: var(--status-full);
+}
+
+.msg-info {
+    color: var(--apagado);
+}
+
+.disabled {
+    display: none;
+}
+
+@media (max-width: 720px) {
+    .formulario {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .campo-logradouro,
+    .campo-cidade {
+        grid-column: span 1;
+    }
+}
