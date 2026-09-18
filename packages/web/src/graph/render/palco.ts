@@ -22,11 +22,15 @@ const ESPACAMENTO_MINIMO = 14;
 // Respiro entre o desenho e a borda da tela ao enquadrar.
 const MARGEM = 60;
 
+// Arrasto do botão esquerdo só vira deslocamento depois deste tanto de pixel;
+// abaixo disso continua sendo clique, senão selecionar fica impossível.
+const LIMIAR_DO_ARRASTO = 4;
 
 export interface Palco {
     readonly stage: Konva.Stage;
     readonly camadaConteudo: Konva.Layer;
     zoom(): number;
+    arrastouAgora(): boolean;
     enquadrar(caixa: Caixa): void;
     aoMoverPonteiro(ouvinte: (metros: Ponto | null) => void): void;
     aoMudarZoom(ouvinte: (zoom: number) => void): void;
@@ -119,8 +123,30 @@ export function criarPalco(container: HTMLDivElement): Palco {
         redesenhar();
     }).observe(container);
 
+    // Roda de mouse dá zoom; dois dedos no trackpad deslocam. Não há como
+    // perguntar ao navegador qual aparelho é: a pista é que trackpad manda
+    // delta em pixel, costuma ter eixo x e valores pequenos ou fracionários,
+    // enquanto a roda manda passos grandes e inteiros só no eixo y. Pinça chega
+    // como ctrl+roda nos dois.
+    function ehRodaDeMouse(evento: WheelEvent): boolean {
+        if (evento.deltaMode !== 0) return true;
+        if (evento.deltaX !== 0) return false;
+        return Math.abs(evento.deltaY) >= 40 && Number.isInteger(evento.deltaY);
+    }
+
+    function deslocar(dx: number, dy: number): void {
+        stage.position({ x: stage.x() + dx, y: stage.y() + dy });
+        redesenhar();
+    }
+
     container.addEventListener('wheel', (evento: WheelEvent) => {
         evento.preventDefault();
+
+        if (!evento.ctrlKey && !ehRodaDeMouse(evento)) {
+            deslocar(-evento.deltaX, -evento.deltaY);
+            return;
+        }
+
         const ponteiro = stage.getPointerPosition();
         if (ponteiro === null) return;
 
@@ -142,11 +168,19 @@ export function criarPalco(container: HTMLDivElement): Palco {
 
     let espacoPressionado = false;
     let arrastandoDe: Ponto | null = null;
+    let candidatoAArrasto: Ponto | null = null;
+    let arrastou = false;
 
     function atualizarCursor(): void {
         container.style.cursor = arrastandoDe !== null
             ? 'grabbing'
             : espacoPressionado ? 'grab' : 'default';
+    }
+
+    // Quem acabou de arrastar não quis clicar: a cena pergunta antes de limpar
+    // a seleção.
+    function arrastouAgora(): boolean {
+        return arrastou;
     }
 
     window.addEventListener('keydown', (evento: KeyboardEvent) => {
@@ -162,27 +196,49 @@ export function criarPalco(container: HTMLDivElement): Palco {
         atualizarCursor();
     });
 
+    function noVazio(): boolean {
+        const ponteiro = stage.getPointerPosition();
+        return ponteiro !== null && stage.getIntersection(ponteiro) === null;
+    }
+
     container.addEventListener('mousedown', (evento: MouseEvent) => {
-        const comBotaoDoMeio = evento.button === 1;
-        if (!comBotaoDoMeio && !(evento.button === 0 && espacoPressionado)) return;
-        evento.preventDefault();
-        arrastandoDe = { x: evento.clientX, y: evento.clientY };
-        atualizarCursor();
+        const daqui = { x: evento.clientX, y: evento.clientY };
+        arrastou = false;
+
+        if (evento.button === 1 || (evento.button === 0 && espacoPressionado)) {
+            evento.preventDefault();
+            arrastandoDe = daqui;
+            atualizarCursor();
+            return;
+        }
+
+        // Botão esquerdo no vazio ainda pode virar clique: só vira arrasto se o
+        // ponteiro andar. Assim o editor não depende do foco do teclado.
+        if (evento.button === 0 && noVazio()) {
+            candidatoAArrasto = daqui;
+        }
     });
 
     window.addEventListener('mousemove', (evento: MouseEvent) => {
+        if (arrastandoDe === null && candidatoAArrasto !== null) {
+            const andou = Math.hypot(
+                evento.clientX - candidatoAArrasto.x,
+                evento.clientY - candidatoAArrasto.y,
+            );
+            if (andou < LIMIAR_DO_ARRASTO) return;
+            arrastandoDe = candidatoAArrasto;
+            arrastou = true;
+            atualizarCursor();
+        }
         if (arrastandoDe === null) return;
-        stage.position({
-            x: stage.x() + evento.clientX - arrastandoDe.x,
-            y: stage.y() + evento.clientY - arrastandoDe.y,
-        });
+
+        deslocar(evento.clientX - arrastandoDe.x, evento.clientY - arrastandoDe.y);
         arrastandoDe = { x: evento.clientX, y: evento.clientY };
-        redesenhar();
     });
 
     window.addEventListener('mouseup', () => {
-        if (arrastandoDe === null) return;
         arrastandoDe = null;
+        candidatoAArrasto = null;
         atualizarCursor();
     });
 
@@ -202,6 +258,7 @@ export function criarPalco(container: HTMLDivElement): Palco {
         stage,
         camadaConteudo,
         zoom: () => stage.scaleX(),
+        arrastouAgora,
         enquadrar(caixa: Caixa): void {
             const ajuste = ajusteParaCaixa(
                 caixa,

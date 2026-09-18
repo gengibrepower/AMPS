@@ -154,6 +154,13 @@ src/editor/gravacao.ts         o planner da ordem de gravação
 src/editor/tools/              selecionar · no · aresta · apagar
 ```
 
+Mover e ampliar: arrastar o fundo desloca (e continua valendo espaço+arrastar e
+botão do meio); o arrasto só começa depois de 4 px, senão clicar para
+selecionar fica impossível. Roda de mouse dá zoom ancorado no cursor, dois
+dedos no trackpad deslocam, pinça dá zoom. Não há como perguntar ao navegador
+qual aparelho é: a pista é que trackpad manda delta em pixel, com eixo x e
+valores pequenos, enquanto a roda manda passos grandes e inteiros só no eixo y.
+
 Interação: barra de ferramentas à esquerda, canvas no meio, inspetor à direita,
 barra de status com cursor em metros, zoom, `versao` e estado sujo. Atalhos
 `V` · `1` vaga · `2` entrada · `3` via · `4` POI · `A` aresta · `Del` · `Esc` ·

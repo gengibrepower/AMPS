@@ -57,7 +57,15 @@ cd ../Merlian && npm run dev   # 3000
 ```bash
 npm test                  # unitários, não precisam de banco
 npm run test:integration  # precisam do banco de pé
+npm run test:e2e          # dirige o Chromium de verdade; precisa do `npm run dev` rodando
 ```
+
+O `test:e2e` sobe um Chromium headless pelo Chrome DevTools Protocol e manda
+input **confiável** — o mesmo que o navegador entrega a uma pessoa. Evento
+sintético (`dispatchEvent`) não serve para provar interação: ele pula captura
+de ponteiro, foco de teclado e o grafo de acerto do Konva, e por isso já me fez
+"consertar" duas coisas que não estavam quebradas. O driver está em
+`packages/web/src/e2e/navegador.ts`.
 
 ## Tropeços conhecidos
 
@@ -70,8 +78,6 @@ npm run test:integration  # precisam do banco de pé
   com `--default-character-set=utf8mb4`, senão `WHERE nome = 'Pátio'` não casa.
 - **Ver o front sem extensão de navegador**: `chromium --headless
   --window-size=1280,900 --virtual-time-budget=8000 --screenshot=/tmp/x.png URL`.
-  Página que exige sessão: uma fixture temporária no root do Vite (mesma origem)
-  grava o `localStorage` e embute a página num iframe, que dá para dirigir por
-  JS. Apague a fixture depois.
-- **`packages/web` não declara `vite` nem `typescript`** — funciona por hoist do
-  vitest na raiz. Resolver ao instalar a primeira dependência de verdade.
+  Para uma página que exige sessão, ou para qualquer coisa que dependa de
+  clique, arrasto ou tecla, use o driver de `src/e2e/navegador.ts` em vez de
+  fixture — ele grava o `localStorage` e dirige o navegador de verdade.

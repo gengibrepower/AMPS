@@ -179,7 +179,7 @@ export function criarCena(palco: Palco): Cena {
     }
 
     palco.stage.on('click', (evento) => {
-        if (evento.target === palco.stage) definirSelecao(null);
+        if (evento.target === palco.stage && !palco.arrastouAgora()) definirSelecao(null);
     });
 
     palco.aoMudarZoom(ajustarPesos);
