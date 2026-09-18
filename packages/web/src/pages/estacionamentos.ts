@@ -63,7 +63,16 @@ function itemDaLista(estacionamento: EstacionamentoWire): HTMLLIElement {
     etiqueta.className = estacionamento.publicado ? 'etiqueta etiqueta-publicado' : 'etiqueta';
     etiqueta.textContent = estacionamento.publicado ? 'Publicado' : 'Rascunho';
 
-    item.append(info, etiqueta);
+    const abrir = document.createElement('a');
+    abrir.className = 'abrir';
+    abrir.href = `editor.html?estacionamento=${estacionamento.id}`;
+    abrir.textContent = 'Abrir editor';
+
+    const acoes = document.createElement('div');
+    acoes.className = 'item-acoes';
+    acoes.append(etiqueta, abrir);
+
+    item.append(info, acoes);
     return item;
 }
 

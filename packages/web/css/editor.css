@@ -1,0 +1,139 @@
+@import url(vars.css);
+
+:root {
+    --linha: rgba(255, 255, 255, 0.12);
+    --apagado: rgba(232, 232, 233, 0.65);
+    --altura-header: 48px;
+    --altura-status: 28px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: var(--altura-header);
+    flex-shrink: 0;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--linha);
+}
+
+.voltar {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    color: var(--apagado);
+    text-decoration: none;
+}
+
+.voltar:hover {
+    color: var(--text-primary);
+}
+
+.titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.nome {
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.etiqueta {
+    flex-shrink: 0;
+    border: 1px solid var(--linha);
+    border-radius: var(--radius-pill);
+    padding: 2px 9px;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--apagado);
+}
+
+.etiqueta-publicado {
+    border-color: var(--status-available);
+    color: var(--status-available);
+}
+
+main {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+.quadro {
+    position: absolute;
+    inset: 0;
+}
+
+.palco {
+    width: 100%;
+    height: 100%;
+}
+
+.bloqueio {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: var(--bg-color);
+    color: var(--apagado);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.barra-status {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: var(--altura-status);
+    flex-shrink: 0;
+    padding: 0 12px;
+    border-top: 1px solid var(--linha);
+    font-size: 0.72rem;
+    color: var(--apagado);
+}
+
+.leitura {
+    display: inline-flex;
+    gap: 5px;
+}
+
+/* Números em monoespaçada para não dançarem quando o cursor se move. */
+.numero {
+    min-width: 62px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+}
+
+.dica {
+    margin-left: auto;
+}
+
+.disabled {
+    display: none;
+}

@@ -9,6 +9,7 @@ export default defineConfig({
         home: resolve(__dirname, "index.html"),
         search: resolve(__dirname, "search.html"),
         estacionamentos: resolve(__dirname, "owner/estacionamentos.html"),
+        editor: resolve(__dirname, "owner/editor.html"),
       },
     },
   },

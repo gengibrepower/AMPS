@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de pátio - AMPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/editor.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back"/>
+</head>
+<body>
+    <header>
+        <a href="estacionamentos.html" class="voltar" aria-label="Voltar">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <div class="titulo">
+            <span id="nomeDoPatio" class="nome">Carregando…</span>
+            <span id="etiqueta" class="etiqueta disabled"></span>
+        </div>
+    </header>
+
+    <main>
+        <section id="quadro" class="quadro">
+            <div id="palco" class="palco"></div>
+        </section>
+
+        <p id="bloqueio" class="bloqueio disabled"></p>
+    </main>
+
+    <footer class="barra-status">
+        <span class="leitura">x <span id="cursorX" class="numero">—</span></span>
+        <span class="leitura">y <span id="cursorY" class="numero">—</span></span>
+        <span class="leitura">zoom <span id="nivelZoom" class="numero">100%</span></span>
+        <span class="dica">espaço ou botão do meio arrasta · roda dá zoom</span>
+    </footer>
+
+    <script type="module" src="../src/editor/editor.ts"></script>
+</body>
+</html>

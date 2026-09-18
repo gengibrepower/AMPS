@@ -212,6 +212,27 @@ main {
     color: var(--apagado);
 }
 
+.item-acoes {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.abrir {
+    flex-shrink: 0;
+    border: 1px solid var(--linha);
+    border-radius: var(--radius-pill);
+    padding: 7px 14px;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.abrir:hover {
+    border-color: var(--btn-green-border);
+}
+
 .etiqueta {
     flex-shrink: 0;
     border: 1px solid var(--linha);
