@@ -1,17 +1,19 @@
 import { ApiError, carregarMapa, listarEstacionamentos } from '../api';
-import type { EstacionamentoWire } from '../api';
+import type { EstacionamentoWire, VagaWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
 import { criarCena } from '../graph/render/cena';
 import type { Cena, Selecao } from '../graph/render/cena';
 import { criarPalco } from '../graph/render/palco';
 import type { Ponto } from '../graph/geometria';
 import { acharNo } from '../graph/modelo';
-import { GRAFO_VAZIO, comoGrafo } from '../graph/tipos';
-import type { Grafo, Papel } from '../graph/tipos';
+import { GRAFO_VAZIO, comoGrafo, comoTipoDeVaga } from '../graph/tipos';
+import type { DadosDaVaga, Grafo, Papel } from '../graph/tipos';
 
 const quadro = document.getElementById('quadro') as HTMLElement | null;
 const palcoDiv = document.getElementById('palco') as HTMLDivElement | null;
 const bloqueio = document.getElementById('bloqueio') as HTMLElement | null;
+const bloqueioTexto = document.getElementById('bloqueioTexto') as HTMLElement | null;
+const bloqueioSaida = document.getElementById('bloqueioSaida') as HTMLElement | null;
 const nomeDoPatio = document.getElementById('nomeDoPatio') as HTMLElement | null;
 const etiqueta = document.getElementById('etiqueta') as HTMLElement | null;
 const cursorX = document.getElementById('cursorX') as HTMLElement | null;
@@ -40,9 +42,10 @@ function mostrarZoom(zoom: number): void {
     if (nivelZoom) nivelZoom.textContent = `${Math.round(zoom * 100)}%`;
 }
 
-function bloquear(texto: string): void {
-    if (bloqueio) bloqueio.textContent = texto;
+function bloquear(texto: string, comSaida = false): void {
+    if (bloqueioTexto) bloqueioTexto.textContent = texto;
     bloqueio?.classList.remove('disabled');
+    bloqueioSaida?.classList.toggle('disabled', !comSaida);
     quadro?.classList.add('disabled');
     if (nomeDoPatio) nomeDoPatio.textContent = 'Editor de pátio';
 }
@@ -54,6 +57,15 @@ function mostrarPatio(estacionamento: EstacionamentoWire): void {
     etiqueta.className = estacionamento.publicado ? 'etiqueta etiqueta-publicado' : 'etiqueta';
 }
 
+function comoDadosDaVaga(vaga: VagaWire): DadosDaVaga {
+    return {
+        noId: vaga.no_id,
+        numero: vaga.numero,
+        tipo: comoTipoDeVaga(vaga.tipo),
+        rotacaoGraus: vaga.rotacao_graus,
+    };
+}
+
 function idDaUrl(): number | null {
     const bruto = new URLSearchParams(window.location.search).get('estacionamento');
     const id = Number(bruto);
@@ -63,7 +75,7 @@ function idDaUrl(): number | null {
 function relatar(erro: unknown): void {
     if (erro instanceof ApiError && erro.status === 401) {
         clearSession();
-        bloquear('Sua sessão expirou. Entre de novo para continuar.');
+        bloquear('Sua sessão expirou.', true);
         return;
     }
     bloquear(erro instanceof ApiError ? erro.message : 'Algo deu errado.');
@@ -83,7 +95,7 @@ async function abrir(id: number, cena: Cena): Promise<void> {
 
         const mapa = await carregarMapa(id);
         grafoAtual = comoGrafo(mapa.grafo);
-        cena.desenhar(grafoAtual);
+        cena.desenhar(grafoAtual, mapa.vagas.map(comoDadosDaVaga));
         cena.enquadrar();
         if (versao) versao.textContent = String(mapa.versao);
 
@@ -116,7 +128,7 @@ function mostrarSelecao(escolhido: Selecao): void {
 const id = idDaUrl();
 
 if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
-    bloquear('Entre com uma conta de dono para abrir o editor.');
+    bloquear('Entre com uma conta de dono para abrir o editor.', true);
 } else if (id === null) {
     bloquear('Abra o editor a partir da lista de estacionamentos.');
 } else if (palcoDiv !== null) {

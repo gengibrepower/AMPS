@@ -1,6 +1,6 @@
 import { projecaoNoSegmento } from './geometria';
 import type { Caixa, Ponto } from './geometria';
-import type { Aresta, Grafo, No } from './tipos';
+import type { Aresta, DadosDaVaga, Grafo, No } from './tipos';
 
 export function acharNo(grafo: Grafo, id: string): No | null {
     return grafo.nodes.find((no) => no.id === id) ?? null;
@@ -81,4 +81,16 @@ export function anguloDaVaga(grafo: Grafo, vaga: No): number | null {
 
     // O retângulo é desenhado com o comprimento no eixo y local.
     return Math.atan2(doca.paraFora.y, doca.paraFora.x) - Math.PI / 2;
+}
+
+// Quem manda na inclinação da vaga é a tabela `vagas`, que é onde a rotação
+// existe de verdade. A dedução pela rua só vale enquanto a vaga não foi
+// cadastrada — aí ela serve de sugestão na hora de criar.
+export function anguloDeDesenho(
+    grafo: Grafo,
+    vaga: No,
+    dados: DadosDaVaga | undefined,
+): number {
+    if (dados !== undefined) return (dados.rotacaoGraus * Math.PI) / 180;
+    return anguloDaVaga(grafo, vaga) ?? 0;
 }

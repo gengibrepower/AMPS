@@ -1,9 +1,11 @@
 import Konva from 'konva';
 import { metrosParaPixels, recuoNaCaixa } from '../geometria';
 import type { Ponto } from '../geometria';
-import type { No, Papel } from '../tipos';
+import type { DadosDaVaga, No, Papel } from '../tipos';
 import {
     ENTRADA,
+    FUNDO_POR_TIPO,
+    NUMERO_DA_VAGA,
     ENTRADA_FUNDO,
     POI,
     POI_FUNDO,
@@ -57,10 +59,16 @@ export function recuoDoNo(no: No, saida: Ponto, angulo = 0): number {
     }
 }
 
-function forma(no: No): Konva.Shape {
+// Altura do número pintado na vaga, em metros: é pintura de chão, então
+// acompanha o zoom como o resto.
+const ALTURA_DO_NUMERO = 0.9;
+
+function forma(no: No, dados: DadosDaVaga | undefined): Konva.Shape {
     const estilo = ESTILO[no.role];
     const comum = {
-        fill: estilo.preenchimento,
+        fill: no.role === 'candidate' && dados !== undefined
+            ? FUNDO_POR_TIPO[dados.tipo] ?? estilo.preenchimento
+            : estilo.preenchimento,
         stroke: estilo.traco,
         strokeScaleEnabled: false,
         strokeWidth: estilo.espessura,
@@ -97,15 +105,38 @@ function forma(no: No): Konva.Shape {
     return new Konva.Circle({ ...comum, radius: metrosParaPixels(RAIO_VIA) });
 }
 
-export function desenharNo(no: No, angulo = 0): Konva.Group {
+export function desenharNo(
+    no: No,
+    angulo = 0,
+    dados: DadosDaVaga | undefined = undefined,
+): Konva.Group {
     const grupo = new Konva.Group({
         x: metrosParaPixels(no.position.x),
         y: metrosParaPixels(no.position.y),
         rotation: (angulo * 180) / Math.PI,
         name: no.id,
     });
-    grupo.add(forma(no));
+    grupo.add(forma(no, dados));
+
+    if (dados !== undefined) {
+        const numero = new Konva.Text({
+            name: 'numero',
+            text: dados.numero,
+            fontSize: metrosParaPixels(ALTURA_DO_NUMERO),
+            fontFamily: 'ui-monospace, monospace',
+            fill: NUMERO_DA_VAGA,
+            listening: false,
+            rotation: -(angulo * 180) / Math.PI,
+        });
+        numero.offsetX(numero.width() / 2);
+        numero.offsetY(numero.height() / 2);
+        grupo.add(numero);
+    }
     return grupo;
+}
+
+export function mostrarNumeros(grupo: Konva.Group, visivel: boolean): void {
+    grupo.findOne<Konva.Text>('.numero')?.visible(visivel);
 }
 
 export function realcarNo(grupo: Konva.Group, papel: Papel, selecionado: boolean): void {

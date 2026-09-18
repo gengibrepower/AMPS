@@ -2,12 +2,13 @@ import { describe, expect, it } from 'vitest';
 import {
     acharNo,
     anguloDaVaga,
+    anguloDeDesenho,
     caixaDoGrafo,
     chaveDaAresta,
     docaDaVaga,
     temInversa,
 } from './modelo';
-import type { Grafo, No } from './tipos';
+import type { DadosDaVaga, Grafo, No } from './tipos';
 
 const GRAFO: Grafo = {
     nodes: [
@@ -186,5 +187,50 @@ describe('docaDaVaga', () => {
     it('devolve null quando não há rua nenhuma', () => {
         const solta = vaga(1, 1);
         expect(docaDaVaga({ nodes: [solta], edges: [] }, solta)).toBeNull();
+    });
+});
+
+describe('anguloDeDesenho', () => {
+    const posicao: No = {
+        id: 'v',
+        role: 'candidate',
+        position: { x: 5, y: 6 },
+        dimensions: { width: 2.5, length: 5 },
+    };
+
+    const comRua: Grafo = {
+        nodes: [
+            { id: 'a', role: 'source', position: { x: 0, y: 0 } },
+            { id: 'b', role: 'transit', position: { x: 10, y: 0 } },
+            posicao,
+        ],
+        edges: [
+            { from: 'a', to: 'b', weight: 10 },
+            { from: 'b', to: 'v', weight: 6 },
+        ],
+    };
+
+    const cadastrada = (rotacaoGraus: number): DadosDaVaga => ({
+        noId: 'v',
+        numero: 'A-01',
+        tipo: 'comum',
+        rotacaoGraus,
+    });
+
+    it('a rotação do banco manda quando a vaga está cadastrada', () => {
+        expect(anguloDeDesenho(comRua, posicao, cadastrada(45))).toBeCloseTo(Math.PI / 4, 6);
+    });
+
+    it('zero no banco é zero, não é "deduza"', () => {
+        expect(anguloDeDesenho(comRua, posicao, cadastrada(0))).toBe(0);
+    });
+
+    it('deduz pela rua enquanto a vaga não foi cadastrada', () => {
+        expect(anguloDeDesenho(comRua, posicao, undefined)).toBe(anguloDaVaga(comRua, posicao));
+    });
+
+    it('cai em zero quando não há vaga cadastrada nem rua', () => {
+        const solta: Grafo = { nodes: [posicao], edges: [] };
+        expect(anguloDeDesenho(solta, posicao, undefined)).toBe(0);
     });
 });

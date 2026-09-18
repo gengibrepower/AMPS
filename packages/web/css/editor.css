@@ -98,13 +98,28 @@ main {
     position: absolute;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 16px;
     padding: 24px;
     background-color: var(--bg-color);
     color: var(--apagado);
     font-size: 0.9rem;
     text-align: center;
+}
+
+.botao-saida {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--btn-green-border);
+    background-color: var(--btn-green-bg);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
 }
 
 .barra-status {

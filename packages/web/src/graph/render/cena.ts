@@ -2,16 +2,16 @@ import Konva from 'konva';
 import { direcao } from '../geometria';
 import {
     acharNo,
-    anguloDaVaga,
+    anguloDeDesenho,
     caixaDoGrafo,
     chaveDaAresta,
     docaDaVaga,
     temInversa,
 } from '../modelo';
 import { GRAFO_VAZIO } from '../tipos';
-import type { Aresta, Grafo, NoVaga } from '../tipos';
+import type { Aresta, DadosDaVaga, Grafo, NoVaga } from '../tipos';
 import { desenharAresta, desenharDoca, ladoDoTraco, meioFioEmMetros, realcarAresta } from './arestas';
-import { desenharNo, realcarNo, recuoDoNo } from './nos';
+import { desenharNo, mostrarNumeros, realcarNo, recuoDoNo } from './nos';
 import { PESO } from './tinta';
 import type { Palco } from './palco';
 
@@ -20,12 +20,15 @@ export type Selecao =
     | { readonly tipo: 'aresta'; readonly from: string; readonly to: string }
     | null;
 
+// Abaixo disso o número pintado na vaga vira borrão.
+const ZOOM_MINIMO_DO_NUMERO = 0.6;
+
 // Folga em metros para o enquadramento: o corredor é desenhado em volta dos nós
 // de via e não entra na caixa deles.
 const FOLGA_DO_ENQUADRAMENTO = 3.5;
 
 export interface Cena {
-    desenhar(grafo: Grafo): void;
+    desenhar(grafo: Grafo, vagas: readonly DadosDaVaga[]): void;
     enquadrar(): void;
     selecionar(selecao: Selecao): void;
     aoSelecionar(ouvinte: (selecao: Selecao) => void): void;
@@ -46,6 +49,7 @@ export function criarCena(palco: Palco): Cena {
     const grupos = new Map<string, Konva.Group>();
     const angulos = new Map<string, number>();
     const docas = new Map<string, Konva.Shape>();
+    const dados = new Map<string, DadosDaVaga>();
     const setas = new Map<string, Konva.Group>();
     const pesos = new Map<string, Konva.Text>();
     const ouvintes: ((selecao: Selecao) => void)[] = [];
@@ -93,6 +97,9 @@ export function criarCena(palco: Palco): Cena {
     // cada via: o peso aparece só na aresta selecionada.
     function ajustarPesos(): void {
         const zoom = palco.zoom();
+        for (const [id, grupo] of grupos) {
+            if (dados.has(id)) mostrarNumeros(grupo, zoom >= ZOOM_MINIMO_DO_NUMERO);
+        }
         for (const [chave, peso] of pesos) {
             peso.scale({ x: 1 / zoom, y: 1 / zoom });
             peso.visible(chave === chaveSelecionada());
@@ -178,8 +185,10 @@ export function criarCena(palco: Palco): Cena {
     palco.aoMudarZoom(ajustarPesos);
 
     return {
-        desenhar(novo: Grafo): void {
+        desenhar(novo: Grafo, vagas: readonly DadosDaVaga[]): void {
             grafo = novo;
+            dados.clear();
+            for (const vaga of vagas) dados.set(vaga.noId, vaga);
             camadaDeArestas.destroyChildren();
             camadaDeNos.destroyChildren();
             grupos.clear();
@@ -190,12 +199,11 @@ export function criarCena(palco: Palco): Cena {
             angulos.clear();
             for (const no of grafo.nodes) {
                 if (no.role !== 'candidate') continue;
-                const angulo = anguloDaVaga(grafo, no);
-                if (angulo !== null) angulos.set(no.id, angulo);
+                angulos.set(no.id, anguloDeDesenho(grafo, no, dados.get(no.id)));
             }
 
             for (const no of grafo.nodes) {
-                const grupo = desenharNo(no, angulos.get(no.id) ?? 0);
+                const grupo = desenharNo(no, angulos.get(no.id) ?? 0, dados.get(no.id));
                 grupo.on('click', () => definirSelecao({ tipo: 'no', id: no.id }));
                 camadaDeNos.add(grupo);
                 grupos.set(no.id, grupo);

@@ -27,3 +27,14 @@ export const VIA_FUNDO = '#FFFFFF';
 export const SELECIONADO = '#1A73E8';
 
 export const PESO = '#3C4249';
+
+// Hachura por tipo de vaga: a tinta do traço continua a mesma, muda o fundo.
+export const FUNDO_POR_TIPO: Record<string, string> = {
+    comum: VAGA_FUNDO,
+    pcd: 'rgba(26, 115, 232, 0.16)',
+    idoso: 'rgba(176, 116, 0, 0.16)',
+    moto: 'rgba(14, 122, 78, 0.14)',
+    eletrico: 'rgba(0, 150, 136, 0.16)',
+};
+
+export const NUMERO_DA_VAGA = '#5C636C';

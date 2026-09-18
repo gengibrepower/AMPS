@@ -59,3 +59,20 @@ export function comoGrafo(valor: unknown): Grafo {
         edges: Array.isArray(bruto.edges) ? (bruto.edges as readonly Aresta[]) : [],
     };
 }
+
+export type TipoDeVaga = 'comum' | 'pcd' | 'idoso' | 'moto' | 'eletrico';
+
+// O que a tabela `vagas` guarda além do grafo. O Merlian não tem orientação no
+// contrato: a rotação vive aqui, e é por isso que ela manda no desenho.
+export interface DadosDaVaga {
+    readonly noId: string;
+    readonly numero: string;
+    readonly tipo: TipoDeVaga;
+    readonly rotacaoGraus: number;
+}
+
+const TIPOS: readonly string[] = ['comum', 'pcd', 'idoso', 'moto', 'eletrico'];
+
+export function comoTipoDeVaga(valor: unknown): TipoDeVaga {
+    return typeof valor === 'string' && TIPOS.includes(valor) ? (valor as TipoDeVaga) : 'comum';
+}

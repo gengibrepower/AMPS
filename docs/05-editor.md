@@ -124,6 +124,16 @@ Quem mexer nisso precisa saber por quê, senão "conserta" e quebra.
   faz uma via sobrecarregada mostrar as vagas empilhadas em vez de escondê-las
   penduradas num nó distante. Vaga fora de lugar aparece com um toco tracejado
   até o meio-fio.
+- **A rotação da vaga vem do banco, não da geometria.** `vagas.rotacao_graus`
+  existe justamente porque o contrato do Merlian não tem orientação, então é
+  ela que manda. A dedução pela rua mais próxima só vale enquanto a vaga não
+  foi cadastrada — aí serve de sugestão na hora de criar, para ser gravada como
+  qualquer outro campo. Sem essa regra, uma vaga em espinha de peixe a 45°
+  seria desenhada perpendicular, contrariando o banco.
+- **O número e o tipo da vaga saem da tabela `vagas`.** Número pintado no chão,
+  em escala, que some abaixo de 60% de zoom; tipo por hachura de fundo, com o
+  traço igual para todos. `candidate` sem linha em `vagas` desenha vazio — é
+  uma vaga rascunhada, ainda não cadastrada.
 - **O que não é rua fica fora do mapa até ser preciso.** A aresta de acesso da
   vaga aparece só quando a vaga ou ela própria está selecionada; o peso da
   aresta, só na aresta selecionada. Planta não tem número em cima de cada via.
