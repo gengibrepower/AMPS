@@ -16,6 +16,7 @@ export interface MysqlConfig {
 
 export interface AuthConfig {
 	readonly jwtSecret: string;
+	readonly tokenTtl: string | undefined;
 }
 
 function port(key: string, fallback: number): number {
@@ -41,8 +42,10 @@ export function loadMysqlConfig(): MysqlConfig {
 }
 
 export function loadAuthConfig(): AuthConfig {
+	const ttl = process.env['AUTH_TOKEN_TTL'];
 	return {
 		jwtSecret: required('AUTH_JWT_SECRET'),
+		tokenTtl: ttl === undefined || ttl === '' ? undefined : ttl,
 	};
 }
 

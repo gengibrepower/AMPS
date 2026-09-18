@@ -10,9 +10,12 @@ import { montarApp } from './composition.js';
 
 const server = loadServerConfig();
 
+const auth = loadAuthConfig();
+
 const app = montarApp({
 	pool: createPool(loadMysqlConfig()),
-	jwtSecret: loadAuthConfig().jwtSecret,
+	jwtSecret: auth.jwtSecret,
+	tokenTtl: auth.tokenTtl,
 	corsOrigin: server.corsOrigin,
 	motorDeGrafo: new MerlianMotorDeGrafo(loadMerlianConfig().baseUrl),
 });

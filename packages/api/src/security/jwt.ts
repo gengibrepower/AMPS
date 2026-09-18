@@ -2,7 +2,11 @@ import { SignJWT, jwtVerify } from 'jose';
 import type { TipoConta, Usuario } from '../ports.js';
 
 const ALGORITHM = 'HS256';
-const TTL = '15m';
+
+// Sem fluxo de refresh, a validade do token é o tempo máximo de trabalho sem
+// ser expulso — e o editor de pátio é uma sessão longa. Configurável para
+// apertar em produção, onde o certo é refresh em vez de token comprido.
+const TTL_PADRAO = '8h';
 
 export interface TokenClaims {
 	readonly sub: number;
@@ -20,7 +24,7 @@ function isTipoConta(value: unknown): value is TipoConta {
 	return typeof value === 'string' && TIPOS.includes(value as TipoConta);
 }
 
-export function createTokenService(secret: string): TokenService {
+export function createTokenService(secret: string, ttl: string = TTL_PADRAO): TokenService {
 	const key = new TextEncoder().encode(secret);
 
 	return {
@@ -30,7 +34,7 @@ export function createTokenService(secret: string): TokenService {
 				// sub é string por definição do JWT; o id volta para número no verify.
 				.setSubject(String(usuario.id))
 				.setIssuedAt()
-				.setExpirationTime(TTL)
+				.setExpirationTime(ttl)
 				.sign(key);
 		},
 

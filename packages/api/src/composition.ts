@@ -25,18 +25,25 @@ import { createApp } from './http/app.js';
 export interface MontagemApp {
 	readonly pool: Pool;
 	readonly jwtSecret: string;
+	readonly tokenTtl?: string | undefined;
 	readonly corsOrigin: string;
 	readonly motorDeGrafo: MotorDeGrafo;
 }
 
-export function montarApp({ pool, jwtSecret, corsOrigin, motorDeGrafo }: MontagemApp): Express {
+export function montarApp({
+	pool,
+	jwtSecret,
+	tokenTtl,
+	corsOrigin,
+	motorDeGrafo,
+}: MontagemApp): Express {
 	const usuarios = new MysqlUsuarioRepository(pool);
 	const donos = new MysqlDonoRepository(pool);
 	const estacionamentos = new MysqlEstacionamentoRepository(pool);
 	const acessoDono = new AcessoDono(donos, estacionamentos);
 	const topologias = new MysqlTopologiaRepository(pool);
 	const vagas = new MysqlVagaRepository(pool);
-	const tokenService = createTokenService(jwtSecret);
+	const tokenService = createTokenService(jwtSecret, tokenTtl);
 
 	return createApp({
 		usuarioService: new UsuarioService(usuarios),
