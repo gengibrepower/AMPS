@@ -350,6 +350,46 @@ describe('estacionamentos', () => {
 		expect(listagem.status).toBe(401);
 	});
 
+	it('busca um pátio pelo id', async () => {
+		const token = await tokenDeDono();
+		const criado = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro', cidade: 'Blumenau', estado: 'SC' });
+
+		const resposta = await request(app)
+			.get(`/estacionamentos/${criado.body.id}`)
+			.set('Authorization', `Bearer ${token}`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toMatchObject({ id: criado.body.id, nome: 'Pátio Centro' });
+	});
+
+	it('devolve 403 ao buscar pátio de outro dono', async () => {
+		const token = await tokenDeDono();
+		const criado = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+		const tokenDoBruno = await tokenDeDono(OUTRO_DONO);
+
+		const resposta = await request(app)
+			.get(`/estacionamentos/${criado.body.id}`)
+			.set('Authorization', `Bearer ${tokenDoBruno}`);
+
+		expect(resposta.status).toBe(403);
+	});
+
+	it('devolve 404 para pátio inexistente', async () => {
+		const token = await tokenDeDono();
+
+		const resposta = await request(app)
+			.get('/estacionamentos/999999')
+			.set('Authorization', `Bearer ${token}`);
+
+		expect(resposta.status).toBe(404);
+	});
+
 	it('devolve 400 quando falta o nome', async () => {
 		const token = await tokenDeDono();
 

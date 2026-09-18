@@ -103,6 +103,10 @@ export function listarEstacionamentos(): Promise<readonly EstacionamentoWire[]> 
     return pedirAutenticado<readonly EstacionamentoWire[]>('/estacionamentos');
 }
 
+export function buscarEstacionamento(id: number): Promise<EstacionamentoWire> {
+    return pedirAutenticado<EstacionamentoWire>(`/estacionamentos/${id}`);
+}
+
 export function criarEstacionamento(dados: DadosEstacionamento): Promise<EstacionamentoWire> {
     return pedirAutenticado<EstacionamentoWire>('/estacionamentos', {
         method: 'POST',

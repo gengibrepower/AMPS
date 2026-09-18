@@ -283,6 +283,16 @@ export function createApp(deps: AppDeps): Express {
 		res.status(200).json(estacionamentos.map(estacionamentoWire));
 	});
 
+	app.get('/estacionamentos/:id', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		res.status(200).json(estacionamentoWire(await deps.estacionamentoService.buscar(auth.sub, id)));
+	});
+
 	app.put('/estacionamentos/:id/topologia', autenticar(deps.tokenService), async (req, res) => {
 		const auth = autenticado(req, res);
 		if (auth === null) return;

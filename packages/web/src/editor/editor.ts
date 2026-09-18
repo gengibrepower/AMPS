@@ -1,4 +1,4 @@
-import { ApiError, carregarMapa, listarEstacionamentos } from '../api';
+import { ApiError, buscarEstacionamento, carregarMapa } from '../api';
 import type { EstacionamentoWire, VagaWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
 import { criarCena } from '../graph/render/cena';
@@ -78,20 +78,16 @@ function relatar(erro: unknown): void {
         bloquear('Sua sessão expirou.', true);
         return;
     }
+    if (erro instanceof ApiError && (erro.status === 403 || erro.status === 404)) {
+        bloquear('Este estacionamento não é seu ou não existe.');
+        return;
+    }
     bloquear(erro instanceof ApiError ? erro.message : 'Algo deu errado.');
 }
 
-// Ainda não existe GET /estacionamentos/:id; o nome sai da lista do dono, que
-// de quebra confirma que o pátio é dele.
 async function abrir(id: number, cena: Cena): Promise<void> {
     try {
-        const meus = await listarEstacionamentos();
-        const estacionamento = meus.find((candidato) => candidato.id === id);
-        if (estacionamento === undefined) {
-            bloquear('Estacionamento não encontrado na sua conta.');
-            return;
-        }
-        mostrarPatio(estacionamento);
+        mostrarPatio(await buscarEstacionamento(id));
 
         const mapa = await carregarMapa(id);
         grafoAtual = comoGrafo(mapa.grafo);

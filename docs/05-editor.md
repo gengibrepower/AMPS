@@ -11,6 +11,7 @@ A API do editor está completa. Falta o desenho.
 | rota | o que faz |
 | --- | --- |
 | `POST /estacionamentos` · `GET /estacionamentos` | cria e lista os do dono do token |
+| `GET /estacionamentos/:id` | um pátio do dono; 404 se não existe, 403 se é de outro |
 | `PUT /estacionamentos/:id/topologia` | o corpo **é** o grafo; devolve `{ estacionamento_id, versao }` |
 | `PUT /estacionamentos/:id/vagas` | upsert em lote pelo `no_id`; nunca apaga |
 | `DELETE /estacionamentos/:id/vagas/:noId` | 422 se a vaga não estiver livre |

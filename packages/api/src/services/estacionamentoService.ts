@@ -21,6 +21,10 @@ export class EstacionamentoService {
 		});
 	}
 
+	async buscar(usuarioId: number, estacionamentoId: number): Promise<Estacionamento> {
+		return this.acesso.estacionamento(usuarioId, estacionamentoId);
+	}
+
 	async listarDoDono(usuarioId: number): Promise<readonly Estacionamento[]> {
 		const dono = await this.acesso.dono(usuarioId);
 		return this.estacionamentos.listByDono(dono.id);
