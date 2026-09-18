@@ -58,6 +58,7 @@ cd ../Merlian && npm run dev   # 3000
 npm test                  # unitários, não precisam de banco
 npm run test:integration  # precisam do banco de pé
 npm run test:e2e          # dirige o Chromium de verdade; precisa do `npm run dev` rodando
+npm run seed:patios       # conta de teste e dois patios prontos, pela API
 ```
 
 O `test:e2e` sobe um Chromium headless pelo Chrome DevTools Protocol e manda
@@ -69,9 +70,12 @@ de ponteiro, foco de teclado e o grafo de acerto do Konva, e por isso já me fez
 
 ## Tropeços conhecidos
 
-- **`test:integration` apaga as 7 tabelas.** Para usar o app depois:
+- **`test:integration` apaga as 7 tabelas**, inclusive os pátios de teste. Para
+  refazer tudo: recarregue o seed de modelos com
   `docker exec -i amps-mysql mysql -uroot -pamps123 < infra/mysql/init/02_seed_modelos.sql`
-  (se acusar duplicata, apague a linha de `modelos` que o teste deixou).
+  (se acusar duplicata, apague antes a linha de `modelos` que o teste deixou) e
+  rode `npm run seed:patios`, que recria a conta `ana@teste.com / teste1234` e
+  dois pátios desenhados.
 - **Mexeu em `01_schema.sql` ou `03_integridade.sql`?** O init só roda com o
   volume vazio: `docker compose down -v && docker compose up -d`.
 - **Não há cliente mysql na máquina** — use `docker exec -it amps-mysql mysql`,

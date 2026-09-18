@@ -6,7 +6,7 @@ que a topologia é JSON e como o Merlian entra.
 
 ## Estado atual
 
-A API do editor está completa. Falta o desenho.
+A API do editor está completa e o editor já desenha. Falta **editar**.
 
 | rota | o que faz |
 | --- | --- |
@@ -174,3 +174,34 @@ salvar · **(6)** publicar.
 O carregamento (`GET /mapa`) entrou já na fatia 2, em vez de esperar a 5: a
 rota existe, e assim o editor desenha dado real desde o começo, sem fixture de
 mentira. A fatia 5 ficou só com a gravação.
+
+## Por onde continuar
+
+A fatia 3 é a que transforma visualizador em editor. Três decisões definem se
+ela presta:
+
+1. **Arrastar nó divide o botão esquerdo com arrastar o fundo.** O limiar de
+   4 px já resolve clique-versus-arrasto; falta o snap na grade de 1 m, senão
+   ninguém encosta uma vaga no meio-fio na mão.
+2. **Criar vaga já grava a rotação.** `anguloDaVaga` vira o `rotacao_graus`
+   gravado no momento da criação. Sem isso a vaga nasce a 0° e deita errado —
+   foi exatamente esse o defeito que apareceu ao cadastrar vagas com rotação
+   zerada.
+3. **Desfazer por snapshot, junto e não depois.** O modelo é JSON puro, então
+   `structuredClone` num stack resolve. Encaixar undo depois obriga a refazer
+   as ferramentas.
+
+Nada disso salva: recarregar a página perde tudo até a fatia 5.
+
+### Pendências conhecidas
+
+- **Trocar o número entre duas vagas dá 409.** O upsert atualiza linha a linha
+  dentro da transação e colide no meio do caminho, mesmo com o estado final
+  válido. O conserto são duas passadas no adapter, a primeira jogando os
+  números num valor temporário.
+- **Token de 8 h é remendo.** O certo é refresh token; `AUTH_TOKEN_TTL` só
+  adiou o problema.
+- **Não existe `DELETE /estacionamentos/:id`** — apagar pátio de teste é no
+  banco, na mão.
+- **RN-05** ("publicar exige metadados básicos") não está implementada: falta
+  definir quais metadados contam.
