@@ -1,8 +1,13 @@
-import { ApiError, listarEstacionamentos } from '../api';
+import { ApiError, carregarMapa, listarEstacionamentos } from '../api';
 import type { EstacionamentoWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
+import { criarCena } from '../graph/render/cena';
+import type { Cena, Selecao } from '../graph/render/cena';
 import { criarPalco } from '../graph/render/palco';
 import type { Ponto } from '../graph/geometria';
+import { acharNo } from '../graph/modelo';
+import { GRAFO_VAZIO, comoGrafo } from '../graph/tipos';
+import type { Grafo, Papel } from '../graph/tipos';
 
 const quadro = document.getElementById('quadro') as HTMLElement | null;
 const palcoDiv = document.getElementById('palco') as HTMLDivElement | null;
@@ -12,6 +17,15 @@ const etiqueta = document.getElementById('etiqueta') as HTMLElement | null;
 const cursorX = document.getElementById('cursorX') as HTMLElement | null;
 const cursorY = document.getElementById('cursorY') as HTMLElement | null;
 const nivelZoom = document.getElementById('nivelZoom') as HTMLElement | null;
+const versao = document.getElementById('versao') as HTMLElement | null;
+const selecao = document.getElementById('selecao') as HTMLElement | null;
+
+const ROTULO_DO_PAPEL: Record<Papel, string> = {
+    candidate: 'vaga',
+    source: 'entrada',
+    transit: 'via',
+    attractor: 'POI',
+};
 
 function emMetros(valor: number): string {
     return `${valor.toFixed(2).replace('.', ',')} m`;
@@ -46,9 +60,18 @@ function idDaUrl(): number | null {
     return bruto !== null && Number.isInteger(id) && id > 0 ? id : null;
 }
 
+function relatar(erro: unknown): void {
+    if (erro instanceof ApiError && erro.status === 401) {
+        clearSession();
+        bloquear('Sua sessão expirou. Entre de novo para continuar.');
+        return;
+    }
+    bloquear(erro instanceof ApiError ? erro.message : 'Algo deu errado.');
+}
+
 // Ainda não existe GET /estacionamentos/:id; o nome sai da lista do dono, que
 // de quebra confirma que o pátio é dele.
-async function carregarPatio(id: number): Promise<void> {
+async function abrir(id: number, cena: Cena): Promise<void> {
     try {
         const meus = await listarEstacionamentos();
         const estacionamento = meus.find((candidato) => candidato.id === id);
@@ -57,14 +80,37 @@ async function carregarPatio(id: number): Promise<void> {
             return;
         }
         mostrarPatio(estacionamento);
+
+        const mapa = await carregarMapa(id);
+        grafoAtual = comoGrafo(mapa.grafo);
+        cena.desenhar(grafoAtual);
+        cena.enquadrar();
+        if (versao) versao.textContent = String(mapa.versao);
+
+        mostrarSelecao(null);
     } catch (erro) {
-        if (erro instanceof ApiError && erro.status === 401) {
-            clearSession();
-            bloquear('Sua sessão expirou. Entre de novo para continuar.');
-            return;
-        }
-        bloquear(erro instanceof ApiError ? erro.message : 'Algo deu errado.');
+        relatar(erro);
     }
+}
+
+let grafoAtual: Grafo = GRAFO_VAZIO;
+
+function mostrarSelecao(escolhido: Selecao): void {
+    if (!selecao) return;
+
+    if (escolhido === null) {
+        const nos = grafoAtual.nodes.length;
+        selecao.textContent = nos === 0 ? 'pátio vazio' : `${nos} nós`;
+        return;
+    }
+    if (escolhido.tipo === 'aresta') {
+        selecao.textContent = `${escolhido.from} → ${escolhido.to}`;
+        return;
+    }
+    const no = acharNo(grafoAtual, escolhido.id);
+    selecao.textContent = no === null
+        ? escolhido.id
+        : `${no.id} · ${ROTULO_DO_PAPEL[no.role]}`;
 }
 
 const id = idDaUrl();
@@ -75,8 +121,15 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
     bloquear('Abra o editor a partir da lista de estacionamentos.');
 } else if (palcoDiv !== null) {
     const palco = criarPalco(palcoDiv);
+    const cena = criarCena(palco);
+
     palco.aoMoverPonteiro(mostrarCursor);
     palco.aoMudarZoom(mostrarZoom);
+    cena.aoSelecionar((escolhido) => mostrarSelecao(escolhido));
+    window.addEventListener('keydown', (evento: KeyboardEvent) => {
+        if (evento.key === 'Escape') cena.selecionar(null);
+    });
+
     mostrarZoom(palco.zoom());
-    void carregarPatio(id);
+    void abrir(id, cena);
 }

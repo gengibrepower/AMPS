@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { faixaVisivel, metrosParaPixels, pixelsParaMetros } from './geometria';
+import {
+    ajusteParaCaixa,
+    direcao,
+    pontosAoLongo,
+    projecaoNoSegmento,
+    faixaVisivel,
+    metrosParaPixels,
+    pixelsParaMetros,
+    recuoNaCaixa,
+    segmento,
+} from './geometria';
 
 describe('conversão de unidade', () => {
     it('vai e volta sem perder o valor', () => {
@@ -28,5 +38,127 @@ describe('faixaVisivel', () => {
         const perto = faixaVisivel(0, 400, 80, 1);
         const longe = faixaVisivel(0, 400, 10, 1);
         expect(perto.ate).toBeLessThan(longe.ate);
+    });
+});
+
+describe('segmento da aresta', () => {
+    const a = { x: 0, y: 0 };
+    const b = { x: 10, y: 0 };
+
+    it('recua as duas pontas para a seta encostar no nó', () => {
+        expect(segmento(a, b, 2, 3, 0)).toEqual({ de: { x: 2, y: 0 }, para: { x: 7, y: 0 } });
+    });
+
+    it('joga a volta para o outro lado da ida', () => {
+        const ida = segmento(a, b, 0, 0, 1);
+        const volta = segmento(b, a, 0, 0, 1);
+        expect(ida.de.y).toBe(-volta.de.y);
+        expect(ida.de.y).not.toBe(0);
+    });
+
+    it('colapsa no meio quando os recuos comem o traço inteiro', () => {
+        const curto = segmento(a, { x: 3, y: 0 }, 2, 2, 0);
+        expect(curto.de).toEqual(curto.para);
+        expect(curto.de).toEqual({ x: 1.5, y: 0 });
+    });
+
+    it('não quebra com os dois nós no mesmo ponto', () => {
+        expect(segmento(a, a, 1, 1, 1)).toEqual({ de: a, para: a });
+    });
+});
+
+describe('recuoNaCaixa', () => {
+    // Vaga de 2,5 x 5 m: meia largura 1,25 e meio comprimento 2,5.
+    it('para na lateral quando a aresta chega de lado', () => {
+        expect(recuoNaCaixa(1.25, 2.5, { x: 1, y: 0 })).toBe(1.25);
+    });
+
+    it('para na frente quando a aresta chega pela ponta', () => {
+        expect(recuoNaCaixa(1.25, 2.5, { x: 0, y: 1 })).toBe(2.5);
+    });
+
+    it('na diagonal usa a borda que aparece primeiro', () => {
+        const meio = Math.SQRT1_2;
+        expect(recuoNaCaixa(1.25, 2.5, { x: meio, y: meio })).toBeCloseTo(1.25 / meio, 6);
+    });
+
+    it('não quebra com direção nula', () => {
+        expect(recuoNaCaixa(1.25, 2.5, { x: 0, y: 0 })).toBe(0);
+    });
+});
+
+describe('direcao', () => {
+    it('devolve vetor unitário', () => {
+        expect(direcao({ x: 0, y: 0 }, { x: 0, y: 4 })).toEqual({ x: 0, y: 1 });
+    });
+
+    it('devolve zero para o mesmo ponto', () => {
+        expect(direcao({ x: 2, y: 2 }, { x: 2, y: 2 })).toEqual({ x: 0, y: 0 });
+    });
+});
+
+describe('ajusteParaCaixa', () => {
+    const caixa = { minX: 0, minY: 0, maxX: 20, maxY: 10 };
+
+    it('centraliza a caixa na tela', () => {
+        const ajuste = ajusteParaCaixa(caixa, 1000, 600, 60, 0.2, 8);
+        const centro = {
+            x: metrosParaPixels(10) * ajuste.zoom + ajuste.x,
+            y: metrosParaPixels(5) * ajuste.zoom + ajuste.y,
+        };
+        expect(centro).toEqual({ x: 500, y: 300 });
+    });
+
+    it('aperta o zoom até a caixa caber com margem', () => {
+        const ajuste = ajusteParaCaixa(caixa, 300, 300, 20, 0.2, 8);
+        expect(metrosParaPixels(20) * ajuste.zoom).toBeLessThanOrEqual(300 - 40);
+    });
+
+    it('respeita o teto de zoom com caixa minúscula', () => {
+        const ponto = { minX: 5, minY: 5, maxX: 5, maxY: 5 };
+        expect(ajusteParaCaixa(ponto, 1000, 600, 60, 0.2, 8).zoom).toBe(1);
+    });
+});
+
+describe('pontosAoLongo', () => {
+    const de = { x: 0, y: 0 };
+
+    it('espaça os pontos e sobra margem igual nas duas pontas', () => {
+        const pontos = pontosAoLongo(de, { x: 10, y: 0 }, 4);
+        expect(pontos).toEqual([{ x: 3, y: 0 }, { x: 7, y: 0 }]);
+    });
+
+    it('põe um ponto no meio quando o traço é mais curto que o passo', () => {
+        expect(pontosAoLongo(de, { x: 3, y: 0 }, 4)).toEqual([{ x: 1.5, y: 0 }]);
+    });
+
+    it('acompanha a diagonal', () => {
+        const pontos = pontosAoLongo(de, { x: 0, y: 8 }, 4);
+        expect(pontos).toEqual([{ x: 0, y: 2 }, { x: 0, y: 6 }]);
+    });
+
+    it('não devolve nada para traço de comprimento zero', () => {
+        expect(pontosAoLongo(de, de, 4)).toEqual([]);
+    });
+});
+
+describe('projecaoNoSegmento', () => {
+    const de = { x: 0, y: 0 };
+    const para = { x: 10, y: 0 };
+
+    it('cai perpendicular quando o ponto está ao lado do meio', () => {
+        expect(projecaoNoSegmento({ x: 4, y: 7 }, de, para)).toEqual({ x: 4, y: 0 });
+    });
+
+    it('prende na ponta quando o ponto passa do fim', () => {
+        expect(projecaoNoSegmento({ x: 30, y: 3 }, de, para)).toEqual({ x: 10, y: 0 });
+    });
+
+    it('prende no começo quando o ponto fica atrás', () => {
+        expect(projecaoNoSegmento({ x: -5, y: 3 }, de, para)).toEqual({ x: 0, y: 0 });
+    });
+
+    it('devolve a própria ponta para segmento de comprimento zero', () => {
+        expect(projecaoNoSegmento({ x: 2, y: 2 }, de, de)).toEqual(de);
     });
 });

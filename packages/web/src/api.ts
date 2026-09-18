@@ -109,3 +109,26 @@ export function criarEstacionamento(dados: DadosEstacionamento): Promise<Estacio
         body: JSON.stringify(dados),
     });
 }
+
+export interface VagaWire {
+    readonly id: number;
+    readonly no_id: string;
+    readonly numero: string;
+    readonly tipo: string;
+    readonly rotacao_graus: number;
+    readonly sensor: string | null;
+    readonly status: string;
+    readonly carro_id: number | null;
+}
+
+// O grafo vem como está no banco, na forma que o Merlian aceita: a API não
+// transforma nada, e o front também não deve.
+export interface MapaWire {
+    readonly versao: number;
+    readonly grafo: unknown;
+    readonly vagas: readonly VagaWire[];
+}
+
+export function carregarMapa(estacionamentoId: number): Promise<MapaWire> {
+    return pedirAutenticado<MapaWire>(`/estacionamentos/${estacionamentoId}/mapa`);
+}

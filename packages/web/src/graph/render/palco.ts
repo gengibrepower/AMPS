@@ -1,6 +1,13 @@
 import Konva from 'konva';
-import { PIXELS_POR_METRO, faixaVisivel, metrosParaPixels, pixelsParaMetros } from '../geometria';
-import type { Ponto } from '../geometria';
+import {
+    PIXELS_POR_METRO,
+    ajusteParaCaixa,
+    faixaVisivel,
+    metrosParaPixels,
+    pixelsParaMetros,
+} from '../geometria';
+import type { Caixa, Ponto } from '../geometria';
+import { EIXO, GRADE_FINA, GRADE_GROSSA } from './tinta';
 
 const ZOOM_MIN = 0.2;
 const ZOOM_MAX = 8;
@@ -12,14 +19,15 @@ const PASSO_GROSSO = 5;
 // Abaixo disso a grade de 1 m vira ruído cinza: some e ficam só os 5 m.
 const ESPACAMENTO_MINIMO = 14;
 
-const COR_FINA = 'rgba(255, 255, 255, 0.05)';
-const COR_GROSSA = 'rgba(255, 255, 255, 0.11)';
-const COR_EIXO = 'rgba(23, 114, 76, 0.85)';
+// Respiro entre o desenho e a borda da tela ao enquadrar.
+const MARGEM = 60;
+
 
 export interface Palco {
     readonly stage: Konva.Stage;
     readonly camadaConteudo: Konva.Layer;
     zoom(): number;
+    enquadrar(caixa: Caixa): void;
     aoMoverPonteiro(ouvinte: (metros: Ponto | null) => void): void;
     aoMudarZoom(ouvinte: (zoom: number) => void): void;
 }
@@ -47,7 +55,7 @@ function desenharGrade(contexto: Konva.Context, stage: Konva.Stage): void {
         : [PASSO_GROSSO];
 
     for (const passo of passos) {
-        contexto.setAttr('strokeStyle', passo === PASSO_FINO ? COR_FINA : COR_GROSSA);
+        contexto.setAttr('strokeStyle', passo === PASSO_FINO ? GRADE_FINA : GRADE_GROSSA);
         contexto.beginPath();
         for (let m = horizontal.de; m <= horizontal.ate; m += passo) {
             if (passo === PASSO_FINO && m % PASSO_GROSSO === 0) continue;
@@ -62,7 +70,7 @@ function desenharGrade(contexto: Konva.Context, stage: Konva.Stage): void {
         contexto.stroke();
     }
 
-    contexto.setAttr('strokeStyle', COR_EIXO);
+    contexto.setAttr('strokeStyle', EIXO);
     contexto.beginPath();
     contexto.moveTo(esquerda, 0);
     contexto.lineTo(direita, 0);
@@ -194,6 +202,20 @@ export function criarPalco(container: HTMLDivElement): Palco {
         stage,
         camadaConteudo,
         zoom: () => stage.scaleX(),
+        enquadrar(caixa: Caixa): void {
+            const ajuste = ajusteParaCaixa(
+                caixa,
+                stage.width(),
+                stage.height(),
+                MARGEM,
+                ZOOM_MIN,
+                ZOOM_MAX,
+            );
+            stage.scale({ x: ajuste.zoom, y: ajuste.zoom });
+            stage.position({ x: ajuste.x, y: ajuste.y });
+            redesenhar();
+            for (const ouvinte of ouvintesDeZoom) ouvinte(ajuste.zoom);
+        },
         aoMoverPonteiro: (ouvinte) => ouvintesDePonteiro.push(ouvinte),
         aoMudarZoom: (ouvinte) => ouvintesDeZoom.push(ouvinte),
     };

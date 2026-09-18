@@ -17,9 +17,11 @@ A API do editor está completa. Falta o desenho.
 | `GET /estacionamentos/:id/mapa` | `{ versao, grafo, vagas }` |
 | `POST`/`DELETE /estacionamentos/:id/publicacao` | RN-11: entrada, vaga e POI conferidos aqui; alcançabilidade no Merlian |
 
-No front existe só `owner/estacionamentos.html` (lista e cadastro). As pastas
-do editor estão criadas e vazias desde o PR #8: `src/editor/`,
-`src/editor/tools/`, `src/graph/`, `src/graph/render/`, `src/client-map/`.
+No front, `owner/estacionamentos.html` lista e cria pátios, e
+`owner/editor.html` já abre o pátio: carrega o mapa, desenha o grafo em metros
+sobre uma grade, enquadra o desenho e deixa selecionar nó e aresta. Falta
+**editar** — criar, mover, apagar e salvar. `src/editor/tools/` e
+`src/client-map/` continuam vazias.
 
 ## A ordem de gravação é obrigatória
 
@@ -100,6 +102,32 @@ LEFT JOIN vagas v
 WHERE t.estacionamento_id = ?;
 ```
 
+## A linguagem do desenho
+
+O editor não desenha um diagrama de nós e setas: desenha a **planta** do pátio.
+Quem mexer nisso precisa saber por quê, senão "conserta" e quebra.
+
+- **O canvas é papel.** Fundo branco e traço escuro, com a interface em volta
+  (cabeçalho, barra de status) continuando escura. A paleta do desenho vive em
+  `render/tinta.ts`, separada do `vars.css`: o verde `#17724C` da interface, que
+  serve para botão, vira 2,3:1 de contraste quando é traço de 1 px sobre fundo
+  escuro, e some.
+- **O corredor tem largura de verdade** — 3,2 m por sentido, 6,4 m na mão dupla.
+  Desenhar a via como linha fina foi o erro que fez a vaga de 2,5 × 5 m parecer
+  desproporcional: tudo está em escala, então a rua também precisa estar.
+- **O sentido é pintado ao longo da via**, com setas repetidas a cada 5 m, como
+  no asfalto. Seta só na ponta não deixa ler o sentido no meio de um trecho
+  longo, que é onde a dúvida aparece.
+- **A vaga se deita perpendicular à rua mais próxima** e encosta nela na
+  projeção do seu centro sobre o corredor — não no nó a que a aresta a liga.
+  Cada vaga aparece **uma vez só**, na rua em que de fato encosta: é isso que
+  faz uma via sobrecarregada mostrar as vagas empilhadas em vez de escondê-las
+  penduradas num nó distante. Vaga fora de lugar aparece com um toco tracejado
+  até o meio-fio.
+- **O que não é rua fica fora do mapa até ser preciso.** A aresta de acesso da
+  vaga aparece só quando a vaga ou ela própria está selecionada; o peso da
+  aresta, só na aresta selecionada. Planta não tem número em cima de cada via.
+
 ## Plano do front
 
 Arquitetura pensada para as pastas que já existem. `graph/` é puro: sem DOM,
@@ -121,6 +149,10 @@ barra de status com cursor em metros, zoom, `versao` e estado sujo. Atalhos
 `V` · `1` vaga · `2` entrada · `3` via · `4` POI · `A` aresta · `Del` · `Esc` ·
 `Ctrl+Z`. Undo por snapshot (`structuredClone`), que o modelo é JSON puro.
 
-Fatias: **(1)** Konva e o palco com grade e zoom · **(2)** modelo e render ·
-**(3)** ferramentas e undo · **(4)** inspetor · **(5)** carregar e salvar ·
-**(6)** publicar.
+Fatias: ~~**(1)** Konva e o palco com grade e zoom~~ · ~~**(2)** modelo, render
+e carregamento~~ · **(3)** ferramentas e undo · **(4)** inspetor · **(5)**
+salvar · **(6)** publicar.
+
+O carregamento (`GET /mapa`) entrou já na fatia 2, em vez de esperar a 5: a
+rota existe, e assim o editor desenha dado real desde o começo, sem fixture de
+mentira. A fatia 5 ficou só com a gravação.
