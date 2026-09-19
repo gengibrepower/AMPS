@@ -343,13 +343,17 @@ main > h2 {
     overflow-wrap: anywhere;
 }
 
+/* O cadastro de dono tem seis campos e não cabe na tela. A caixa centra por
+   `margin: auto` e não por `align-items`: quando falta espaço, o auto vira
+   zero e a caixa encosta no topo — com `align-items: center` ela sobe para
+   fora do viewport, e o que transborda para cima não tem como ser rolado. */
 .login {
     position: fixed;
     inset: 0;
     z-index: 30;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow-y: auto;
+    padding: 24px 16px;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(1px);
 }
@@ -359,8 +363,9 @@ main > h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: min(512px, 60vw);
-    padding: 3rem 4rem;
+    margin: auto;
+    width: min(512px, 100%);
+    padding: clamp(2rem, 6vh, 3rem) clamp(1.5rem, 6vw, 4rem);
     background-color: var(--card-bg);
     border-radius: 20px;
 }
@@ -386,6 +391,20 @@ main > h2 {
     flex-direction: column;
     width: 100%;
     gap: 6px;
+}
+
+/* Seis campos em coluna única não cabem em nenhuma tela de notebook. Só o
+   cadastro de dono pareia; login e cadastro de cliente continuam em coluna. */
+@media (min-width: 420px) {
+    #owner-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 14px;
+    }
+
+    #owner-form button[type="submit"] {
+        grid-column: 1 / -1;
+    }
 }
 
 .login label {
