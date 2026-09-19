@@ -5,7 +5,9 @@ Monorepo npm workspaces: `packages/api` (Express + MySQL) e `packages/web`
 [Merlian](https://github.com/gengibrepower/Merlian), consumido por HTTP.
 
 Antes de mexer no editor de pátio, leia `docs/05-editor.md`: tem as armadilhas
-que custam uma tarde se descobertas na marra.
+que custam uma tarde se descobertas na marra. Para a navegação por tipo de
+conta, `docs/06-navegacao-e-contas.md`. O cadastro de carro ainda não existe e
+tem guia próprio, do ambiente ao PR: `docs/07-cadastro-de-carro.md`.
 
 ## Como trabalhar neste repo
 
