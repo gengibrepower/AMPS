@@ -5,15 +5,22 @@ import { criarCena } from '../graph/render/cena';
 import type { Cena, ModoDaCena, Selecao } from '../graph/render/cena';
 import { criarPalco } from '../graph/render/palco';
 import type { Ponto } from '../graph/geometria';
-import { acharNo } from '../graph/modelo';
+import { acharNo, pesoNatural } from '../graph/modelo';
 import { comoGrafo, comoTipoDeVaga } from '../graph/tipos';
-import type { DadosDaVaga, Papel } from '../graph/tipos';
+import type { DadosDaVaga, Papel, TipoDeVaga } from '../graph/tipos';
 import { criarEstado } from './estado';
 import type { Instantaneo } from './estado';
 import { apagarNo } from './tools/apagar';
 import { apagarAresta, ligar } from './tools/aresta';
 import { ferramentaDaTecla, papelDa } from './tools/ferramentas';
 import type { Ferramenta } from './tools/ferramentas';
+import {
+    atualizarVaga,
+    editarPeso,
+    numeroLivre,
+    recalcularPeso,
+    renomear,
+} from './tools/inspetor';
 import { criarNoEm, moverNoPara } from './tools/no';
 
 const quadro = document.getElementById('quadro') as HTMLElement | null;
@@ -33,6 +40,27 @@ const barraDeFerramentas = document.getElementById('ferramentas') as HTMLElement
 const botaoApagar = document.getElementById('apagar') as HTMLButtonElement | null;
 const botaoDesfazer = document.getElementById('desfazer') as HTMLButtonElement | null;
 
+const inspetor = document.getElementById('inspetor') as HTMLElement | null;
+const inspetorVazio = document.getElementById('inspetorVazio') as HTMLElement | null;
+const inspetorNo = document.getElementById('inspetorNo') as HTMLElement | null;
+const inspetorVaga = document.getElementById('inspetorVaga') as HTMLElement | null;
+const inspetorAresta = document.getElementById('inspetorAresta') as HTMLElement | null;
+const inspetorId = document.getElementById('inspetorId') as HTMLElement | null;
+const inspetorPapel = document.getElementById('inspetorPapel') as HTMLElement | null;
+const inspetorX = document.getElementById('inspetorX') as HTMLElement | null;
+const inspetorY = document.getElementById('inspetorY') as HTMLElement | null;
+const inspetorErro = document.getElementById('inspetorErro') as HTMLElement | null;
+const campoRotulo = document.getElementById('campoRotulo') as HTMLInputElement | null;
+const campoNumero = document.getElementById('campoNumero') as HTMLInputElement | null;
+const campoTipo = document.getElementById('campoTipo') as HTMLSelectElement | null;
+const campoRotacao = document.getElementById('campoRotacao') as HTMLInputElement | null;
+const grausRapidos = document.getElementById('grausRapidos') as HTMLElement | null;
+const arestaDe = document.getElementById('arestaDe') as HTMLElement | null;
+const arestaPara = document.getElementById('arestaPara') as HTMLElement | null;
+const campoPeso = document.getElementById('campoPeso') as HTMLInputElement | null;
+const botaoRecalcular = document.getElementById('recalcular') as HTMLButtonElement | null;
+const dicaPeso = document.getElementById('dicaPeso') as HTMLElement | null;
+
 const ROTULO_DO_PAPEL: Record<Papel, string> = {
     candidate: 'vaga',
     source: 'entrada',
@@ -49,6 +77,14 @@ function mostrarCursor(metros: Ponto | null): void {
     if (cursorY) cursorY.textContent = metros === null ? '—' : emMetros(metros.y);
 }
 
+// A coluna do banco é inteira e o desenho gira em [0, 360): 370° e -90° viram
+// o mesmo ângulo em vez de recusa.
+function emGrausInteiros(bruto: string): number {
+    const numero = Math.round(Number(bruto.replace(',', '.')));
+    if (!Number.isFinite(numero)) return 0;
+    return ((numero % 360) + 360) % 360;
+}
+
 function mostrarZoom(zoom: number): void {
     if (nivelZoom) nivelZoom.textContent = `${Math.round(zoom * 100)}%`;
 }
@@ -59,6 +95,7 @@ function bloquear(texto: string, comSaida = false): void {
     bloqueioSaida?.classList.toggle('disabled', !comSaida);
     quadro?.classList.add('disabled');
     barraDeFerramentas?.classList.add('disabled');
+    inspetor?.classList.add('disabled');
     if (nomeDoPatio) nomeDoPatio.textContent = 'Editor de pátio';
 }
 
@@ -137,6 +174,68 @@ function mostrarSelecao(): void {
         : `${no.id} · ${ROTULO_DO_PAPEL[no.role]}`;
 }
 
+function vagaSelecionada(): DadosDaVaga | undefined {
+    const atual = escolhido;
+    if (atual?.tipo !== 'no') return undefined;
+    return estado.vagas().find((vaga) => vaga.noId === atual.id);
+}
+
+function avisar(texto: string): void {
+    if (inspetorErro) inspetorErro.textContent = texto;
+}
+
+// O inspetor é repintado a cada mudança, e um campo de digitação em foco é
+// justamente o que o dono está escrevendo: sobrescrever ali apagaria a edição
+// no meio. `select` não se digita, então acompanha o modelo sempre.
+function preencher(campo: HTMLInputElement | HTMLSelectElement | null, valor: string): void {
+    if (campo === null) return;
+    if (campo instanceof HTMLInputElement && document.activeElement === campo) return;
+    campo.value = valor;
+}
+
+function mostrarInspetor(): void {
+    avisar('');
+
+    const no = escolhido?.tipo === 'no' ? acharNo(estado.grafo(), escolhido.id) : null;
+    const aresta = escolhido?.tipo === 'aresta' ? escolhido : null;
+
+    inspetorVazio?.classList.toggle('disabled', no !== null || aresta !== null);
+    inspetorNo?.classList.toggle('disabled', no === null);
+    inspetorAresta?.classList.toggle('disabled', aresta === null);
+
+    if (no !== null) {
+        if (inspetorId) inspetorId.textContent = no.id;
+        if (inspetorPapel) inspetorPapel.textContent = ROTULO_DO_PAPEL[no.role];
+        if (inspetorX) inspetorX.textContent = emMetros(no.position.x);
+        if (inspetorY) inspetorY.textContent = emMetros(no.position.y);
+        preencher(campoRotulo, no.label ?? '');
+
+        const vaga = vagaSelecionada();
+        inspetorVaga?.classList.toggle('disabled', vaga === undefined);
+        if (vaga !== undefined) {
+            preencher(campoNumero, vaga.numero);
+            preencher(campoTipo, vaga.tipo);
+            preencher(campoRotacao, String(vaga.rotacaoGraus));
+        }
+    }
+
+    if (aresta !== null) {
+        if (arestaDe) arestaDe.textContent = aresta.from;
+        if (arestaPara) arestaPara.textContent = aresta.to;
+
+        const atual = estado.grafo().edges
+            .find((cada) => cada.from === aresta.from && cada.to === aresta.to);
+        preencher(campoPeso, atual === undefined ? '' : String(atual.weight));
+
+        const natural = pesoNatural(estado.grafo(), aresta.from, aresta.to);
+        if (dicaPeso) {
+            dicaPeso.textContent = natural === null
+                ? ''
+                : `distância entre os nós: ${emMetros(natural)}`;
+        }
+    }
+}
+
 function mostrarBotoes(): void {
     if (botaoApagar) botaoApagar.disabled = escolhido === null;
     if (botaoDesfazer) botaoDesfazer.disabled = !estado.podeDesfazer();
@@ -172,16 +271,20 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
     palco.aoMoverPonteiro(mostrarCursor);
     palco.aoMudarZoom(mostrarZoom);
 
+    inspetor?.classList.remove('disabled');
+
     estado.aoMudar((instantaneo: Instantaneo) => {
         cena.desenhar(instantaneo.grafo, instantaneo.vagas);
         mostrarSelecao();
         mostrarBotoes();
+        mostrarInspetor();
     });
 
     cena.aoSelecionar((atual) => {
         escolhido = atual;
         mostrarSelecao();
         mostrarBotoes();
+        mostrarInspetor();
     });
 
     // Criar não sai da ferramenta: uma fileira de vagas é o caso normal, e
@@ -209,6 +312,88 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
         else apagarAresta(estado, escolhido.from, escolhido.to);
     }
 
+    // Os campos gravam no `change`, não a cada tecla: assim uma edição inteira
+    // é um passo do desfazer, e não uma letra.
+    //
+    // Enter precisa de tratamento à parte. `change` só sai quando o campo perde
+    // o foco, e fora de um <form> o Enter não faz nada — sem isto o dono digita,
+    // aperta Enter e o editor ignora. Tirar o foco dispara o `change` de sempre,
+    // então a gravação continua num caminho só.
+    function aoConfirmar(campo: HTMLInputElement | null, aplicar: () => void): void {
+        campo?.addEventListener('change', aplicar);
+        campo?.addEventListener('keydown', (evento: KeyboardEvent) => {
+            if (evento.key !== 'Enter') return;
+            evento.preventDefault();
+            campo.blur();
+        });
+    }
+
+    aoConfirmar(campoRotulo, () => {
+        if (escolhido?.tipo === 'no' && campoRotulo !== null) {
+            renomear(estado, escolhido.id, campoRotulo.value);
+        }
+    });
+
+    function editarVagaCom(campos: {
+        numero?: string;
+        tipo?: TipoDeVaga;
+        rotacaoGraus?: number;
+    }): void {
+        const vaga = vagaSelecionada();
+        if (vaga === undefined) return;
+
+        const nova: DadosDaVaga = {
+            ...vaga,
+            ...(campos.numero === undefined ? {} : { numero: campos.numero }),
+            ...(campos.tipo === undefined ? {} : { tipo: campos.tipo }),
+            ...(campos.rotacaoGraus === undefined ? {} : { rotacaoGraus: campos.rotacaoGraus }),
+        };
+
+        // Repinta antes de avisar: `mostrarInspetor` limpa o erro ao entrar, e
+        // na ordem inversa a mensagem morria no mesmo instante em que nascia.
+        if (nova.numero.trim() === '') {
+            mostrarInspetor();
+            avisar('a vaga precisa de um número');
+            return;
+        }
+        if (!numeroLivre(estado.vagas(), nova.noId, nova.numero)) {
+            mostrarInspetor();
+            avisar(`número ${nova.numero} já é de outra vaga`);
+            return;
+        }
+        atualizarVaga(estado, nova);
+    }
+
+    aoConfirmar(campoNumero, () => {
+        if (campoNumero !== null) editarVagaCom({ numero: campoNumero.value.trim() });
+    });
+    campoTipo?.addEventListener('change', () => {
+        editarVagaCom({ tipo: comoTipoDeVaga(campoTipo.value) });
+    });
+    aoConfirmar(campoRotacao, () => {
+        if (campoRotacao !== null) editarVagaCom({ rotacaoGraus: emGrausInteiros(campoRotacao.value) });
+    });
+
+    for (const botao of grausRapidos?.querySelectorAll('[data-graus]') ?? []) {
+        botao.addEventListener('click', () => {
+            const graus = Number(botao.getAttribute('data-graus'));
+            if (Number.isInteger(graus)) editarVagaCom({ rotacaoGraus: graus });
+        });
+    }
+
+    aoConfirmar(campoPeso, () => {
+        if (escolhido?.tipo !== 'aresta' || campoPeso === null) return;
+        const peso = Number(campoPeso.value.replace(',', '.'));
+        if (!editarPeso(estado, escolhido.from, escolhido.to, peso)) {
+            mostrarInspetor();
+            avisar('peso deve ser um número não negativo');
+        }
+    });
+
+    botaoRecalcular?.addEventListener('click', () => {
+        if (escolhido?.tipo === 'aresta') recalcularPeso(estado, escolhido.from, escolhido.to);
+    });
+
     botaoApagar?.addEventListener('click', apagarEscolhido);
     botaoDesfazer?.addEventListener('click', () => estado.desfazer());
     for (const botao of barraDeFerramentas?.querySelectorAll('[data-ferramenta]') ?? []) {
@@ -219,7 +404,9 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
     }
 
     window.addEventListener('keydown', (evento: KeyboardEvent) => {
-        if (evento.target instanceof HTMLInputElement) return;
+        if (evento.target instanceof HTMLInputElement
+            || evento.target instanceof HTMLSelectElement
+            || evento.target instanceof HTMLTextAreaElement) return;
 
         if (evento.key === 'Escape') {
             escolherFerramenta('selecionar', cena);
@@ -242,5 +429,6 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
 
     mostrarZoom(palco.zoom());
     mostrarBotoes();
+    mostrarInspetor();
     void abrir(id, cena);
 }

@@ -216,6 +216,130 @@ main {
     margin-left: auto;
 }
 
+
+/* Inspetor: canvas no meio, ferramentas à esquerda, campos à direita. */
+.inspetor {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+    width: 216px;
+    padding: 12px;
+    overflow-y: auto;
+    border-left: 1px solid var(--linha);
+    font-size: 0.78rem;
+}
+
+.inspetor-vazio {
+    color: var(--apagado);
+    font-size: 0.78rem;
+}
+
+.inspetor-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.inspetor-titulo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.inspetor-id {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
+.inspetor-posicao {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+    color: var(--apagado);
+    font-size: 0.72rem;
+}
+
+.campo {
+    margin-top: 4px;
+    color: var(--apagado);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.entrada {
+    width: 100%;
+    border: 1px solid var(--search-border);
+    border-radius: 8px;
+    padding: 6px 8px;
+    background-color: var(--search-bg);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.78rem;
+}
+
+.entrada:focus {
+    outline: none;
+    border-color: var(--btn-green-border);
+}
+
+/* O caso comum é perpendicular à rua; o campo cobre espinha de peixe a 45°. */
+.graus {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.grau {
+    flex: 1;
+    border: 1px solid var(--search-border);
+    border-radius: 8px;
+    padding: 4px 0;
+    background: none;
+    color: var(--apagado);
+    font-family: inherit;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.grau:hover {
+    color: var(--text-primary);
+    background-color: var(--search-bg);
+}
+
+.botao-inspetor {
+    margin-top: 8px;
+    border: 1px solid var(--btn-green-border);
+    border-radius: var(--radius-pill);
+    padding: 6px 10px;
+    background-color: var(--btn-green-bg);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.inspetor-dica {
+    color: var(--apagado);
+    font-size: 0.7rem;
+}
+
+.inspetor-erro {
+    color: var(--status-full);
+    font-size: 0.72rem;
+}
+
+.seta {
+    color: var(--apagado);
+}
+
+/* Utilitária por último de propósito: `.disabled` tem a mesma especificidade
+   de qualquer classe de componente, então só vence quem vier depois. Declarada
+   no meio do arquivo, ela perdia para o `display: flex` do inspetor e o painel
+   da aresta aparecia junto com o do nó. */
 .disabled {
     display: none;
 }
