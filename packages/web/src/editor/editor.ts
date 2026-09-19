@@ -1,4 +1,11 @@
-import { ApiError, buscarEstacionamento, carregarMapa } from '../api';
+import {
+    ApiError,
+    apagarVaga,
+    buscarEstacionamento,
+    carregarMapa,
+    gravarTopologia,
+    gravarVagas,
+} from '../api';
 import type { EstacionamentoWire, VagaWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
 import { criarCena } from '../graph/render/cena';
@@ -6,10 +13,11 @@ import type { Cena, ModoDaCena, Selecao } from '../graph/render/cena';
 import { criarPalco } from '../graph/render/palco';
 import type { Ponto } from '../graph/geometria';
 import { acharNo, pesoNatural } from '../graph/modelo';
-import { comoGrafo, comoTipoDeVaga } from '../graph/tipos';
+import { GRAFO_VAZIO, comoGrafo, comoTipoDeVaga } from '../graph/tipos';
 import type { DadosDaVaga, Papel, TipoDeVaga } from '../graph/tipos';
 import { criarEstado } from './estado';
 import type { Instantaneo } from './estado';
+import { executar, planejar } from './gravacao';
 import { apagarNo } from './tools/apagar';
 import { apagarAresta, ligar } from './tools/aresta';
 import { ferramentaDaTecla, papelDa } from './tools/ferramentas';
@@ -60,6 +68,8 @@ const arestaPara = document.getElementById('arestaPara') as HTMLElement | null;
 const campoPeso = document.getElementById('campoPeso') as HTMLInputElement | null;
 const botaoRecalcular = document.getElementById('recalcular') as HTMLButtonElement | null;
 const dicaPeso = document.getElementById('dicaPeso') as HTMLElement | null;
+const botaoSalvar = document.getElementById('salvar') as HTMLButtonElement | null;
+const avisoDeGravacao = document.getElementById('avisoDeGravacao') as HTMLElement | null;
 
 const ROTULO_DO_PAPEL: Record<Papel, string> = {
     candidate: 'vaga',
@@ -137,18 +147,80 @@ function relatar(erro: unknown): void {
 
 const estado = criarEstado();
 let escolhido: Selecao = null;
+let gravando = false;
 let ferramenta: Ferramenta = 'selecionar';
 
 // Origem pendente da ferramenta de aresta: o primeiro nó clicado espera o
 // segundo. Trocar de ferramenta ou apertar Esc esquece.
 let origemDaAresta: string | null = null;
 
+// O instantâneo que o servidor tem. É contra ele que o planner compara, e é
+// ele que o salvar substitui quando dá certo.
+let doServidor: Instantaneo = { grafo: GRAFO_VAZIO, vagas: [] };
+
+async function salvar(id: number): Promise<void> {
+    if (gravando || !estado.sujo()) return;
+
+    const local = estado.atual();
+    const passos = planejar(doServidor, local);
+    if (passos.length === 0) {
+        // Sujo sem nada a gravar é ida e volta: criar e desfazer deixa a pilha
+        // com passos, mas o conteúdo volta a ser o do servidor.
+        doServidor = local;
+        estado.carregar(local);
+        avisarGravacao('nada a salvar');
+        return;
+    }
+
+    gravando = true;
+    mostrarBotoes();
+    avisarGravacao('');
+
+    try {
+        const nova = await executar(passos, {
+            apagarVaga: async (noId) => {
+                await apagarVaga(id, noId);
+            },
+            topologia: async (grafo) => (await gravarTopologia(id, grafo)).versao,
+            vagas: async (vagas) => {
+                await gravarVagas(id, vagas.map((vaga) => ({
+                    no_id: vaga.noId,
+                    numero: vaga.numero,
+                    tipo: vaga.tipo,
+                    rotacao_graus: vaga.rotacaoGraus,
+                    sensor: vaga.sensor,
+                })));
+            },
+        });
+
+        // O que acabou de subir passa a ser o estado do servidor. `carregar`
+        // zera a pilha, que é o que faz `sujo()` voltar a ser falso.
+        doServidor = local;
+        estado.carregar(local);
+        if (nova !== null && versao) versao.textContent = String(nova);
+        avisarGravacao('salvo');
+    } catch (erro) {
+        // Parou no passo que falhou: o que já subiu ficou, o resto não. Manter
+        // o editor sujo é o certo — ainda há mudança por gravar.
+        if (erro instanceof ApiError && erro.status === 401) {
+            clearSession();
+            bloquear('Sua sessão expirou.', true);
+            return;
+        }
+        avisarGravacao(erro instanceof ApiError ? erro.message : 'não deu para salvar', true);
+    } finally {
+        gravando = false;
+        mostrarBotoes();
+    }
+}
+
 async function abrir(id: number, cena: Cena): Promise<void> {
     try {
         mostrarPatio(await buscarEstacionamento(id));
 
         const mapa = await carregarMapa(id);
-        estado.carregar({ grafo: comoGrafo(mapa.grafo), vagas: mapa.vagas.map(comoDadosDaVaga) });
+        doServidor = { grafo: comoGrafo(mapa.grafo), vagas: mapa.vagas.map(comoDadosDaVaga) };
+        estado.carregar(doServidor);
         cena.enquadrar();
         if (versao) versao.textContent = String(mapa.versao);
     } catch (erro) {
@@ -240,6 +312,16 @@ function mostrarBotoes(): void {
     if (botaoApagar) botaoApagar.disabled = escolhido === null;
     if (botaoDesfazer) botaoDesfazer.disabled = !estado.podeDesfazer();
     if (alterado) alterado.textContent = estado.sujo() ? 'sim' : 'não';
+    if (botaoSalvar) {
+        botaoSalvar.disabled = gravando || !estado.sujo();
+        botaoSalvar.textContent = gravando ? 'Salvando…' : 'Salvar';
+    }
+}
+
+function avisarGravacao(texto: string, erro = false): void {
+    if (!avisoDeGravacao) return;
+    avisoDeGravacao.textContent = texto;
+    avisoDeGravacao.className = erro ? 'aviso aviso-erro' : 'aviso';
 }
 
 function modoDa(ferramenta: Ferramenta): ModoDaCena {
@@ -394,6 +476,7 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
         if (escolhido?.tipo === 'aresta') recalcularPeso(estado, escolhido.from, escolhido.to);
     });
 
+    botaoSalvar?.addEventListener('click', () => void salvar(id));
     botaoApagar?.addEventListener('click', apagarEscolhido);
     botaoDesfazer?.addEventListener('click', () => estado.desfazer());
     for (const botao of barraDeFerramentas?.querySelectorAll('[data-ferramenta]') ?? []) {
@@ -404,6 +487,17 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
     }
 
     window.addEventListener('keydown', (evento: KeyboardEvent) => {
+        // Ctrl+S antes do guarda de formulário: de dentro de um campo o atalho
+        // abriria o "salvar página" do navegador, que é um diálogo modal em
+        // cima do editor. Tirar o foco primeiro confirma a edição pendente,
+        // que só grava no `change`.
+        if ((evento.ctrlKey || evento.metaKey) && evento.key.toLowerCase() === 's') {
+            evento.preventDefault();
+            if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+            void salvar(id);
+            return;
+        }
+
         if (evento.target instanceof HTMLInputElement
             || evento.target instanceof HTMLSelectElement
             || evento.target instanceof HTMLTextAreaElement) return;
