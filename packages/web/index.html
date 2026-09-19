@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu,search,chevron_right,home,grid_view,account_circle,my_location,local_fire_department,bookmark"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu,search,chevron_right,home,grid_view,directions_car,account_circle,my_location,local_fire_department,bookmark"/>
 </head>
 <body>
     <header>
@@ -23,9 +23,7 @@
     <nav class="sidebar-nav disabled">
         <div class="sidebar">
             <button id="close-sidebar-button" aria-label="Fechar menu">X</button>
-            <ul class="nav-list">
-                <li class="nav-item"><a href="">Home</a></li>
-                <li class="nav-item"><a href="">Estacionamentos</a></li>
+            <ul class="nav-list" id="navLista">
                 <li class="nav-item"><a href="">Configurações</a></li>
                 <li class="nav-item"><a href="">Sobre</a></li>
                 <li class="nav-item"><a href="">Contato</a></li>
@@ -120,6 +118,7 @@
                         <div class="links">
                             <a href="#" id="linkForgotPassword">Esqueci minha senha</a>
                             <a href="#" id="linkRegisterClient">Criar conta</a>
+                            <a href="#" id="linkRegisterOwner">Sou um estacionamento</a>
                         </div>
                 </div>
             </div>
@@ -177,6 +176,44 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Criar conta de dono -->
+            <div id="accountRegisterOwner" class="account-view disabled">
+                <div class="accountLogin">
+                    <h2>Cadastrar Estacionamento</h2>
+                    <form id="owner-form">
+                        <div class="form-group">
+                            <label for="nome-dono">Nome do Responsável</label>
+                            <input type="text" id="nome-dono" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email-dono">E-mail</label>
+                            <input type="email" id="email-dono" placeholder="seu.email@gmail.com" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="cpf-dono">CPF</label>
+                            <input type="text" id="cpf-dono" placeholder="000.000.000-00" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="razao-dono">Razão Social</label>
+                            <input type="text" id="razao-dono" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="cnpj-dono">CNPJ</label>
+                            <input type="text" id="cnpj-dono" placeholder="00.000.000/0000-00" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="senha-dono">Senha</label>
+                            <input type="password" id="senha-dono" required />
+                        </div>
+                        <button type="submit" class="btn-primary">Cadastrar Estacionamento</button>
+                    </form>
+                    <div id="owner-msg" class="message"></div>
+                    <div class="links">
+                        <a href="#" id="linkBackToLoginFromOwner">Já tem uma conta? Faça login</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
  
@@ -185,9 +222,9 @@
             <span class="material-symbols-outlined">home</span>
             <span class="nav-label">Home</span>
         </button>
-        <button class="nav-btn" id="navList" aria-label="Categorias">
-            <span class="material-symbols-outlined">grid_view</span>
-            <span class="nav-label">Editor</span>
+        <button class="nav-btn disabled" id="navArea" aria-label="Minha área">
+            <span class="material-symbols-outlined" id="navAreaIcone">grid_view</span>
+            <span class="nav-label" id="navAreaRotulo"></span>
         </button>
         <button class="nav-btn active" id="navConta" aria-label="Conta">
             <span class="material-symbols-outlined">account_circle</span>
@@ -198,6 +235,7 @@
     <script type="module" src="src/script.ts"></script>
     <script type="module" src="src/login.ts"></script>
     <script type="module" src="src/cadastro_cliente.ts"></script>
+    <script type="module" src="src/cadastro_dono.ts"></script>
     <script type="module" src="src/esqueci_senha.ts"></script>
 </body>
 </html>

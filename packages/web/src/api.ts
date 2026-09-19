@@ -81,6 +81,25 @@ export function cadastrarCliente(dados: CadastroCliente): Promise<UsuarioWire> {
     });
 }
 
+export interface CadastroDono extends CadastroCliente {
+    readonly razao: string;
+    readonly cnpj: string;
+}
+
+export interface DonoWire extends UsuarioWire {
+    readonly dono: {
+        readonly razao: string;
+        readonly cnpj: string;
+    };
+}
+
+export function cadastrarDono(dados: CadastroDono): Promise<DonoWire> {
+    return pedir<DonoWire>('/donos', {
+        method: 'POST',
+        body: JSON.stringify(dados),
+    });
+}
+
 export interface EnderecoWire {
     readonly cep: string | null;
     readonly logradouro: string | null;
