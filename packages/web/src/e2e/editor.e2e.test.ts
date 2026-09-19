@@ -94,7 +94,10 @@ async function clicar(x: number, y: number): Promise<string> {
 }
 
 beforeAll(async () => {
-    const carimbo = Date.now().toString().slice(-8);
+    // Sorteado, não tirado do relógio: o CNPJ usa os dois últimos dígitos, e
+    // suítes que levam segundos quase inteiros repetem `ms % 100` — aí o
+    // /donos devolve 409 e o beforeAll inteiro cai.
+    const carimbo = String(Math.floor(Math.random() * 1e8)).padStart(8, '0');
     const email = `e2e${carimbo}@ex.com`;
     await pedir('/donos', {
         nome: 'Teste E2E',

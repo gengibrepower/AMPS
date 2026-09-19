@@ -82,17 +82,47 @@ async function sondar(x: number, y: number): Promise<Ponto> {
     };
 }
 
+interface Area {
+    readonly x: number;
+    readonly y: number;
+    readonly w: number;
+    readonly h: number;
+}
+
+function areaDoPalco(): Promise<Area> {
+    return navegador.js<Area>(`(() => {
+        const r = document.getElementById('palco').getBoundingClientRect();
+        return { x: r.x, y: r.y, w: r.width, h: r.height };
+    })()`);
+}
+
+// Ponto do palco por fração do lado, não por pixel: a barra de ferramentas e o
+// inspetor mudam a largura do canvas, e pixel chutado passa a cair em cima do
+// painel — o cursor não lê nada e a conta vira NaN.
+function naArea(area: Area, fracaoX: number, fracaoY: number): Ponto {
+    return { x: area.x + area.w * fracaoX, y: area.y + area.h * fracaoY };
+}
+
+async function noPalco(fracaoX: number, fracaoY: number): Promise<Ponto> {
+    const alvo = naArea(await areaDoPalco(), fracaoX, fracaoY);
+    return sondar(alvo.x, alvo.y);
+}
+
 // O enquadramento depende do tamanho da janela, então a conversão sai de duas
 // sondagens do próprio cursor em vez de pixel chutado.
 async function calibrar(): Promise<(metros: Ponto) => Ponto> {
-    const a = await sondar(400, 300);
-    const b = await sondar(800, 500);
-    const porMetroX = (800 - 400) / (b.x - a.x);
-    const porMetroY = (500 - 300) / (b.y - a.y);
+    const area = await areaDoPalco();
+    const telaA = naArea(area, 0.3, 0.4);
+    const telaB = naArea(area, 0.7, 0.75);
+
+    const a = await sondar(telaA.x, telaA.y);
+    const b = await sondar(telaB.x, telaB.y);
+    const porMetroX = (telaB.x - telaA.x) / (b.x - a.x);
+    const porMetroY = (telaB.y - telaA.y) / (b.y - a.y);
 
     return (metros) => ({
-        x: 400 + (metros.x - a.x) * porMetroX,
-        y: 300 + (metros.y - a.y) * porMetroY,
+        x: telaA.x + (metros.x - a.x) * porMetroX,
+        y: telaA.y + (metros.y - a.y) * porMetroY,
     });
 }
 
@@ -153,7 +183,10 @@ async function contagem(): Promise<string> {
 }
 
 beforeAll(async () => {
-    const carimbo = Date.now().toString().slice(-8);
+    // Sorteado, não tirado do relógio: o CNPJ usa os dois últimos dígitos, e
+    // suítes que levam segundos quase inteiros repetem `ms % 100` — aí o
+    // /donos devolve 409 e o beforeAll inteiro cai.
+    const carimbo = String(Math.floor(Math.random() * 1e8)).padStart(8, '0');
     const email = `tools${carimbo}@ex.com`;
     await pedir('/donos', {
         nome: 'Teste Ferramentas',
@@ -188,12 +221,12 @@ beforeAll(async () => {
     await navegador.ir(`${WEB}/owner/editor.html?estacionamento=${patio.id}`, 4000);
     paraTela = await calibrar();
 
-    LIVRE = noMetro(await sondar(900, 620));
-    DESTINO = noMetro(await sondar(1100, 620));
-    OUTRO = noMetro(await sondar(430, 620));
+    LIVRE = noMetro(await noPalco(0.70, 0.87));
+    DESTINO = noMetro(await noPalco(0.87, 0.87));
+    OUTRO = noMetro(await noPalco(0.30, 0.87));
 
-    VIA_A = noMetro(await sondar(1156, 414));
-    VIA_B = noMetro(await sondar(1156, 617));
+    VIA_A = noMetro(await noPalco(0.93, 0.59));
+    VIA_B = noMetro(await noPalco(0.93, 0.87));
     const meio = (VIA_A.y + VIA_B.y) / 2;
     NA_IDA = { x: VIA_A.x - 1, y: meio };
     NA_VOLTA = { x: VIA_A.x + 1, y: meio };
