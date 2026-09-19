@@ -6,7 +6,7 @@ que a topologia é JSON e como o Merlian entra.
 
 ## Estado atual
 
-A API do editor está completa e o editor já edita. Falta **salvar**.
+A API do editor está completa e o editor edita e salva. Falta **publicar**.
 
 | rota | o que faz |
 | --- | --- |
@@ -21,8 +21,8 @@ A API do editor está completa e o editor já edita. Falta **salvar**.
 No front, `owner/estacionamentos.html` lista e cria pátios, e
 `owner/editor.html` abre o pátio, desenha o grafo em metros sobre uma grade e
 deixa criar, mover, ligar e apagar nó, com desfazer, mais o inspetor à direita
-para rótulo, número, tipo, rotação e peso. Nada disso persiste: recarregar a
-página perde tudo até a fatia 5. `src/client-map/` continua vazia.
+para rótulo, número, tipo, rotação e peso. O botão Salvar grava na ordem que
+os triggers impõem. `src/client-map/` continua vazia.
 
 ## A ordem de gravação é obrigatória
 
@@ -169,7 +169,7 @@ barra de status com cursor em metros, zoom, `versao` e estado sujo. Atalhos
 
 Fatias: ~~**(1)** Konva e o palco com grade e zoom~~ · ~~**(2)** modelo, render
 e carregamento~~ · ~~**(3)** ferramentas e undo~~ · ~~**(4)** inspetor~~ ·
-**(5)** salvar · **(6)** publicar.
+~~**(5)** salvar~~ · **(6)** publicar.
 
 O carregamento (`GET /mapa`) entrou já na fatia 2, em vez de esperar a 5: a
 rota existe, e assim o editor desenha dado real desde o começo, sem fixture de
@@ -237,23 +237,36 @@ E o que o inspetor não faz: **não sequestra atalho de dentro de campo de
 formulário.** Com o cursor num campo, `Ctrl+Z` é o do navegador, desfazendo a
 digitação. É de propósito, mas surpreende quem espera desfazer o editor.
 
+## O que a fatia 5 decidiu
+
+- **O planner é puro e mora em `editor/gravacao.ts`.** Recebe o instantâneo do
+  servidor e o local, devolve a lista de requisições na ordem dos triggers. O
+  `executar` percorre e **para no primeiro erro**: seguir gravaria metade da
+  mudança.
+- **O lote de vagas leva só as que mudaram**, não o pátio inteiro.
+- **Erro deixa o editor sujo de propósito.** O passo que falhou não subiu, e um
+  novo salvar retoma do ponto certo porque o planner recompara contra o
+  servidor.
+- **Salvar zera a pilha de desfazer.** É o que faz `sujo()` voltar a ser falso,
+  dado como o estado foi desenhado — mas não se desfaz para antes do último
+  salvamento.
+
+### Não há transação cobrindo os três passos
+
+São três requisições, e não dá para ser diferente. Se o `DELETE` passa e o
+`PUT /topologia` falha, o banco fica no meio do caminho: a vaga saiu, o grafo
+não. O editor continua sujo e o salvar seguinte conserta, mas **entre os dois
+o pátio no banco está inconsistente com o que o dono vê**.
+
 ## Por onde continuar
 
-A fatia 5 é a gravação, e o coração dela é o planner da ordem obrigatória lá
-de cima: `DELETE` das vagas que sumiram, `PUT /topologia`, `PUT /vagas` com o
-resto, cada passo só se houve mudança. Função pura que recebe estado do
-servidor + estado local e devolve a lista de requisições — é a peça com mais
-risco do editor e a que mais merece teste.
+A fatia 6 é publicar. A rota já existe e faz o grosso: a RN-11 confere entrada,
+vaga e POI na API, e a alcançabilidade no Merlian. O que falta é o front —
+botão, estado de publicado, e o que fazer com a lista de vagas inalcançáveis
+que o Merlian devolve.
 
-O que já está pago para ela:
-
-- **`estado.sujo()` sai da pilha de desfazer**, não de comparar estrutura, e
-  pilha vazia é literalmente o instantâneo que o servidor mandou. Para o diff
-  do planner, porém, **compare estrutura** — o MySQL reordena as chaves do
-  JSON e comparar string dá falso positivo sempre.
-- **O `sensor` volta intacto**, então o upsert não apaga pareamento.
-- **O editor não produz aresta órfã nem número repetido**, então os 422 do
-  trigger seguem sendo rede de segurança.
+A **RN-05** ("publicar exige metadados básicos") continua sem definição de
+quais metadados contam. Isso é decisão de produto, não de código.
 
 ### Duas armadilhas do Konva
 
@@ -277,6 +290,14 @@ que é NaN chegando no CDP. O jeito certo é sondar o próprio `#cursorX` para
 descobrir a conversão metro↔tela, como faz `ferramentas.e2e.test.ts`.
 
 ### Pendências conhecidas
+
+- **Não há trava otimista na topologia.** O `PUT /estacionamentos/:id/topologia`
+  não recebe `versao`, e o serviço grava por cima. Duas abas editando o mesmo
+  pátio se sobrescrevem em silêncio, e o front não resolve isso sozinho: a rota
+  teria que recusar quando a versão enviada não é a corrente.
+- **O 422 de "vaga ocupada" no `DELETE` não tem cobertura e2e.** Não existe
+  rota que ocupe vaga, então o caminho só foi exercitado por unitário, com
+  gravador de mentira. O editor reporta a mensagem na barra do cabeçalho.
 
 - **Trocar o número entre duas vagas dá 409.** O upsert atualiza linha a linha
   dentro da transação e colide no meio do caminho, mesmo com o estado final
