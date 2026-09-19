@@ -6,7 +6,8 @@ que a topologia é JSON e como o Merlian entra.
 
 ## Estado atual
 
-A API do editor está completa e o editor edita e salva. Falta **publicar**.
+A API do editor está completa e o editor edita, salva e publica. As seis
+fatias fecharam.
 
 | rota | o que faz |
 | --- | --- |
@@ -22,7 +23,8 @@ No front, `owner/estacionamentos.html` lista e cria pátios, e
 `owner/editor.html` abre o pátio, desenha o grafo em metros sobre uma grade e
 deixa criar, mover, ligar e apagar nó, com desfazer, mais o inspetor à direita
 para rótulo, número, tipo, rotação e peso. O botão Salvar grava na ordem que
-os triggers impõem. `src/client-map/` continua vazia.
+os triggers impõem, e o Publicar passa pela RN-11. `src/client-map/` continua
+vazia — a visão do cliente é outro trabalho.
 
 ## A ordem de gravação é obrigatória
 
@@ -169,7 +171,7 @@ barra de status com cursor em metros, zoom, `versao` e estado sujo. Atalhos
 
 Fatias: ~~**(1)** Konva e o palco com grade e zoom~~ · ~~**(2)** modelo, render
 e carregamento~~ · ~~**(3)** ferramentas e undo~~ · ~~**(4)** inspetor~~ ·
-~~**(5)** salvar~~ · **(6)** publicar.
+~~**(5)** salvar~~ · ~~**(6)** publicar~~.
 
 O carregamento (`GET /mapa`) entrou já na fatia 2, em vez de esperar a 5: a
 rota existe, e assim o editor desenha dado real desde o começo, sem fixture de
@@ -258,15 +260,28 @@ São três requisições, e não dá para ser diferente. Se o `DELETE` passa e o
 não. O editor continua sujo e o salvar seguinte conserta, mas **entre os dois
 o pátio no banco está inconsistente com o que o dono vê**.
 
+## O que a fatia 6 decidiu
+
+- **A RN-11 inteira fica na API.** O front só mostra o que voltou — nenhuma
+  regra de publicação foi duplicada aqui.
+- **Publicar grava antes.** A validação corre sobre o que está no banco, não
+  sobre o que está na tela; sem gravar, o dono publicaria um pátio diferente do
+  que está vendo. Se o salvar falhar, não publica. **Despublicar não grava**,
+  porque tirar do ar não valida nada.
+- **O 422 nomeia as vagas num campo próprio**, não só no texto. Foi mudança na
+  API (`UnprocessableError` ganhou `vagas`, como o `campo` do `ConflictError`)
+  para o editor poder realçá-las sem interpretar mensagem em português.
+- **A recusa é pintada no desenho** e some ao mexer no pátio, porque ela falava
+  de um desenho que não é mais este.
+
 ## Por onde continuar
 
-A fatia 6 é publicar. A rota já existe e faz o grosso: a RN-11 confere entrada,
-vaga e POI na API, e a alcançabilidade no Merlian. O que falta é o front —
-botão, estado de publicado, e o que fazer com a lista de vagas inalcançáveis
-que o Merlian devolve.
+O editor acabou. O que sobra é de fora dele:
 
-A **RN-05** ("publicar exige metadados básicos") continua sem definição de
-quais metadados contam. Isso é decisão de produto, não de código.
+- **`src/client-map/` continua vazia** — a visão do cliente, que é onde o
+  `JSON_TABLE` da consulta lá de cima finalmente serve.
+- **RN-05** ("publicar exige metadados básicos") continua sem definição de
+  quais metadados contam. Decisão de produto, não de código.
 
 ### Duas armadilhas do Konva
 
@@ -298,6 +313,12 @@ descobrir a conversão metro↔tela, como faz `ferramentas.e2e.test.ts`.
 - **O 422 de "vaga ocupada" no `DELETE` não tem cobertura e2e.** Não existe
   rota que ocupe vaga, então o caminho só foi exercitado por unitário, com
   gravador de mentira. O editor reporta a mensagem na barra do cabeçalho.
+- **O realce da vaga recusada não tem cobertura e2e.** É pintura no canvas e as
+  suítes leem DOM; foi conferido por captura de tela. O que o e2e prova é que a
+  mensagem nomeia a vaga certa.
+- **`npm run dev` da API não tem watch.** Mexeu em `packages/api`? Derrube e
+  suba de novo, senão o servidor segue com o código antigo — e o sintoma é um
+  campo novo que simplesmente não aparece na resposta.
 
 - **Trocar o número entre duas vagas dá 409.** O upsert atualiza linha a linha
   dentro da transação e colide no meio do caminho, mesmo com o estado final
