@@ -596,3 +596,43 @@ describe('mesmaVaga', () => {
         expect(mesmaVaga(base, { ...base, noId: 's2' })).toBe(false);
     });
 });
+
+describe('criarAresta com vaga: o acesso entra e não sai', () => {
+    const COM_VAGA: Grafo = {
+        nodes: [
+            { id: 't1', role: 'transit', position: { x: 0, y: 0 } },
+            { id: 's1', role: 'candidate', position: { x: 0, y: 6 }, dimensions: { width: 2.5, length: 5 } },
+            { id: 's2', role: 'candidate', position: { x: 4, y: 6 }, dimensions: { width: 2.5, length: 5 } },
+        ],
+        edges: [],
+    };
+
+    it('clicando na via primeiro', () => {
+        expect(criarAresta(COM_VAGA, 't1', 's1').edges).toEqual([
+            { from: 't1', to: 's1', weight: 6 },
+        ]);
+    });
+
+    // O defeito que fazia a publicação recusar: a aresta saía da vaga em vez de
+    // entrar nela, e o Merlian a considerava inalcançável, com razão.
+    it('clicando na vaga primeiro dá o mesmo acesso, não o inverso', () => {
+        expect(criarAresta(COM_VAGA, 's1', 't1').edges).toEqual([
+            { from: 't1', to: 's1', weight: 6 },
+        ]);
+    });
+
+    it('as duas ordens de clique produzem o mesmo grafo', () => {
+        expect(criarAresta(COM_VAGA, 's1', 't1')).toEqual(criarAresta(COM_VAGA, 't1', 's1'));
+    });
+
+    it('não duplica quando o acesso já existe, na ordem que for', () => {
+        const comAcesso = criarAresta(COM_VAGA, 't1', 's1');
+        expect(criarAresta(comAcesso, 's1', 't1')).toBe(comAcesso);
+    });
+
+    it('entre duas vagas não há lado para inverter: segue o clique', () => {
+        expect(criarAresta(COM_VAGA, 's1', 's2').edges).toEqual([
+            { from: 's1', to: 's2', weight: 4 },
+        ]);
+    });
+});

@@ -196,10 +196,13 @@ describe('publicação', () => {
 
     // Publicar valida o que está no banco: com o editor sujo, o botão grava
     // antes, senão o dono publicaria um pátio diferente do que está vendo.
+    // Clica na VAGA primeiro de propósito: o acesso tem de entrar nela venha o
+    // clique de onde vier. Na ordem inversa nascia uma aresta saindo da vaga, e
+    // o Merlian a considerava inalcançável — com razão.
     it('ligar a vaga pelo editor e publicar grava antes', async () => {
         await apertar('KeyA', 'a', 65);
-        await clicarEm(VIA);
         await clicarEm(SOLTA);
+        await clicarEm(VIA);
         await apertar('KeyV', 'v', 86);
         expect(await navegador.texto('#alterado')).toBe('sim');
 

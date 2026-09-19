@@ -205,16 +205,25 @@ export function temAresta(grafo: Grafo, de: string, para: string): boolean {
 // grafo recebido quando não há o que criar, para o chamador saber que não houve
 // mudança sem comparar estrutura.
 export function criarAresta(grafo: Grafo, deId: string, paraId: string): Grafo {
-    const de = acharNo(grafo, deId);
-    const para = acharNo(grafo, paraId);
-    if (de === null || para === null || deId === paraId) return grafo;
+    const escolhido = acharNo(grafo, deId);
+    const outro = acharNo(grafo, paraId);
+    if (escolhido === null || outro === null || deId === paraId) return grafo;
+
+    // O acesso entra na vaga e não sai, venha o clique de onde vier. Sem isto,
+    // clicar na vaga antes da rua cria uma vaga de onde se sai e onde não se
+    // entra — e o Merlian a considera inalcançável, com razão.
+    const inverter = escolhido.role === 'candidate' && outro.role !== 'candidate';
+    const de = inverter ? outro : escolhido;
+    const para = inverter ? escolhido : outro;
 
     const peso = pesoEntre(de, para);
     const novas: Aresta[] = [];
 
-    if (!temAresta(grafo, deId, paraId)) novas.push({ from: deId, to: paraId, weight: peso });
-    if (maoDuplaEntre(de, para) && !temAresta(grafo, paraId, deId)) {
-        novas.push({ from: paraId, to: deId, weight: peso });
+    if (!temAresta(grafo, de.id, para.id)) {
+        novas.push({ from: de.id, to: para.id, weight: peso });
+    }
+    if (maoDuplaEntre(de, para) && !temAresta(grafo, para.id, de.id)) {
+        novas.push({ from: para.id, to: de.id, weight: peso });
     }
     if (novas.length === 0) return grafo;
 
