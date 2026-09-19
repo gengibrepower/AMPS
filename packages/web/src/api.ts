@@ -136,3 +136,46 @@ export interface MapaWire {
 export function carregarMapa(estacionamentoId: number): Promise<MapaWire> {
     return pedirAutenticado<MapaWire>(`/estacionamentos/${estacionamentoId}/mapa`);
 }
+
+// O corpo do PUT de topologia **é** o grafo, na mesma forma que vai para o
+// Merlian: nada de envelope.
+export interface TopologiaResposta {
+    readonly estacionamento_id: number;
+    readonly versao: number;
+}
+
+export function gravarTopologia(
+    estacionamentoId: number,
+    grafo: unknown,
+): Promise<TopologiaResposta> {
+    return pedirAutenticado<TopologiaResposta>(`/estacionamentos/${estacionamentoId}/topologia`, {
+        method: 'PUT',
+        body: JSON.stringify(grafo),
+    });
+}
+
+export interface VagaParaGravar {
+    readonly no_id: string;
+    readonly numero: string;
+    readonly tipo: string;
+    readonly rotacao_graus: number;
+    readonly sensor: string | null;
+}
+
+export function gravarVagas(
+    estacionamentoId: number,
+    vagas: readonly VagaParaGravar[],
+): Promise<readonly VagaWire[]> {
+    return pedirAutenticado<readonly VagaWire[]>(`/estacionamentos/${estacionamentoId}/vagas`, {
+        method: 'PUT',
+        body: JSON.stringify(vagas),
+    });
+}
+
+// 204 sem corpo; o 422 vem quando a vaga não está livre. O `no_id` é escapado
+// porque nada garante que ele seja seguro numa URL: os que o editor gera são,
+// mas pátio importado traz o id que quiser.
+export function apagarVaga(estacionamentoId: number, noId: string): Promise<null> {
+    const caminho = `/estacionamentos/${estacionamentoId}/vagas/${encodeURIComponent(noId)}`;
+    return pedirAutenticado<null>(caminho, { method: 'DELETE' });
+}
