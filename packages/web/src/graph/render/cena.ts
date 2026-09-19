@@ -37,6 +37,7 @@ export interface Cena {
     desenhar(grafo: Grafo, vagas: readonly DadosDaVaga[]): void;
     enquadrar(): void;
     selecionar(selecao: Selecao): void;
+    recusar(ids: readonly string[]): void;
     modo(modo: ModoDaCena): void;
     aoSelecionar(ouvinte: (selecao: Selecao) => void): void;
     aoClicarNoNo(ouvinte: (id: string) => void): void;
@@ -70,12 +71,18 @@ export function criarCena(palco: Palco): Cena {
     let grafo: Grafo = GRAFO_VAZIO;
     let selecao: Selecao = null;
     let arrastavel = true;
+    let recusados: ReadonlySet<string> = new Set();
 
     function aplicarRealce(): void {
         for (const no of grafo.nodes) {
             const grupo = grupos.get(no.id);
             if (grupo !== undefined) {
-                realcarNo(grupo, no.role, selecao?.tipo === 'no' && selecao.id === no.id);
+                realcarNo(
+                    grupo,
+                    no.role,
+                    selecao?.tipo === 'no' && selecao.id === no.id,
+                    recusados.has(no.id),
+                );
             }
         }
         for (const aresta of grafo.edges) {
@@ -299,6 +306,14 @@ export function criarCena(palco: Palco): Cena {
             ajustarPesos();
         },
         selecionar: definirSelecao,
+
+        // O que a publicação recusou fica marcado até a próxima tentativa: num
+        // pátio de 90 vagas, caçar a A-37 pelo número no texto do erro é o que
+        // torna a mensagem inútil.
+        recusar(ids: readonly string[]): void {
+            recusados = new Set(ids);
+            aplicarRealce();
+        },
 
         // O redesenho não é enfeite: enquanto a camada não ouve, o Konva deixa
         // de atualizar o canvas de acerto, e sem isto os nós desenhados nesse

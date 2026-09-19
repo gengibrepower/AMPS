@@ -26,6 +26,12 @@ export const VIA_FUNDO = '#FFFFFF';
 
 export const SELECIONADO = '#1A73E8';
 
+// Vaga que a publicação recusou. Vermelho de traço sobre papel branco, mais
+// escuro que o `--status-full` da interface, que sobre fundo claro clareia
+// demais para um traço de 1 px.
+export const RECUSADO = '#C62828';
+export const RECUSADO_FUNDO = 'rgba(198, 40, 40, 0.14)';
+
 export const PESO = '#3C4249';
 
 // Hachura por tipo de vaga: a tinta do traço continua a mesma, muda o fundo.

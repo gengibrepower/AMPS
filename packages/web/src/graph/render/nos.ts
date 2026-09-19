@@ -9,6 +9,8 @@ import {
     ENTRADA_FUNDO,
     POI,
     POI_FUNDO,
+    RECUSADO,
+    RECUSADO_FUNDO,
     SELECIONADO,
     VAGA_FUNDO,
     VAGA_TRACO,
@@ -116,7 +118,9 @@ export function desenharNo(
         rotation: (angulo * 180) / Math.PI,
         name: no.id,
     });
-    grupo.add(forma(no, dados));
+    const desenho = forma(no, dados);
+    grupo.setAttr('preenchimento', desenho.fill());
+    grupo.add(desenho);
 
     if (dados !== undefined) {
         const numero = new Konva.Text({
@@ -139,9 +143,25 @@ export function mostrarNumeros(grupo: Konva.Group, visivel: boolean): void {
     grupo.findOne<Konva.Text>('.numero')?.visible(visivel);
 }
 
-export function realcarNo(grupo: Konva.Group, papel: Papel, selecionado: boolean): void {
+// Recusado vence a seleção: enquanto a publicação aponta o problema, é ele que
+// o dono precisa enxergar, mesmo com a vaga selecionada.
+export function realcarNo(
+    grupo: Konva.Group,
+    papel: Papel,
+    selecionado: boolean,
+    recusado = false,
+): void {
     const desenho = grupo.findOne<Konva.Shape>('Shape');
     if (desenho === undefined) return;
+
+    if (recusado) {
+        desenho.stroke(RECUSADO);
+        desenho.strokeWidth(ESTILO[papel].espessura + 1.5);
+        desenho.fill(RECUSADO_FUNDO);
+        return;
+    }
+
     desenho.stroke(selecionado ? SELECIONADO : ESTILO[papel].traco);
     desenho.strokeWidth(selecionado ? ESTILO[papel].espessura + 1.5 : ESTILO[papel].espessura);
+    desenho.fill(grupo.getAttr('preenchimento') as string);
 }
