@@ -21,7 +21,10 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
 		return;
 	}
 	if (error instanceof UnprocessableError) {
-		res.status(422).json({ erro: error.message });
+		res.status(422).json({
+			erro: error.message,
+			...(error.vagas.length === 0 ? {} : { vagas: error.vagas }),
+		});
 		return;
 	}
 	if (error instanceof UnavailableError) {

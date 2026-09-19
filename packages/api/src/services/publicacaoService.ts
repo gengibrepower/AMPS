@@ -54,8 +54,11 @@ export class PublicacaoService {
 			alcance.vagasInalcancaveis.includes(vaga.noId),
 		);
 		if (inalcancaveis.length > 0) {
-			const numeros = inalcancaveis.map((vaga) => vaga.numero).join(', ');
-			throw new UnprocessableError(`vagas sem caminho ate uma entrada: ${numeros}`);
+			const numeros = inalcancaveis.map((vaga) => vaga.numero);
+			throw new UnprocessableError(
+				`vagas sem caminho ate uma entrada: ${numeros.join(', ')}`,
+				numeros,
+			);
 		}
 
 		return this.estacionamentos.setPublicado(estacionamento.id, true);

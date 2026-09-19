@@ -19,8 +19,14 @@ export class ForbiddenError extends Error {
 	}
 }
 
+// `vagas` acompanha o motivo quando a recusa aponta para vagas especificas,
+// como faz o `campo` do ConflictError. Sem isso o cliente teria de interpretar
+// a mensagem em portugues para saber quais vagas realcar.
 export class UnprocessableError extends Error {
-	constructor(readonly motivo: string) {
+	constructor(
+		readonly motivo: string,
+		readonly vagas: readonly string[] = [],
+	) {
 		super(motivo);
 		this.name = 'UnprocessableError';
 	}
