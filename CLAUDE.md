@@ -72,6 +72,15 @@ de ponteiro, foco de teclado e o grafo de acerto do Konva, e por isso já me fez
 
 ## Tropeços conhecidos
 
+- **"Não foi possível falar com o servidor" quase nunca é o servidor.** É CORS.
+  A API só aceita a origem de `CORS_ORIGIN`, que por padrão é
+  `http://localhost:5173`. Se a 5173 já estiver ocupada, o vite sobe na 5174
+  calado, o navegador bloqueia toda requisição e o front mostra aquela
+  mensagem — que é o `ApiError(0)` de `api.ts`, o `fetch` nem chegando a
+  responder. Confira a porta na barra de endereço antes de procurar bug no
+  login. Pelo mesmo motivo, `http://127.0.0.1:5173` não serve: o vite escuta em
+  `::1` e a origem seria outra de todo jeito.
+
 - **`test:integration` apaga as 7 tabelas**, inclusive os pátios de teste. Para
   refazer tudo: recarregue o seed de modelos com
   `docker exec -i amps-mysql mysql -uroot -pamps123 < infra/mysql/init/02_seed_modelos.sql`
