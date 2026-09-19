@@ -184,6 +184,12 @@ export function proximoNumeroDeVaga(vagas: readonly DadosDaVaga[]): string {
     return String(proximo);
 }
 
+// Uma casa decimal, em metros. A regra mora aqui porque criar aresta e
+// recalcular peso têm que arredondar igual — em dois lugares elas divergem.
+function pesoEntre(a: No, b: No): number {
+    return Number(distancia(a.position, b.position).toFixed(1));
+}
+
 // Uma ponta que é vaga faz o acesso: entra na vaga e não sai de lá. Entre
 // pontos de via e entrada a rua nasce de mão dupla, que é o que um pátio de
 // verdade tem — e é o que o desenho mostra com 6,4 m em vez de 3,2 m.
@@ -203,7 +209,7 @@ export function criarAresta(grafo: Grafo, deId: string, paraId: string): Grafo {
     const para = acharNo(grafo, paraId);
     if (de === null || para === null || deId === paraId) return grafo;
 
-    const peso = Number(distancia(de.position, para.position).toFixed(1));
+    const peso = pesoEntre(de, para);
     const novas: Aresta[] = [];
 
     if (!temAresta(grafo, deId, paraId)) novas.push({ from: deId, to: paraId, weight: peso });
@@ -221,5 +227,40 @@ export function removerAresta(grafo: Grafo, de: string, para: string): Grafo {
     return {
         nodes: grafo.nodes,
         edges: grafo.edges.filter((aresta) => !(aresta.from === de && aresta.to === para)),
+    };
+}
+
+// O peso que a aresta teria se nascesse agora. Serve para criar e para o
+// recálculo explícito do inspetor — nunca é aplicado sozinho.
+export function pesoNatural(grafo: Grafo, de: string, para: string): number | null {
+    const origem = acharNo(grafo, de);
+    const destino = acharNo(grafo, para);
+    return origem === null || destino === null ? null : pesoEntre(origem, destino);
+}
+
+export function mudarPeso(grafo: Grafo, de: string, para: string, peso: number): Grafo {
+    return {
+        nodes: grafo.nodes,
+        edges: grafo.edges.map((aresta) => (
+            aresta.from === de && aresta.to === para ? { ...aresta, weight: peso } : aresta
+        )),
+    };
+}
+
+// O que se renomeia é o `label`, cosmético e ecoado pelo Merlian; o `id` é
+// imutável porque `vagas.no_id` casa com ele. Rótulo vazio tira a chave em vez
+// de gravar string vazia: o `strictObject` do Merlian não ganha nada com uma
+// chave sem conteúdo.
+export function renomearNo(grafo: Grafo, id: string, rotulo: string): Grafo {
+    const limpo = rotulo.trim();
+    return {
+        nodes: grafo.nodes.map((no) => {
+            if (no.id !== id) return no;
+            if (limpo !== '') return { ...no, label: limpo };
+
+            const { label: _descartado, ...semRotulo } = no;
+            return semRotulo as No;
+        }),
+        edges: grafo.edges,
     };
 }

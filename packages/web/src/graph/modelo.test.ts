@@ -9,11 +9,14 @@ import {
     criarNo,
     docaDaVaga,
     maoDuplaEntre,
+    mudarPeso,
     moverNo,
     proximoId,
+    pesoNatural,
     proximoNumeroDeVaga,
     removerAresta,
     removerNo,
+    renomearNo,
     rotacaoDaVaga,
     temInversa,
     VAGA_PADRAO,
@@ -466,5 +469,59 @@ describe('removerAresta', () => {
 
     it('ignora aresta que não existe', () => {
         expect(removerAresta(GRAFO, 'e1', 's1').edges).toEqual(GRAFO.edges);
+    });
+});
+
+describe('renomearNo', () => {
+    it('põe o rótulo no nó certo', () => {
+        expect(acharNo(renomearNo(GRAFO, 'e1', 'Portaria'), 'e1')?.label).toBe('Portaria');
+    });
+
+    it('apara o espaço em volta', () => {
+        expect(acharNo(renomearNo(GRAFO, 'e1', '  Portaria  '), 'e1')?.label).toBe('Portaria');
+    });
+
+    // Chave sem conteúdo não ajuda ninguém, e o Merlian ecoa o que receber.
+    it('rótulo vazio tira a chave em vez de gravar string vazia', () => {
+        const comRotulo = renomearNo(GRAFO, 'e1', 'Portaria');
+        const semRotulo = acharNo(renomearNo(comRotulo, 'e1', '   '), 'e1');
+        expect(semRotulo === null ? true : 'label' in semRotulo).toBe(false);
+    });
+
+    it('não mexe no id nem no papel', () => {
+        const no = acharNo(renomearNo(GRAFO, 's1', 'Vaga da frente'), 's1');
+        expect(no?.id).toBe('s1');
+        expect(no?.role).toBe('candidate');
+    });
+
+    it('não mexe nas arestas', () => {
+        expect(renomearNo(GRAFO, 'e1', 'Portaria').edges).toBe(GRAFO.edges);
+    });
+});
+
+describe('pesoNatural', () => {
+    it('é a distância entre os nós, com uma casa', () => {
+        expect(pesoNatural(GRAFO, 'e1', 't1')).toBe(3.6);
+    });
+
+    it('não depende do peso gravado', () => {
+        const torto = mudarPeso(GRAFO, 'e1', 't1', 99);
+        expect(pesoNatural(torto, 'e1', 't1')).toBe(3.6);
+    });
+
+    it('devolve null quando falta nó', () => {
+        expect(pesoNatural(GRAFO, 'e1', 'fantasma')).toBeNull();
+    });
+});
+
+describe('mudarPeso', () => {
+    it('troca só o sentido pedido', () => {
+        const novo = mudarPeso(GRAFO, 'e1', 't1', 7.5);
+        expect(novo.edges.find((a) => a.from === 'e1' && a.to === 't1')?.weight).toBe(7.5);
+        expect(novo.edges.find((a) => a.from === 't1' && a.to === 'e1')?.weight).toBe(3.6);
+    });
+
+    it('não mexe nos nós', () => {
+        expect(mudarPeso(GRAFO, 'e1', 't1', 7.5).nodes).toBe(GRAFO.nodes);
     });
 });
