@@ -24,13 +24,18 @@ const MARGEM = 60;
 
 // Arrasto do botão esquerdo só vira deslocamento depois deste tanto de pixel;
 // abaixo disso continua sendo clique, senão selecionar fica impossível.
-const LIMIAR_DO_ARRASTO = 4;
+export const LIMIAR_DO_ARRASTO = 4;
+
+// O mesmo limiar vale para arrastar um nó: os dois dividem o botão esquerdo, e
+// quem decide se aquilo foi clique ou arrasto tem que ser um só.
+Konva.dragDistance = LIMIAR_DO_ARRASTO;
 
 export interface Palco {
     readonly stage: Konva.Stage;
     readonly camadaConteudo: Konva.Layer;
     zoom(): number;
     arrastouAgora(): boolean;
+    emMetros(tela: Ponto): Ponto;
     enquadrar(caixa: Caixa): void;
     aoMoverPonteiro(ouvinte: (metros: Ponto | null) => void): void;
     aoMudarZoom(ouvinte: (zoom: number) => void): void;
@@ -259,6 +264,7 @@ export function criarPalco(container: HTMLDivElement): Palco {
         camadaConteudo,
         zoom: () => stage.scaleX(),
         arrastouAgora,
+        emMetros,
         enquadrar(caixa: Caixa): void {
             const ajuste = ajusteParaCaixa(
                 caixa,

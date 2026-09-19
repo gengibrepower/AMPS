@@ -1,5 +1,6 @@
 import Konva from 'konva';
-import { direcao } from '../geometria';
+import { direcao, encaixarNaTela, encaixarPonto, pixelsParaMetros } from '../geometria';
+import type { Ponto } from '../geometria';
 import {
     acharNo,
     anguloDeDesenho,
@@ -14,6 +15,11 @@ import { desenharAresta, desenharDoca, ladoDoTraco, meioFioEmMetros, realcarAres
 import { desenharNo, mostrarNumeros, realcarNo, recuoDoNo } from './nos';
 import { PESO } from './tinta';
 import type { Palco } from './palco';
+
+// O que a cena faz com o ponteiro. Apontar arrasta; ligar precisa do clique no
+// nó mas não pode mover nada; criar deixa o clique atravessar até o palco,
+// inclusive por cima de um nó, porque quem sabe o metro do ponteiro é o palco.
+export type ModoDaCena = 'selecionar' | 'ligar' | 'criar';
 
 export type Selecao =
     | { readonly tipo: 'no'; readonly id: string }
@@ -31,7 +37,11 @@ export interface Cena {
     desenhar(grafo: Grafo, vagas: readonly DadosDaVaga[]): void;
     enquadrar(): void;
     selecionar(selecao: Selecao): void;
+    modo(modo: ModoDaCena): void;
     aoSelecionar(ouvinte: (selecao: Selecao) => void): void;
+    aoClicarNoNo(ouvinte: (id: string) => void): void;
+    aoArrastarNo(ouvinte: (id: string, metros: Ponto) => void): void;
+    aoClicarNoVazio(ouvinte: (metros: Ponto) => void): void;
 }
 
 function mesmaSelecao(a: Selecao, b: Selecao): boolean {
@@ -53,9 +63,13 @@ export function criarCena(palco: Palco): Cena {
     const setas = new Map<string, Konva.Group>();
     const pesos = new Map<string, Konva.Text>();
     const ouvintes: ((selecao: Selecao) => void)[] = [];
+    const clicados: ((id: string) => void)[] = [];
+    const arrastados: ((id: string, metros: Ponto) => void)[] = [];
+    const vazios: ((metros: Ponto) => void)[] = [];
 
     let grafo: Grafo = GRAFO_VAZIO;
     let selecao: Selecao = null;
+    let arrastavel = true;
 
     function aplicarRealce(): void {
         for (const no of grafo.nodes) {
@@ -82,6 +96,22 @@ export function criarCena(palco: Palco): Cena {
             }
         }
         palco.camadaConteudo.batchDraw();
+    }
+
+    // Desfazer e apagar tiram do grafo o que estava selecionado. Sem avisar
+    // quem ouve, a barra de status fica exibindo o id de um nó que não existe
+    // mais, e o Esc seguinte não conserta: para a cena a seleção já é nula.
+    function esquecerSelecaoMorta(): void {
+        const atual = selecao;
+        if (atual === null) return;
+
+        const vivo = atual.tipo === 'no'
+            ? acharNo(grafo, atual.id) !== null
+            : grafo.edges.some((aresta) => aresta.from === atual.from && aresta.to === atual.to);
+        if (vivo) return;
+
+        selecao = null;
+        for (const ouvinte of ouvintes) ouvinte(selecao);
     }
 
     function definirSelecao(nova: Selecao): void {
@@ -178,8 +208,41 @@ export function criarCena(palco: Palco): Cena {
         docas.set(vaga.id, traco);
     }
 
+    // O arrasto do nó pousa na grade de 1 m. O Konva conversa em coordenada
+    // absoluta de tela, e a conta desce até os metros para o encaixe valer no
+    // modelo, não no pixel.
+    function presoNaGrade(tela: Ponto): Ponto {
+        const stage = palco.stage;
+        return encaixarNaTela(tela, { x: stage.x(), y: stage.y() }, stage.scaleX());
+    }
+
+    function tornarArrastavel(grupo: Konva.Group, id: string): void {
+        grupo.draggable(arrastavel);
+        grupo.dragBoundFunc(presoNaGrade);
+        grupo.on('dragstart', () => definirSelecao({ tipo: 'no', id }));
+        grupo.on('dragend', () => {
+            const metros = encaixarPonto({
+                x: pixelsParaMetros(grupo.x()),
+                y: pixelsParaMetros(grupo.y()),
+            });
+            // Quem ouve redesenha a cena, e o redesenho destrói justamente o
+            // grupo que o Konva acabou de arrastar. Avisar fora do evento deixa
+            // o Konva encerrar o arrasto primeiro; destruí-lo por dentro larga a
+            // animação de arrasto girando e trava a página.
+            setTimeout(() => {
+                for (const ouvinte of arrastados) ouvinte(id, metros);
+            }, 0);
+        });
+    }
+
     palco.stage.on('click', (evento) => {
-        if (evento.target === palco.stage && !palco.arrastouAgora()) definirSelecao(null);
+        if (evento.target !== palco.stage || palco.arrastouAgora()) return;
+        definirSelecao(null);
+
+        const ponteiro = palco.stage.getPointerPosition();
+        if (ponteiro === null) return;
+        const metros = palco.emMetros(ponteiro);
+        for (const ouvinte of vazios) ouvinte(metros);
     });
 
     palco.aoMudarZoom(ajustarPesos);
@@ -204,7 +267,11 @@ export function criarCena(palco: Palco): Cena {
 
             for (const no of grafo.nodes) {
                 const grupo = desenharNo(no, angulos.get(no.id) ?? 0, dados.get(no.id));
-                grupo.on('click', () => definirSelecao({ tipo: 'no', id: no.id }));
+                grupo.on('click', () => {
+                    definirSelecao({ tipo: 'no', id: no.id });
+                    for (const ouvinte of clicados) ouvinte(no.id);
+                });
+                tornarArrastavel(grupo, no.id);
                 camadaDeNos.add(grupo);
                 grupos.set(no.id, grupo);
             }
@@ -214,9 +281,16 @@ export function criarCena(palco: Palco): Cena {
                 desenharUmaDoca(no);
             }
 
-            if (selecao?.tipo === 'no' && acharNo(grafo, selecao.id) === null) selecao = null;
+            esquecerSelecaoMorta();
             ajustarPesos();
             aplicarRealce();
+
+            // Desenho síncrono, não `batchDraw`. Quem decide qual forma recebe
+            // o clique é o canvas de acerto do Konva, e adiá-lo para o próximo
+            // quadro abre uma janela em que o nó já está no modelo mas ainda
+            // não recebe ponteiro. Aqui isso custa pouco: a cena só é refeita
+            // quando o grafo muda, não a cada quadro.
+            palco.camadaConteudo.draw();
         },
         enquadrar(): void {
             const caixa = caixaDoGrafo(grafo, FOLGA_DO_ENQUADRAMENTO);
@@ -225,6 +299,21 @@ export function criarCena(palco: Palco): Cena {
             ajustarPesos();
         },
         selecionar: definirSelecao,
+
+        // O redesenho não é enfeite: enquanto a camada não ouve, o Konva deixa
+        // de atualizar o canvas de acerto, e sem isto os nós desenhados nesse
+        // meio-tempo continuariam invisíveis ao clique quando ela voltar a ouvir.
+        modo(novo: ModoDaCena): void {
+            arrastavel = novo === 'selecionar';
+            for (const grupo of grupos.values()) grupo.draggable(arrastavel);
+
+            palco.camadaConteudo.listening(novo !== 'criar');
+            palco.camadaConteudo.draw();
+        },
+
         aoSelecionar: (ouvinte) => ouvintes.push(ouvinte),
+        aoClicarNoNo: (ouvinte) => clicados.push(ouvinte),
+        aoArrastarNo: (ouvinte) => arrastados.push(ouvinte),
+        aoClicarNoVazio: (ouvinte) => vazios.push(ouvinte),
     };
 }
