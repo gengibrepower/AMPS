@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/editor.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back,arrow_selector_tool,delete,local_parking,login,polyline,push_pin,route,undo"/>
 </head>
 <body>
     <header>
@@ -22,6 +22,47 @@
     </header>
 
     <main>
+        <nav id="ferramentas" class="ferramentas disabled" aria-label="Ferramentas">
+            <button type="button" class="ferramenta" data-ferramenta="selecionar" aria-pressed="true" title="Selecionar (V)">
+                <span class="material-symbols-outlined">arrow_selector_tool</span>
+                <span class="atalho">V</span>
+            </button>
+            <button type="button" class="ferramenta" data-ferramenta="candidate" aria-pressed="false" title="Vaga (1)">
+                <span class="material-symbols-outlined">local_parking</span>
+                <span class="atalho">1</span>
+            </button>
+            <button type="button" class="ferramenta" data-ferramenta="source" aria-pressed="false" title="Entrada (2)">
+                <span class="material-symbols-outlined">login</span>
+                <span class="atalho">2</span>
+            </button>
+            <button type="button" class="ferramenta" data-ferramenta="transit" aria-pressed="false" title="Via (3)">
+                <span class="material-symbols-outlined">route</span>
+                <span class="atalho">3</span>
+            </button>
+            <button type="button" class="ferramenta" data-ferramenta="attractor" aria-pressed="false" title="POI (4)">
+                <span class="material-symbols-outlined">push_pin</span>
+                <span class="atalho">4</span>
+            </button>
+
+            <span class="separador"></span>
+
+            <button type="button" class="ferramenta" data-ferramenta="aresta" aria-pressed="false" title="Ligar nós (A)">
+                <span class="material-symbols-outlined">polyline</span>
+                <span class="atalho">A</span>
+            </button>
+
+            <span class="separador"></span>
+
+            <button type="button" id="apagar" class="ferramenta" data-acao="apagar" title="Apagar (Del)" disabled>
+                <span class="material-symbols-outlined">delete</span>
+                <span class="atalho">Del</span>
+            </button>
+            <button type="button" id="desfazer" class="ferramenta" data-acao="desfazer" title="Desfazer (Ctrl+Z)" disabled>
+                <span class="material-symbols-outlined">undo</span>
+                <span class="atalho">Z</span>
+            </button>
+        </nav>
+
         <section id="quadro" class="quadro">
             <div id="palco" class="palco"></div>
         </section>
@@ -38,7 +79,8 @@
         <span class="leitura">zoom <span id="nivelZoom" class="numero">100%</span></span>
         <span class="leitura">versão <span id="versao" class="numero curto">—</span></span>
         <span class="leitura">seleção <span id="selecao" class="numero largo">—</span></span>
-        <span class="dica">arraste o fundo para mover · roda ou pinça dá zoom</span>
+        <span class="leitura">alterado <span id="alterado" class="numero curto">não</span></span>
+        <span class="dica">A liga dois nós em sequência · arraste o nó para mover · Del apaga · Ctrl+Z desfaz</span>
     </footer>
 
     <script type="module" src="../src/editor/editor.ts"></script>

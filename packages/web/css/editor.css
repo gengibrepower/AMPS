@@ -78,13 +78,70 @@ header {
 
 main {
     position: relative;
+    display: flex;
     flex: 1;
     min-height: 0;
 }
 
-.quadro {
+.ferramentas {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+    width: 54px;
+    padding: 8px 6px;
+    border-right: 1px solid var(--linha);
+}
+
+.ferramenta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: none;
+    color: var(--apagado);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.ferramenta:hover:not(:disabled) {
+    background-color: var(--search-bg);
+    color: var(--text-primary);
+}
+
+.ferramenta[aria-pressed="true"] {
+    border-color: var(--btn-green-border);
+    background-color: var(--btn-green-bg);
+    color: var(--text-primary);
+}
+
+.ferramenta:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+/* O atalho fica junto do ícone: é como se aprende a largar o mouse. */
+.atalho {
     position: absolute;
-    inset: 0;
+    right: 3px;
+    bottom: 1px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.58rem;
+}
+
+.separador {
+    height: 1px;
+    margin: 6px 4px;
+    background-color: var(--linha);
+}
+
+.quadro {
+    position: relative;
+    flex: 1;
+    min-width: 0;
 }
 
 /* O canvas é papel: fundo claro sob a interface escura, como a planta impressa. */
