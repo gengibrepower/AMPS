@@ -369,6 +369,27 @@ main {
     cursor: default;
 }
 
+.botao-publicar {
+    border: 1px solid var(--linha);
+    border-radius: var(--radius-pill);
+    padding: 6px 16px;
+    background: none;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.botao-publicar:hover:not(:disabled) {
+    background-color: var(--search-bg);
+}
+
+.botao-publicar:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
 /* Utilitária por último de propósito: `.disabled` tem a mesma especificidade
    de qualquer classe de componente, então só vence quem vier depois. Declarada
    no meio do arquivo, ela perdia para o `display: flex` do inspetor e o painel

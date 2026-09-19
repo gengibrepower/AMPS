@@ -3,8 +3,10 @@ import {
     apagarVaga,
     buscarEstacionamento,
     carregarMapa,
+    despublicar,
     gravarTopologia,
     gravarVagas,
+    publicar,
 } from '../api';
 import type { EstacionamentoWire, VagaWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
@@ -70,6 +72,7 @@ const botaoRecalcular = document.getElementById('recalcular') as HTMLButtonEleme
 const dicaPeso = document.getElementById('dicaPeso') as HTMLElement | null;
 const botaoSalvar = document.getElementById('salvar') as HTMLButtonElement | null;
 const avisoDeGravacao = document.getElementById('avisoDeGravacao') as HTMLElement | null;
+const botaoPublicar = document.getElementById('publicar') as HTMLButtonElement | null;
 
 const ROTULO_DO_PAPEL: Record<Papel, string> = {
     candidate: 'vaga',
@@ -109,11 +112,21 @@ function bloquear(texto: string, comSaida = false): void {
     if (nomeDoPatio) nomeDoPatio.textContent = 'Editor de pátio';
 }
 
+function mostrarEtiqueta(): void {
+    if (etiqueta) {
+        etiqueta.textContent = publicado ? 'Publicado' : 'Rascunho';
+        etiqueta.className = publicado ? 'etiqueta etiqueta-publicado' : 'etiqueta';
+    }
+    if (botaoPublicar) {
+        botaoPublicar.disabled = gravando;
+        botaoPublicar.textContent = publicado ? 'Despublicar' : 'Publicar';
+    }
+}
+
 function mostrarPatio(estacionamento: EstacionamentoWire): void {
     if (nomeDoPatio) nomeDoPatio.textContent = estacionamento.nome;
-    if (!etiqueta) return;
-    etiqueta.textContent = estacionamento.publicado ? 'Publicado' : 'Rascunho';
-    etiqueta.className = estacionamento.publicado ? 'etiqueta etiqueta-publicado' : 'etiqueta';
+    publicado = estacionamento.publicado;
+    mostrarEtiqueta();
 }
 
 function comoDadosDaVaga(vaga: VagaWire): DadosDaVaga {
@@ -148,6 +161,7 @@ function relatar(erro: unknown): void {
 const estado = criarEstado();
 let escolhido: Selecao = null;
 let gravando = false;
+let publicado = false;
 let ferramenta: Ferramenta = 'selecionar';
 
 // Origem pendente da ferramenta de aresta: o primeiro nó clicado espera o
@@ -212,6 +226,54 @@ async function salvar(id: number): Promise<void> {
         gravando = false;
         mostrarBotoes();
     }
+}
+
+// Publicar valida o que está **no banco**, não o que está na tela: sem gravar
+// antes, o dono publicaria um pátio diferente do que está vendo. Se o salvar
+// falhar, não publica — o erro dele já foi mostrado.
+async function publicarOuDespublicar(id: number, cena: Cena): Promise<void> {
+    if (gravando) return;
+
+    if (!publicado && estado.sujo()) {
+        await salvar(id);
+        if (estado.sujo()) return;
+    }
+
+    gravando = true;
+    mostrarBotoes();
+    avisarGravacao('');
+    cena.recusar([]);
+
+    try {
+        const atual = publicado ? await despublicar(id) : await publicar(id);
+        publicado = atual.publicado;
+        avisarGravacao(publicado ? 'publicado' : 'despublicado');
+    } catch (erro) {
+        if (erro instanceof ApiError && erro.status === 401) {
+            clearSession();
+            bloquear('Sua sessão expirou.', true);
+            return;
+        }
+        if (erro instanceof ApiError) {
+            // A RN-11 recusa nomeando as vagas sem caminho. Marcá-las no
+            // desenho é o que transforma a mensagem em algo acionável.
+            cena.recusar(idsDasVagas(erro.vagas));
+            avisarGravacao(erro.message, true);
+        } else {
+            avisarGravacao('não deu para publicar', true);
+        }
+    } finally {
+        gravando = false;
+        mostrarBotoes();
+    }
+}
+
+// O erro nomeia vaga por `numero`; a cena conhece nó por `id`.
+function idsDasVagas(numeros: readonly string[]): readonly string[] {
+    const procurados = new Set(numeros);
+    return estado.vagas()
+        .filter((vaga) => procurados.has(vaga.numero))
+        .map((vaga) => vaga.noId);
 }
 
 async function abrir(id: number, cena: Cena): Promise<void> {
@@ -316,6 +378,7 @@ function mostrarBotoes(): void {
         botaoSalvar.disabled = gravando || !estado.sujo();
         botaoSalvar.textContent = gravando ? 'Salvando…' : 'Salvar';
     }
+    mostrarEtiqueta();
 }
 
 function avisarGravacao(texto: string, erro = false): void {
@@ -356,6 +419,9 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
     inspetor?.classList.remove('disabled');
 
     estado.aoMudar((instantaneo: Instantaneo) => {
+        // Mexer no pátio invalida a recusa anterior: ela falava de um desenho
+        // que não é mais este.
+        cena.recusar([]);
         cena.desenhar(instantaneo.grafo, instantaneo.vagas);
         mostrarSelecao();
         mostrarBotoes();
@@ -477,6 +543,7 @@ if (getSession() === null || usuarioAtual()?.tipo_conta !== 'dono') {
     });
 
     botaoSalvar?.addEventListener('click', () => void salvar(id));
+    botaoPublicar?.addEventListener('click', () => void publicarOuDespublicar(id, cena));
     botaoApagar?.addEventListener('click', apagarEscolhido);
     botaoDesfazer?.addEventListener('click', () => estado.desfazer());
     for (const botao of barraDeFerramentas?.querySelectorAll('[data-ferramenta]') ?? []) {
