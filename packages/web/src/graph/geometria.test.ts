@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
     ajusteParaCaixa,
     direcao,
+    distancia,
+    encaixar,
+    encaixarNaTela,
+    encaixarPonto,
     pontosAoLongo,
     projecaoNoSegmento,
     faixaVisivel,
@@ -160,5 +164,62 @@ describe('projecaoNoSegmento', () => {
 
     it('devolve a própria ponta para segmento de comprimento zero', () => {
         expect(projecaoNoSegmento({ x: 2, y: 2 }, de, de)).toEqual(de);
+    });
+});
+
+describe('encaixar', () => {
+    it('leva ao metro mais perto', () => {
+        expect(encaixar(7.4)).toBe(7);
+        expect(encaixar(7.6)).toBe(8);
+    });
+
+    it('arredonda para longe do zero nos negativos, como no positivo', () => {
+        expect(encaixar(-7.6)).toBe(-8);
+    });
+
+    it('aceita passo menor que o metro', () => {
+        expect(encaixar(7.4, 0.5)).toBe(7.5);
+    });
+
+    it('não mexe no valor com passo inválido', () => {
+        expect(encaixar(7.4, 0)).toBe(7.4);
+    });
+
+    it('encaixa os dois eixos do ponto', () => {
+        expect(encaixarPonto({ x: 2.2, y: -0.7 })).toEqual({ x: 2, y: -1 });
+    });
+});
+
+describe('distancia', () => {
+    it('mede o triângulo 3-4-5', () => {
+        expect(distancia({ x: 1, y: 1 }, { x: 4, y: 5 })).toBe(5);
+    });
+});
+
+describe('encaixarNaTela', () => {
+    const origem = { x: 80, y: 80 };
+
+    it('devolve a tela do metro inteiro mais perto', () => {
+        // 1 m são 20 px; com zoom 2, 41 px além da origem é 1,025 m.
+        expect(encaixarNaTela({ x: origem.x + 41, y: origem.y }, origem, 2)).toEqual({
+            x: origem.x + 40,
+            y: origem.y,
+        });
+    });
+
+    it('encaixa em metro, não em pixel: o passo na tela acompanha o zoom', () => {
+        const perto = encaixarNaTela({ x: origem.x + 141, y: origem.y }, origem, 4);
+        const longe = encaixarNaTela({ x: origem.x + 141, y: origem.y }, origem, 1);
+        expect(perto.x - origem.x).toBe(160);
+        expect(longe.x - origem.x).toBe(140);
+    });
+
+    it('vale à esquerda da origem', () => {
+        expect(encaixarNaTela({ x: origem.x - 41, y: origem.y }, origem, 2).x).toBe(origem.x - 40);
+    });
+
+    it('não divide por zero quando o palco ainda não tem escala', () => {
+        const tela = { x: 5, y: 5 };
+        expect(encaixarNaTela(tela, origem, 0)).toEqual(tela);
     });
 });

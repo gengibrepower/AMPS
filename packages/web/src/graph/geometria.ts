@@ -164,3 +164,41 @@ export function projecaoNoSegmento(ponto: Ponto, de: Ponto, para: Ponto): Ponto 
     const preso = Math.min(1, Math.max(0, t));
     return { x: de.x + dx * preso, y: de.y + dy * preso };
 }
+
+// Passo do encaixe, em metros. Sem ele não se encosta uma vaga no meio-fio na
+// mão: 2,5 m de largura pedem precisão que o pixel não dá.
+export const PASSO_DA_GRADE = 1;
+
+export function encaixar(metros: number, passo = PASSO_DA_GRADE): number {
+    return passo <= 0 ? metros : Math.round(metros / passo) * passo;
+}
+
+export function encaixarPonto(ponto: Ponto, passo = PASSO_DA_GRADE): Ponto {
+    return { x: encaixar(ponto.x, passo), y: encaixar(ponto.y, passo) };
+}
+
+export function distancia(a: Ponto, b: Ponto): number {
+    return Math.hypot(b.x - a.x, b.y - a.y);
+}
+
+// Onde o arrasto pode pousar na tela. O Konva entrega e espera coordenada
+// absoluta, então a conta desce até os metros, encaixa e volta pelo mesmo
+// caminho — é o que mantém o encaixe em metros e não em pixel de tela.
+export function encaixarNaTela(
+    tela: Ponto,
+    origem: Ponto,
+    zoom: number,
+    passo = PASSO_DA_GRADE,
+): Ponto {
+    if (zoom === 0) return tela;
+
+    const preso = encaixarPonto({
+        x: pixelsParaMetros((tela.x - origem.x) / zoom),
+        y: pixelsParaMetros((tela.y - origem.y) / zoom),
+    }, passo);
+
+    return {
+        x: metrosParaPixels(preso.x) * zoom + origem.x,
+        y: metrosParaPixels(preso.y) * zoom + origem.y,
+    };
+}

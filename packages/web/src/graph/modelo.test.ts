@@ -5,8 +5,18 @@ import {
     anguloDeDesenho,
     caixaDoGrafo,
     chaveDaAresta,
+    criarAresta,
+    criarNo,
     docaDaVaga,
+    maoDuplaEntre,
+    moverNo,
+    proximoId,
+    proximoNumeroDeVaga,
+    removerAresta,
+    removerNo,
+    rotacaoDaVaga,
     temInversa,
+    VAGA_PADRAO,
 } from './modelo';
 import type { DadosDaVaga, Grafo, No } from './tipos';
 
@@ -232,5 +242,227 @@ describe('anguloDeDesenho', () => {
     it('cai em zero quando não há vaga cadastrada nem rua', () => {
         const solta: Grafo = { nodes: [posicao], edges: [] };
         expect(anguloDeDesenho(solta, posicao, undefined)).toBe(0);
+    });
+});
+
+describe('proximoId', () => {
+    it('usa um prefixo por papel', () => {
+        expect(proximoId(GRAFO, 'candidate')).toBe('s2');
+        expect(proximoId(GRAFO, 'source')).toBe('e2');
+        expect(proximoId(GRAFO, 'transit')).toBe('t2');
+        expect(proximoId(GRAFO, 'attractor')).toBe('p1');
+    });
+
+    it('continua do maior sufixo, não do total', () => {
+        const comBuraco: Grafo = {
+            nodes: [
+                { id: 't1', role: 'transit', position: { x: 0, y: 0 } },
+                { id: 't7', role: 'transit', position: { x: 1, y: 0 } },
+            ],
+            edges: [],
+        };
+        expect(proximoId(comBuraco, 'transit')).toBe('t8');
+    });
+
+    it('não repete id quando o pátio veio com nome fora do padrão', () => {
+        const semeado: Grafo = {
+            nodes: [
+                { id: 's1', role: 'candidate', position: { x: 0, y: 0 }, dimensions: { width: 2.5, length: 5 } },
+                { id: 'v001', role: 'candidate', position: { x: 3, y: 0 }, dimensions: { width: 2.5, length: 5 } },
+            ],
+            edges: [],
+        };
+        const novo = proximoId(semeado, 'candidate');
+        expect(semeado.nodes.some((no) => no.id === novo)).toBe(false);
+    });
+});
+
+describe('criarNo', () => {
+    it('só a vaga nasce com dimensions, como no discriminatedUnion do Merlian', () => {
+        const vaga = criarNo(GRAFO, 'candidate', { x: 9, y: 2 }).no;
+        const via = criarNo(GRAFO, 'transit', { x: 9, y: 2 }).no;
+        expect(vaga.role === 'candidate' && vaga.dimensions).toEqual(VAGA_PADRAO);
+        expect('dimensions' in via).toBe(false);
+    });
+
+    it('não mexe no grafo que recebeu', () => {
+        const antes = GRAFO.nodes.length;
+        expect(criarNo(GRAFO, 'transit', { x: 9, y: 2 }).grafo.nodes).toHaveLength(antes + 1);
+        expect(GRAFO.nodes).toHaveLength(antes);
+    });
+
+    it('não inventa aresta', () => {
+        expect(criarNo(GRAFO, 'transit', { x: 9, y: 2 }).grafo.edges).toBe(GRAFO.edges);
+    });
+});
+
+describe('moverNo', () => {
+    it('leva o nó para a posição nova', () => {
+        expect(acharNo(moverNo(GRAFO, 's1', { x: 8, y: 1 }), 's1')?.position).toEqual({ x: 8, y: 1 });
+    });
+
+    it('não recalcula o peso da aresta: recálculo é ação explícita', () => {
+        const movido = moverNo(GRAFO, 's1', { x: 40, y: 40 });
+        expect(movido.edges).toEqual(GRAFO.edges);
+    });
+
+    it('a vaga continua vaga depois de mover', () => {
+        const vaga = acharNo(moverNo(GRAFO, 's1', { x: 8, y: 1 }), 's1');
+        expect(vaga?.role === 'candidate' && vaga.dimensions).toEqual({ width: 2.5, length: 5 });
+    });
+
+    it('ignora id que não existe', () => {
+        expect(moverNo(GRAFO, 'fantasma', { x: 1, y: 1 }).nodes).toEqual(GRAFO.nodes);
+    });
+});
+
+describe('removerNo', () => {
+    it('leva junto as arestas que tocavam o nó', () => {
+        const semVia = removerNo(GRAFO, 't1');
+        expect(semVia.nodes.map((no) => no.id)).toEqual(['e1', 's1']);
+        expect(semVia.edges).toHaveLength(0);
+    });
+
+    it('não deixa aresta apontando para nó que não existe', () => {
+        const sobrou = removerNo(GRAFO, 's1');
+        const ids = new Set(sobrou.nodes.map((no) => no.id));
+        expect(sobrou.edges.every((a) => ids.has(a.from) && ids.has(a.to))).toBe(true);
+    });
+
+    it('ignora id que não existe', () => {
+        expect(removerNo(GRAFO, 'fantasma')).toEqual(GRAFO);
+    });
+});
+
+describe('rotacaoDaVaga', () => {
+    it('devolve grau inteiro em [0, 360), como a coluna do banco', () => {
+        const vaga = acharNo(GRAFO, 's1')!;
+        const graus = rotacaoDaVaga(GRAFO, vaga);
+        expect(Number.isInteger(graus)).toBe(true);
+        expect(graus).toBeGreaterThanOrEqual(0);
+        expect(graus).toBeLessThan(360);
+    });
+
+    it('concorda com o ângulo deduzido pela rua', () => {
+        const vaga = acharNo(GRAFO, 's1')!;
+        const esperado = ((Math.round((anguloDaVaga(GRAFO, vaga)! * 180) / Math.PI) % 360) + 360) % 360;
+        expect(rotacaoDaVaga(GRAFO, vaga)).toBe(esperado);
+    });
+
+    it('cai em zero quando não há rua para deduzir', () => {
+        const vaga = acharNo(GRAFO, 's1')!;
+        expect(rotacaoDaVaga({ nodes: [vaga], edges: [] }, vaga)).toBe(0);
+    });
+});
+
+describe('proximoNumeroDeVaga', () => {
+    const vaga = (numero: string): DadosDaVaga => ({
+        noId: numero,
+        numero,
+        tipo: 'comum',
+        rotacaoGraus: 0,
+    });
+
+    it('começa no 1 num pátio sem vaga', () => {
+        expect(proximoNumeroDeVaga([])).toBe('1');
+    });
+
+    it('não colide com número já gravado', () => {
+        expect(proximoNumeroDeVaga([vaga('1'), vaga('3')])).toBe('4');
+        expect(proximoNumeroDeVaga([vaga('2'), vaga('3')])).toBe('4');
+    });
+
+    it('convive com a numeração por setor do pátio semeado', () => {
+        expect(proximoNumeroDeVaga([vaga('S-01'), vaga('S-02')])).toBe('3');
+    });
+});
+
+describe('maoDuplaEntre', () => {
+    const via = acharNo(GRAFO, 't1')!;
+    const entrada = acharNo(GRAFO, 'e1')!;
+    const vaga = acharNo(GRAFO, 's1')!;
+
+    it('rua entre via e entrada é de mão dupla', () => {
+        expect(maoDuplaEntre(via, entrada)).toBe(true);
+    });
+
+    it('acesso de vaga é de mão única, dos dois lados', () => {
+        expect(maoDuplaEntre(via, vaga)).toBe(false);
+        expect(maoDuplaEntre(vaga, via)).toBe(false);
+    });
+});
+
+describe('criarAresta', () => {
+    const SOLTO: Grafo = {
+        nodes: [
+            { id: 't1', role: 'transit', position: { x: 0, y: 0 } },
+            { id: 't2', role: 'transit', position: { x: 3, y: 4 } },
+            { id: 's1', role: 'candidate', position: { x: 0, y: 6 }, dimensions: { width: 2.5, length: 5 } },
+        ],
+        edges: [],
+    };
+
+    it('liga duas vias nos dois sentidos', () => {
+        expect(criarAresta(SOLTO, 't1', 't2').edges).toEqual([
+            { from: 't1', to: 't2', weight: 5 },
+            { from: 't2', to: 't1', weight: 5 },
+        ]);
+    });
+
+    it('o acesso da vaga entra e não sai', () => {
+        expect(criarAresta(SOLTO, 't1', 's1').edges).toEqual([{ from: 't1', to: 's1', weight: 6 }]);
+    });
+
+    it('o peso é a distância euclidiana, com uma casa', () => {
+        const obliquo: Grafo = {
+            nodes: [
+                { id: 't1', role: 'transit', position: { x: 0, y: 0 } },
+                { id: 't2', role: 'transit', position: { x: 1, y: 1 } },
+            ],
+            edges: [],
+        };
+        expect(criarAresta(obliquo, 't1', 't2').edges[0]?.weight).toBe(1.4);
+    });
+
+    it('não duplica aresta que já existe', () => {
+        const uma = criarAresta(SOLTO, 't1', 't2');
+        expect(criarAresta(uma, 't1', 't2')).toBe(uma);
+    });
+
+    // Completar a volta é como se transforma mão única em mão dupla.
+    it('completa a volta que faltava sem repetir a ida', () => {
+        const so_ida: Grafo = { nodes: SOLTO.nodes, edges: [{ from: 't1', to: 't2', weight: 5 }] };
+        expect(criarAresta(so_ida, 't2', 't1').edges).toEqual([
+            { from: 't1', to: 't2', weight: 5 },
+            { from: 't2', to: 't1', weight: 5 },
+        ]);
+    });
+
+    it('não liga um nó nele mesmo', () => {
+        expect(criarAresta(SOLTO, 't1', 't1')).toBe(SOLTO);
+    });
+
+    it('ignora nó que não existe', () => {
+        expect(criarAresta(SOLTO, 't1', 'fantasma')).toBe(SOLTO);
+    });
+});
+
+describe('removerAresta', () => {
+    it('tira um sentido só e deixa a rua de mão única', () => {
+        const dupla = criarAresta(
+            { nodes: GRAFO.nodes, edges: [] },
+            'e1',
+            't1',
+        );
+        const unica = removerAresta(dupla, 't1', 'e1');
+        expect(unica.edges).toEqual([{ from: 'e1', to: 't1', weight: 3.6 }]);
+    });
+
+    it('não mexe nos nós', () => {
+        expect(removerAresta(GRAFO, 'e1', 't1').nodes).toBe(GRAFO.nodes);
+    });
+
+    it('ignora aresta que não existe', () => {
+        expect(removerAresta(GRAFO, 'e1', 's1').edges).toEqual(GRAFO.edges);
     });
 });
