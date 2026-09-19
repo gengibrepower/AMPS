@@ -1,4 +1,4 @@
-import { acharNo, mudarPeso, pesoNatural, renomearNo } from '../../graph/modelo';
+import { acharNo, mesmaVaga, mudarPeso, pesoNatural, renomearNo } from '../../graph/modelo';
 import type { DadosDaVaga } from '../../graph/tipos';
 import type { Estado } from '../estado';
 
@@ -18,15 +18,6 @@ export function numeroLivre(
     numero: string,
 ): boolean {
     return !vagas.some((vaga) => vaga.noId !== noId && vaga.numero === numero);
-}
-
-// Campo a campo, o sensor incluído: comparar só o que o inspetor edita faria
-// uma troca de sensor passar por "nada mudou" e sumir sem aviso.
-function mesmaVaga(a: DadosDaVaga, b: DadosDaVaga): boolean {
-    return a.numero === b.numero
-        && a.tipo === b.tipo
-        && a.rotacaoGraus === b.rotacaoGraus
-        && a.sensor === b.sensor;
 }
 
 export function atualizarVaga(estado: Estado, nova: DadosDaVaga): boolean {

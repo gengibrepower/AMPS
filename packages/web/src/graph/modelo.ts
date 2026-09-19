@@ -264,3 +264,45 @@ export function renomearNo(grafo: Grafo, id: string, rotulo: string): Grafo {
         edges: grafo.edges,
     };
 }
+
+// Comparação estrutural, não textual. O MySQL reordena as chaves do JSON ao
+// guardar — `edges` antes de `nodes`, `to` antes de `from` — e comparar string
+// daria "não salvo" para sempre. A ordem dos arrays também não conta: o que
+// importa é o conjunto.
+function mesmoNo(a: No, b: No): boolean {
+    if (a.role !== b.role) return false;
+    if (a.position.x !== b.position.x || a.position.y !== b.position.y) return false;
+    if ((a.label ?? '') !== (b.label ?? '')) return false;
+
+    if (a.role === 'candidate' && b.role === 'candidate') {
+        return a.dimensions.width === b.dimensions.width
+            && a.dimensions.length === b.dimensions.length;
+    }
+    return true;
+}
+
+export function mesmoGrafo(a: Grafo, b: Grafo): boolean {
+    if (a.nodes.length !== b.nodes.length || a.edges.length !== b.edges.length) return false;
+
+    const nos = new Map(b.nodes.map((no) => [no.id, no]));
+    for (const no of a.nodes) {
+        const outro = nos.get(no.id);
+        if (outro === undefined || !mesmoNo(no, outro)) return false;
+    }
+
+    const pesos = new Map(b.edges.map((aresta) => [chaveDaAresta(aresta), aresta.weight]));
+    for (const aresta of a.edges) {
+        if (pesos.get(chaveDaAresta(aresta)) !== aresta.weight) return false;
+    }
+    return true;
+}
+
+// Campo a campo, o sensor incluído: o `PUT /vagas` é upsert da linha inteira,
+// então uma diferença que passe despercebida vira dado perdido no banco.
+export function mesmaVaga(a: DadosDaVaga, b: DadosDaVaga): boolean {
+    return a.noId === b.noId
+        && a.numero === b.numero
+        && a.tipo === b.tipo
+        && a.rotacaoGraus === b.rotacaoGraus
+        && a.sensor === b.sensor;
+}

@@ -9,6 +9,8 @@ import {
     criarNo,
     docaDaVaga,
     maoDuplaEntre,
+    mesmaVaga,
+    mesmoGrafo,
     mudarPeso,
     moverNo,
     proximoId,
@@ -523,5 +525,74 @@ describe('mudarPeso', () => {
 
     it('não mexe nos nós', () => {
         expect(mudarPeso(GRAFO, 'e1', 't1', 7.5).nodes).toBe(GRAFO.nodes);
+    });
+});
+
+describe('mesmoGrafo', () => {
+    it('reconhece o grafo idêntico', () => {
+        expect(mesmoGrafo(GRAFO, GRAFO)).toBe(true);
+    });
+
+    // É o caso que o MySQL cria: mesmo conteúdo, chaves e arrays em outra ordem.
+    it('ordem dos arrays não conta', () => {
+        const virado: Grafo = {
+            nodes: [...GRAFO.nodes].reverse(),
+            edges: [...GRAFO.edges].reverse(),
+        };
+        expect(mesmoGrafo(GRAFO, virado)).toBe(true);
+    });
+
+    it('vê posição diferente', () => {
+        expect(mesmoGrafo(GRAFO, moverNo(GRAFO, 's1', { x: 99, y: 99 }))).toBe(false);
+    });
+
+    it('vê peso diferente', () => {
+        expect(mesmoGrafo(GRAFO, mudarPeso(GRAFO, 'e1', 't1', 99))).toBe(false);
+    });
+
+    it('vê rótulo diferente', () => {
+        expect(mesmoGrafo(GRAFO, renomearNo(GRAFO, 'e1', 'Portaria'))).toBe(false);
+    });
+
+    it('vê nó a mais', () => {
+        expect(mesmoGrafo(GRAFO, criarNo(GRAFO, 'transit', { x: 9, y: 9 }).grafo)).toBe(false);
+    });
+
+    it('vê aresta a menos', () => {
+        expect(mesmoGrafo(GRAFO, removerAresta(GRAFO, 'e1', 't1'))).toBe(false);
+    });
+
+    it('vê id trocado mesmo com a mesma contagem', () => {
+        const outroId: Grafo = {
+            nodes: GRAFO.nodes.map((no) => (no.id === 'e1' ? { ...no, id: 'e9' } : no)),
+            edges: GRAFO.edges,
+        };
+        expect(mesmoGrafo(GRAFO, outroId)).toBe(false);
+    });
+
+    it('dois grafos vazios são iguais', () => {
+        expect(mesmoGrafo({ nodes: [], edges: [] }, { nodes: [], edges: [] })).toBe(true);
+    });
+});
+
+describe('mesmaVaga', () => {
+    const base: DadosDaVaga = {
+        noId: 's1',
+        numero: 'A-01',
+        tipo: 'comum',
+        rotacaoGraus: 0,
+        sensor: 'esp32-01',
+    };
+
+    it('reconhece a vaga idêntica', () => {
+        expect(mesmaVaga(base, { ...base })).toBe(true);
+    });
+
+    it('vê cada campo, o sensor incluído', () => {
+        expect(mesmaVaga(base, { ...base, numero: 'A-02' })).toBe(false);
+        expect(mesmaVaga(base, { ...base, tipo: 'pcd' })).toBe(false);
+        expect(mesmaVaga(base, { ...base, rotacaoGraus: 90 })).toBe(false);
+        expect(mesmaVaga(base, { ...base, sensor: null })).toBe(false);
+        expect(mesmaVaga(base, { ...base, noId: 's2' })).toBe(false);
     });
 });
