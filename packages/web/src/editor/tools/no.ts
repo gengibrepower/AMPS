@@ -22,6 +22,7 @@ export function criarNoEm(estado: Estado, papel: Papel, metros: Ponto): string {
             numero: proximoNumeroDeVaga(estado.vagas()),
             tipo: 'comum' as const,
             rotacaoGraus: rotacaoDaVaga(grafo, no),
+            sensor: null,
         }]
         : estado.vagas();
 

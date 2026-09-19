@@ -75,6 +75,7 @@ function comoDadosDaVaga(vaga: VagaWire): DadosDaVaga {
         numero: vaga.numero,
         tipo: comoTipoDeVaga(vaga.tipo),
         rotacaoGraus: vaga.rotacao_graus,
+        sensor: vaga.sensor,
     };
 }
 

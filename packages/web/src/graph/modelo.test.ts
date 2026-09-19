@@ -225,6 +225,7 @@ describe('anguloDeDesenho', () => {
         numero: 'A-01',
         tipo: 'comum',
         rotacaoGraus,
+        sensor: null,
     });
 
     it('a rotação do banco manda quando a vaga está cadastrada', () => {
@@ -361,6 +362,7 @@ describe('proximoNumeroDeVaga', () => {
         numero,
         tipo: 'comum',
         rotacaoGraus: 0,
+        sensor: null,
     });
 
     it('começa no 1 num pátio sem vaga', () => {

@@ -64,11 +64,16 @@ export type TipoDeVaga = 'comum' | 'pcd' | 'idoso' | 'moto' | 'eletrico';
 
 // O que a tabela `vagas` guarda além do grafo. O Merlian não tem orientação no
 // contrato: a rotação vive aqui, e é por isso que ela manda no desenho.
+//
+// O `sensor` entra sem o editor mexer nele: o `PUT /vagas` é upsert da linha
+// inteira, então uma vaga que voltasse sem sensor apagaria em silêncio o
+// pareamento que já estava gravado.
 export interface DadosDaVaga {
     readonly noId: string;
     readonly numero: string;
     readonly tipo: TipoDeVaga;
     readonly rotacaoGraus: number;
+    readonly sensor: string | null;
 }
 
 const TIPOS: readonly string[] = ['comum', 'pcd', 'idoso', 'moto', 'eletrico'];
