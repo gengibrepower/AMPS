@@ -40,6 +40,7 @@ export interface Navegador {
         virtual: number,
         modificadores?: number,
     ): Promise<void>;
+    digitar(texto: string): Promise<void>;
     mouse(tipo: TipoDeMouse, x: number, y: number, opcoes?: OpcoesDoMouse): Promise<void>;
     roda(x: number, y: number, dx: number, dy: number, comCtrl?: boolean): Promise<void>;
     foto(caminho: string): Promise<void>;
@@ -136,6 +137,20 @@ export async function abrirNavegador(): Promise<Navegador> {
                 nativeVirtualKeyCode: virtual,
                 modifiers: modificadores,
             });
+        },
+        // Uma tecla por caractere, não `Input.insertText`: o insertText muda o
+        // valor e dispara `input`, mas não marca o campo como editado pela
+        // pessoa, e aí o `change` nunca sai — nem no Enter, nem ao perder o
+        // foco. Quem escuta `change` não veria nada.
+        async digitar(texto) {
+            for (const caractere of texto) {
+                await comando('Input.dispatchKeyEvent', {
+                    type: 'char',
+                    text: caractere,
+                    key: caractere,
+                    unmodifiedText: caractere,
+                });
+            }
         },
         async mouse(tipo, x, y, opcoes = {}) {
             await comando('Input.dispatchMouseEvent', {
