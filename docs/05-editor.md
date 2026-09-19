@@ -6,7 +6,7 @@ que a topologia é JSON e como o Merlian entra.
 
 ## Estado atual
 
-A API do editor está completa e o editor já desenha. Falta **editar**.
+A API do editor está completa e o editor já edita. Falta **salvar**.
 
 | rota | o que faz |
 | --- | --- |
@@ -19,10 +19,10 @@ A API do editor está completa e o editor já desenha. Falta **editar**.
 | `POST`/`DELETE /estacionamentos/:id/publicacao` | RN-11: entrada, vaga e POI conferidos aqui; alcançabilidade no Merlian |
 
 No front, `owner/estacionamentos.html` lista e cria pátios, e
-`owner/editor.html` já abre o pátio: carrega o mapa, desenha o grafo em metros
-sobre uma grade, enquadra o desenho e deixa selecionar nó e aresta. Falta
-**editar** — criar, mover, apagar e salvar. `src/editor/tools/` e
-`src/client-map/` continuam vazias.
+`owner/editor.html` abre o pátio, desenha o grafo em metros sobre uma grade e
+deixa criar, mover, ligar e apagar nó, com desfazer. Nada disso persiste:
+recarregar a página perde tudo até a fatia 5. `src/client-map/` continua
+vazia.
 
 ## A ordem de gravação é obrigatória
 
@@ -152,7 +152,7 @@ src/graph/geometria.ts         metros↔pixels, snap, distância
 src/graph/render/              palco, nós, arestas
 src/editor/estado.ts           grafo + vagas + seleção + sujo + undo
 src/editor/gravacao.ts         o planner da ordem de gravação
-src/editor/tools/              selecionar · no · aresta · apagar
+src/editor/tools/              ferramentas · no · aresta · apagar
 ```
 
 Mover e ampliar: arrastar o fundo desloca (e continua valendo espaço+arrastar e
@@ -168,30 +168,76 @@ barra de status com cursor em metros, zoom, `versao` e estado sujo. Atalhos
 `Ctrl+Z`. Undo por snapshot (`structuredClone`), que o modelo é JSON puro.
 
 Fatias: ~~**(1)** Konva e o palco com grade e zoom~~ · ~~**(2)** modelo, render
-e carregamento~~ · **(3)** ferramentas e undo · **(4)** inspetor · **(5)**
+e carregamento~~ · ~~**(3)** ferramentas e undo~~ · **(4)** inspetor · **(5)**
 salvar · **(6)** publicar.
 
 O carregamento (`GET /mapa`) entrou já na fatia 2, em vez de esperar a 5: a
 rota existe, e assim o editor desenha dado real desde o começo, sem fixture de
 mentira. A fatia 5 ficou só com a gravação.
 
-## Por onde continuar
+## O que a fatia 3 decidiu
 
-A fatia 3 é a que transforma visualizador em editor. Três decisões definem se
-ela presta:
+As três decisões que ela precisava tomar, e como ficaram:
 
 1. **Arrastar nó divide o botão esquerdo com arrastar o fundo.** O limiar de
-   4 px já resolve clique-versus-arrasto; falta o snap na grade de 1 m, senão
-   ninguém encosta uma vaga no meio-fio na mão.
-2. **Criar vaga já grava a rotação.** `anguloDaVaga` vira o `rotacao_graus`
-   gravado no momento da criação. Sem isso a vaga nasce a 0° e deita errado —
-   foi exatamente esse o defeito que apareceu ao cadastrar vagas com rotação
-   zerada.
-3. **Desfazer por snapshot, junto e não depois.** O modelo é JSON puro, então
-   `structuredClone` num stack resolve. Encaixar undo depois obriga a refazer
-   as ferramentas.
+   4 px virou `Konva.dragDistance`, então vale para os dois — quem decide se
+   aquilo foi clique ou arrasto tem que ser um só. O arrasto pousa na grade de
+   1 m, com a conta descendo até os metros: encaixar em pixel de tela faria o
+   passo mudar com o zoom.
+2. **Criar vaga já grava a rotação.** `rotacaoDaVaga` vira o `rotacao_graus`
+   no momento da criação. O efeito colateral é que **o editor nunca produz
+   vaga rascunhada** — `candidate` sem linha em `vagas` só vem de pátio
+   importado.
+3. **Desfazer por instantâneo.** `structuredClone` num stack. De quebra, pilha
+   vazia quer dizer exatamente "igual ao que o servidor mandou", e é daí que
+   sai o estado sujo — sem comparar estrutura, que é onde o MySQL reordenando
+   as chaves daria falso positivo.
 
-Nada disso salva: recarregar a página perde tudo até a fatia 5.
+A ferramenta de aresta entrou junto, porque sem ela o nó nasce solto e não há
+corredor nenhum para desenhar. Ela **encadeia**: o destino vira a origem do
+clique seguinte, então clicar `t1`, `t2`, `t3` traça a alameda inteira. O
+sentido sai do papel dos nós — entre via e entrada nasce o par da mão dupla,
+com vaga numa ponta nasce só o acesso, que entra e não sai. O peso nasce da
+distância euclidiana e daí em diante só muda na mão.
+
+**Mão única é desenhada centrada no eixo.** Mão dupla são duas faixas
+deslocadas 1,6 m para cada lado; tirar um sentido faz a que sobrou recentrar e
+ocupar também o lado onde a outra estava. Quem for mexer no desenho da via
+precisa saber disso antes de achar que a faixa "pulou".
+
+## Por onde continuar
+
+A fatia 4 é o inspetor à direita: renomear `label`, editar número, tipo e
+rotação da vaga, e o peso da aresta. Dois cuidados que já estão pagos e não
+podem ser desfeitos ali:
+
+- **Id de nó é imutável.** O inspetor edita `label` e `numero`, nunca o `id`.
+- **Peso não se recalcula sozinho.** Se o inspetor ganhar um botão de
+  recalcular, que seja explícito e só na seleção.
+
+O `keydown` do editor já ignora evento vindo de `HTMLInputElement`, então os
+campos do inspetor não vão disparar atalho.
+
+### Duas armadilhas do Konva
+
+Custaram uma tarde na fatia 3 e não se veem lendo o código — quem "limpar" as
+duas faz o editor travar 5 s por clique outra vez.
+
+- **Não redesenhe a cena dentro do `dragend`.** O redesenho destrói o grupo que
+  o Konva acabou de arrastar e deixa a animação de arrasto girando: o renderer
+  para de responder e o CDP passa a levar 5 s por evento de input. O aviso sai
+  num `setTimeout`, depois que o Konva encerrou o arrasto.
+- **`batchDraw` adia o canvas de acerto.** É ele quem decide qual forma recebe
+  o clique, e adiá-lo para o quadro seguinte abre uma janela em que o nó já
+  está no modelo mas ainda não recebe ponteiro. Por isso `desenhar` e trocar de
+  modo fazem `draw()` síncrono. Custa pouco: a cena só é refeita quando o grafo
+  muda, não a cada quadro.
+
+E uma do ambiente de teste: **o viewport do Chromium headless não é o que o
+`--window-size` promete** — 1280×760 vira 1280×673. Teste e2e que chute pixel
+cai fora da tela e falha com `Input.dispatchMouseEvent: Invalid parameters`,
+que é NaN chegando no CDP. O jeito certo é sondar o próprio `#cursorX` para
+descobrir a conversão metro↔tela, como faz `ferramentas.e2e.test.ts`.
 
 ### Pendências conhecidas
 
