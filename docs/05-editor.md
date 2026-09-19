@@ -20,9 +20,9 @@ A API do editor está completa e o editor já edita. Falta **salvar**.
 
 No front, `owner/estacionamentos.html` lista e cria pátios, e
 `owner/editor.html` abre o pátio, desenha o grafo em metros sobre uma grade e
-deixa criar, mover, ligar e apagar nó, com desfazer. Nada disso persiste:
-recarregar a página perde tudo até a fatia 5. `src/client-map/` continua
-vazia.
+deixa criar, mover, ligar e apagar nó, com desfazer, mais o inspetor à direita
+para rótulo, número, tipo, rotação e peso. Nada disso persiste: recarregar a
+página perde tudo até a fatia 5. `src/client-map/` continua vazia.
 
 ## A ordem de gravação é obrigatória
 
@@ -168,8 +168,8 @@ barra de status com cursor em metros, zoom, `versao` e estado sujo. Atalhos
 `Ctrl+Z`. Undo por snapshot (`structuredClone`), que o modelo é JSON puro.
 
 Fatias: ~~**(1)** Konva e o palco com grade e zoom~~ · ~~**(2)** modelo, render
-e carregamento~~ · ~~**(3)** ferramentas e undo~~ · **(4)** inspetor · **(5)**
-salvar · **(6)** publicar.
+e carregamento~~ · ~~**(3)** ferramentas e undo~~ · ~~**(4)** inspetor~~ ·
+**(5)** salvar · **(6)** publicar.
 
 O carregamento (`GET /mapa`) entrou já na fatia 2, em vez de esperar a 5: a
 rota existe, e assim o editor desenha dado real desde o começo, sem fixture de
@@ -205,18 +205,55 @@ deslocadas 1,6 m para cada lado; tirar um sentido faz a que sobrou recentrar e
 ocupar também o lado onde a outra estava. Quem for mexer no desenho da via
 precisa saber disso antes de achar que a faixa "pulou".
 
+## O que a fatia 4 decidiu
+
+- **O `sensor` entra em `DadosDaVaga` sem o inspetor mostrá-lo.** O
+  `PUT /vagas` é upsert da linha inteira: vaga que voltasse sem sensor apagaria
+  em silêncio o pareamento gravado. O editor carrega e devolve; parear sensor
+  continua sendo fora dele.
+- **Número repetido morre no cliente.** O 422 do trigger é rede de segurança,
+  não fluxo normal. O efeito colateral é que **trocar o número entre duas vagas
+  exige passar por um número temporário** — some com a pendência do 409 só em
+  parte, porque lá o problema é o adapter colidir no meio da transação.
+- **Recalcular peso é botão, não automatismo.** Mover um nó continua sem
+  refazer o peso, como a decisão de modelo manda.
+- **Rotação aceita grau livre**, com quatro botões para o caso comum. Espinha
+  de peixe a 45° precisa disso.
+- **Os campos gravam no `change`, não a cada tecla**, para uma edição inteira
+  ser um passo do desfazer.
+
+### Duas armadilhas de formulário
+
+- **Enter não grava sozinho.** `change` só sai quando o campo perde o foco, e
+  fora de um `<form>` o Enter não faz nada. Sem tratar a tecla, o dono digita,
+  aperta Enter e o editor ignora. O editor tira o foco no Enter, o que dispara
+  o `change` de sempre e mantém a gravação num caminho só.
+- **A utilitária `.disabled` tem que ficar por último no `editor.css`.** Ela
+  tem a mesma especificidade de qualquer classe de componente, então só vence
+  quem vier depois. Declarada no meio do arquivo, perdia para o `display: flex`
+  do inspetor e os dois painéis apareciam juntos.
+
+E o que o inspetor não faz: **não sequestra atalho de dentro de campo de
+formulário.** Com o cursor num campo, `Ctrl+Z` é o do navegador, desfazendo a
+digitação. É de propósito, mas surpreende quem espera desfazer o editor.
+
 ## Por onde continuar
 
-A fatia 4 é o inspetor à direita: renomear `label`, editar número, tipo e
-rotação da vaga, e o peso da aresta. Dois cuidados que já estão pagos e não
-podem ser desfeitos ali:
+A fatia 5 é a gravação, e o coração dela é o planner da ordem obrigatória lá
+de cima: `DELETE` das vagas que sumiram, `PUT /topologia`, `PUT /vagas` com o
+resto, cada passo só se houve mudança. Função pura que recebe estado do
+servidor + estado local e devolve a lista de requisições — é a peça com mais
+risco do editor e a que mais merece teste.
 
-- **Id de nó é imutável.** O inspetor edita `label` e `numero`, nunca o `id`.
-- **Peso não se recalcula sozinho.** Se o inspetor ganhar um botão de
-  recalcular, que seja explícito e só na seleção.
+O que já está pago para ela:
 
-O `keydown` do editor já ignora evento vindo de `HTMLInputElement`, então os
-campos do inspetor não vão disparar atalho.
+- **`estado.sujo()` sai da pilha de desfazer**, não de comparar estrutura, e
+  pilha vazia é literalmente o instantâneo que o servidor mandou. Para o diff
+  do planner, porém, **compare estrutura** — o MySQL reordena as chaves do
+  JSON e comparar string dá falso positivo sempre.
+- **O `sensor` volta intacto**, então o upsert não apaga pareamento.
+- **O editor não produz aresta órfã nem número repetido**, então os 422 do
+  trigger seguem sendo rede de segurança.
 
 ### Duas armadilhas do Konva
 
