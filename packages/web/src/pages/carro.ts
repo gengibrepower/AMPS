@@ -1,6 +1,7 @@
 import {
     ApiError,
     cadastrarCarro,
+    excluirCarro,
     listarCarros,
     listarModelos,
     type CarroWire,
@@ -100,7 +101,31 @@ function renderizarCarros(carros: readonly CarroWire[]): void {
         }
 
         conteudo.append(placaCarro, descricao);
-        item.appendChild(conteudo);
+
+        const botaoExcluir = document.createElement('button');
+        botaoExcluir.type = 'button';
+        botaoExcluir.className = 'botao-texto';
+        botaoExcluir.textContent = 'Excluir';
+        botaoExcluir.addEventListener('click', async () => {
+            const confirmou = window.confirm(
+                `Deseja realmente excluir o carro ${carro.placa}?`,
+            );
+
+            if (!confirmou) return;
+
+            botaoExcluir.disabled = true;
+
+            try {
+                await excluirCarro(carro.id);
+                await carregarCarros();
+                mostrarMensagem(mensagem, 'Carro excluído com sucesso.', 'success');
+            } catch (erro) {
+                botaoExcluir.disabled = false;
+                relatar(erro);
+            }
+        });
+        
+        item.append(conteudo, botaoExcluir);
         lista.appendChild(item);
     }
 }

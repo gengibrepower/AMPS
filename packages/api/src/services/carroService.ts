@@ -34,4 +34,20 @@ export class CarroService {
 
 		return this.carros.listByProprietario(usuario.nome);
 	}
+
+	async excluir(usuarioId: number, carroId: number): Promise<void> {
+		const usuario = await this.usuarios.findById(usuarioId);
+		if (usuario === null) {
+			throw new NotFoundError('usuario');
+		}
+
+		const carros = await this.carros.listByProprietario(usuario.nome);
+		const carro = carros.find((item) => item.id === carroId);
+
+		if (carro === undefined) {
+			throw new NotFoundError('carro');
+		}
+
+		await this.carros.deleteById(carroId);
+	}
 }

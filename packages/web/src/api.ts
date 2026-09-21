@@ -251,3 +251,9 @@ export function cadastrarCarro(placa: string, modeloId: number): Promise<CarroWi
 export function listarCarros(): Promise<readonly CarroWire[]> {
     return pedirAutenticado<readonly CarroWire[]>('/carros');
 }
+
+export function excluirCarro(id: number): Promise<void> {
+    return pedirAutenticado<void>(`/carros/${id}`, {
+        method: 'DELETE',
+    });
+}

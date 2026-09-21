@@ -276,6 +276,20 @@ export function createApp(deps: AppDeps): Express {
 		});
 	});
 
+	app.delete('/carros/:id', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const carroId = Number(req.params.id);
+		if (!Number.isInteger(carroId) || carroId <= 0) {
+			res.status(400).json({ erro: 'id de carro invalido' });
+			return;
+		}
+
+		await deps.carroService.excluir(auth.sub, carroId);
+		res.status(204).send();
+	});
+
 	app.post('/estacionamentos', autenticar(deps.tokenService), async (req, res) => {
 		const auth = autenticado(req, res);
 		if (auth === null) return;

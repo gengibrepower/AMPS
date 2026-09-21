@@ -21,6 +21,11 @@ WHERE proprietario = ?
 ORDER BY id
 `;
 
+const DELETE_BY_ID = `
+DELETE FROM carros 
+WHERE id = ?
+`;
+
 export class MysqlCarroRepository implements CarroRepository {
 	constructor(private readonly pool: Pool) {}
 
@@ -55,4 +60,13 @@ export class MysqlCarroRepository implements CarroRepository {
 			proprietario: row.proprietario,
 		}));
 	}
+
+	async deleteById(id: number): Promise<boolean> {
+	const [result] = await this.pool.execute<ResultSetHeader>(
+		DELETE_BY_ID,
+		[id],
+	);
+
+	return result.affectedRows > 0;
+}
 }
