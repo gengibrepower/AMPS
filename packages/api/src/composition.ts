@@ -51,7 +51,7 @@ export function montarApp({
 		authService: new AuthService(usuarios, tokenService),
 		modeloService: new ModeloService(new MysqlModeloRepository(pool)),
 		carroService: new CarroService(new MysqlCarroRepository(pool), usuarios),
-		estacionamentoService: new EstacionamentoService(estacionamentos, acessoDono),
+		estacionamentoService: new EstacionamentoService(estacionamentos, vagas, acessoDono),
 		topologiaService: new TopologiaService(topologias, acessoDono),
 		vagaService: new VagaService(vagas, acessoDono),
 		mapaService: new MapaService(topologias, vagas, acessoDono),

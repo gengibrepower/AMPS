@@ -401,6 +401,100 @@ describe('estacionamentos', () => {
 		expect(resposta.status).toBe(400);
 		expect(resposta.body.campos).toEqual(['nome']);
 	});
+
+	async function criarPatio(token: string): Promise<number> {
+		const criado = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro', cidade: 'Blumenau', estado: 'SC' });
+		return criado.body.id as number;
+	}
+
+	it('edita nome e endereco', async () => {
+		const token = await tokenDeDono();
+		const id = await criarPatio(token);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}`)
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Norte', cidade: 'Joinville', estado: 'SC' });
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toMatchObject({ id, nome: 'Pátio Norte', publicado: false });
+		expect(resposta.body.endereco).toMatchObject({ cidade: 'Joinville' });
+	});
+
+	it('campo de endereco omitido na edicao vira null', async () => {
+		const token = await tokenDeDono();
+		const id = await criarPatio(token);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}`)
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+
+		expect(resposta.body.endereco).toMatchObject({ cidade: null, estado: null });
+	});
+
+	it('devolve 400 ao editar sem nome', async () => {
+		const token = await tokenDeDono();
+		const id = await criarPatio(token);
+
+		const resposta = await request(app)
+			.put(`/estacionamentos/${id}`)
+			.set('Authorization', `Bearer ${token}`)
+			.send({ cidade: 'Joinville' });
+
+		expect(resposta.status).toBe(400);
+		expect(resposta.body.campos).toEqual(['nome']);
+	});
+
+	it('exclui e some da listagem', async () => {
+		const token = await tokenDeDono();
+		const id = await criarPatio(token);
+
+		const exclusao = await request(app)
+			.delete(`/estacionamentos/${id}`)
+			.set('Authorization', `Bearer ${token}`);
+		const listagem = await request(app)
+			.get('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`);
+
+		expect(exclusao.status).toBe(204);
+		expect(listagem.body).toEqual([]);
+	});
+
+	it('devolve 403 ao editar ou excluir patio de outro dono', async () => {
+		const token = await tokenDeDono();
+		const id = await criarPatio(token);
+		const tokenDoBruno = await tokenDeDono(OUTRO_DONO);
+
+		const edicao = await request(app)
+			.put(`/estacionamentos/${id}`)
+			.set('Authorization', `Bearer ${tokenDoBruno}`)
+			.send({ nome: 'Pátio do Bruno' });
+		const exclusao = await request(app)
+			.delete(`/estacionamentos/${id}`)
+			.set('Authorization', `Bearer ${tokenDoBruno}`);
+
+		expect(edicao.status).toBe(403);
+		expect(exclusao.status).toBe(403);
+	});
+
+	it('devolve 404 ao editar ou excluir patio inexistente', async () => {
+		const token = await tokenDeDono();
+
+		const edicao = await request(app)
+			.put('/estacionamentos/999999')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Fantasma' });
+		const exclusao = await request(app)
+			.delete('/estacionamentos/999999')
+			.set('Authorization', `Bearer ${token}`);
+
+		expect(edicao.status).toBe(404);
+		expect(exclusao.status).toBe(404);
+	});
 });
 
 describe('PUT /estacionamentos/:id/topologia', () => {
@@ -728,6 +822,35 @@ describe('vagas e mapa', () => {
 
 		expect(resposta.status).toBe(422);
 		expect(resposta.body.erro).toContain('reservada');
+	});
+
+	it('recusa excluir o patio com vaga em uso', async () => {
+		await comTopologia();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01' },
+		]);
+		await db().execute(
+			"UPDATE vagas SET status = 'reservada' WHERE estacionamento_id = ? AND no_id = ?",
+			[estacionamentoId, 's1'],
+		);
+
+		const resposta = await comAutorizacao('delete', `/estacionamentos/${estacionamentoId}`);
+
+		expect(resposta.status).toBe(422);
+		expect(resposta.body.vagas).toEqual(['A-01']);
+	});
+
+	it('exclui o patio com as vagas todas livres', async () => {
+		await comTopologia();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01' },
+		]);
+
+		const exclusao = await comAutorizacao('delete', `/estacionamentos/${estacionamentoId}`);
+		const busca = await comAutorizacao('get', `/estacionamentos/${estacionamentoId}`);
+
+		expect(exclusao.status).toBe(204);
+		expect(busca.status).toBe(404);
 	});
 
 	it('abre o mapa vazio num estacionamento sem topologia', async () => {

@@ -322,6 +322,34 @@ export function createApp(deps: AppDeps): Express {
 		res.status(200).json(estacionamentoWire(await deps.estacionamentoService.buscar(auth.sub, id)));
 	});
 
+	app.put('/estacionamentos/:id', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		const dados = exigir(req, res, ['nome']);
+		if (dados === null) return;
+
+		const estacionamento = await deps.estacionamentoService.editar(auth.sub, id, {
+			nome: dados.nome,
+			endereco: endereco(req),
+		});
+		res.status(200).json(estacionamentoWire(estacionamento));
+	});
+
+	app.delete('/estacionamentos/:id', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		await deps.estacionamentoService.remover(auth.sub, id);
+		res.status(204).end();
+	});
+
 	app.put('/estacionamentos/:id/topologia', autenticar(deps.tokenService), async (req, res) => {
 		const auth = autenticado(req, res);
 		if (auth === null) return;

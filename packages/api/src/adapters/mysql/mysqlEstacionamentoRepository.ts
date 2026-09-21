@@ -1,5 +1,6 @@
 import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import type {
+	DadosDoEstacionamento,
 	Estacionamento,
 	EstacionamentoRepository,
 	NovoEstacionamento,
@@ -39,6 +40,18 @@ const SELECT_BY_ID = `
 SELECT id, dono_id, nome_estacionamento, publicado,
 	   cep, logradouro, numero, bairro, complemento, cidade, estado
 FROM estacionamentos
+WHERE id = ?
+`;
+
+const UPDATE = `
+UPDATE estacionamentos
+SET nome_estacionamento = ?, cep = ?, logradouro = ?, numero = ?,
+	bairro = ?, complemento = ?, cidade = ?, estado = ?
+WHERE id = ?
+`;
+
+const DELETE = `
+DELETE FROM estacionamentos
 WHERE id = ?
 `;
 
@@ -103,6 +116,30 @@ export class MysqlEstacionamentoRepository implements EstacionamentoRepository {
 		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_BY_ID, [id]);
 		const row = rows[0];
 		return row === undefined ? null : toEstacionamento(row);
+	}
+
+	async update(id: number, dados: DadosDoEstacionamento): Promise<Estacionamento> {
+		await this.pool.execute(UPDATE, [
+			dados.nome,
+			dados.endereco.cep,
+			dados.endereco.logradouro,
+			dados.endereco.numero,
+			dados.endereco.bairro,
+			dados.endereco.complemento,
+			dados.endereco.cidade,
+			dados.endereco.estado,
+			id,
+		]);
+		const atualizado = await this.findById(id);
+		if (atualizado === null) {
+			throw new NotFoundError('estacionamento');
+		}
+		return atualizado;
+	}
+
+	// topologias e vagas somem junto, por ON DELETE CASCADE de 01_schema.sql.
+	async delete(id: number): Promise<void> {
+		await this.pool.execute(DELETE, [id]);
 	}
 
 	async setPublicado(id: number, publicado: boolean): Promise<Estacionamento> {
