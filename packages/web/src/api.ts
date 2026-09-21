@@ -144,6 +144,21 @@ export function criarEstacionamento(dados: DadosEstacionamento): Promise<Estacio
     });
 }
 
+export function editarEstacionamento(
+    id: number,
+    dados: DadosEstacionamento,
+): Promise<EstacionamentoWire> {
+    return pedirAutenticado<EstacionamentoWire>(`/estacionamentos/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(dados),
+    });
+}
+
+// 204 sem corpo; o 422 vem quando alguma vaga ainda está ocupada ou reservada.
+export function excluirEstacionamento(id: number): Promise<null> {
+    return pedirAutenticado<null>(`/estacionamentos/${id}`, { method: 'DELETE' });
+}
+
 export interface VagaWire {
     readonly id: number;
     readonly no_id: string;
