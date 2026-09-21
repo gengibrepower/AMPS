@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/owner.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,close,logout"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,close,delete,edit,logout"/>
 </head>
 <body>
     <header>
@@ -40,7 +40,8 @@
                 </button>
             </div>
 
-            <form id="formNovo" class="formulario disabled" novalidate>
+            <form id="formPatio" class="formulario disabled" novalidate>
+                <p id="tituloForm" class="formulario-titulo"></p>
                 <div class="campo campo-nome">
                     <label for="nome">Nome</label>
                     <input type="text" id="nome" name="nome" maxlength="150" required autocomplete="off">
@@ -74,8 +75,8 @@
                     <input type="text" id="estado" name="estado" maxlength="2" autocomplete="off">
                 </div>
                 <div class="formulario-acoes">
-                    <button type="button" id="cancelarNovo" class="botao-texto">Cancelar</button>
-                    <button type="submit" id="salvarNovo" class="botao-primario">Criar</button>
+                    <button type="button" id="cancelarPatio" class="botao-texto">Cancelar</button>
+                    <button type="submit" id="salvarPatio" class="botao-primario">Criar</button>
                 </div>
             </form>
 

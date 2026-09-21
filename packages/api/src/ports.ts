@@ -71,10 +71,13 @@ export interface Estacionamento {
 	readonly endereco: Endereco;
 }
 
-export interface NovoEstacionamento {
-	readonly donoId: number;
+export interface DadosDoEstacionamento {
 	readonly nome: string;
 	readonly endereco: Endereco;
+}
+
+export interface NovoEstacionamento extends DadosDoEstacionamento {
+	readonly donoId: number;
 }
 
 export interface Topologia {
@@ -150,6 +153,8 @@ export interface EstacionamentoRepository {
 	create(novo: NovoEstacionamento): Promise<Estacionamento>;
 	listByDono(donoId: number): Promise<readonly Estacionamento[]>;
 	findById(id: number): Promise<Estacionamento | null>;
+	update(id: number, dados: DadosDoEstacionamento): Promise<Estacionamento>;
+	delete(id: number): Promise<void>;
 	setPublicado(id: number, publicado: boolean): Promise<Estacionamento>;
 }
 

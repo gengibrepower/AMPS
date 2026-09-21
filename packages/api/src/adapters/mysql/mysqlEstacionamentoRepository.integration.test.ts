@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import type { ResultSetHeader } from 'mysql2/promise';
+import type { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import type { Endereco } from '../../ports.js';
 import { MysqlEstacionamentoRepository } from './mysqlEstacionamentoRepository.js';
 import { usarBancoDeTeste } from './testSupport.js';
@@ -25,6 +25,18 @@ const ENDERECO: Endereco = {
 	complemento: 'subsolo',
 	cidade: 'Blumenau',
 	estado: 'SC',
+};
+
+const GRAFO = {
+	nodes: [
+		{
+			id: 's1',
+			role: 'candidate',
+			position: { x: 0, y: 0 },
+			dimensions: { width: 2.5, length: 5 },
+		},
+	],
+	edges: [],
 };
 
 async function criarDono(email: string, cpf: string, cnpj: string): Promise<number> {
@@ -95,6 +107,69 @@ describe('MysqlEstacionamentoRepository (integração)', () => {
 		const repo = new MysqlEstacionamentoRepository(db());
 
 		expect(await repo.findById(999999)).toBeNull();
+	});
+
+	it('troca nome e endereco, mantendo dono e publicacao', async () => {
+		const repo = new MysqlEstacionamentoRepository(db());
+		const criado = await repo.create({ donoId, nome: 'Pátio Centro', endereco: SEM_ENDERECO });
+		await repo.setPublicado(criado.id, true);
+
+		const editado = await repo.update(criado.id, { nome: 'Pátio Norte', endereco: ENDERECO });
+
+		expect(editado).toEqual({
+			id: criado.id,
+			donoId,
+			nome: 'Pátio Norte',
+			publicado: true,
+			endereco: ENDERECO,
+		});
+	});
+
+	it('apaga campo de endereco que voltou vazio', async () => {
+		const repo = new MysqlEstacionamentoRepository(db());
+		const criado = await repo.create({ donoId, nome: 'Pátio Centro', endereco: ENDERECO });
+
+		const editado = await repo.update(criado.id, {
+			nome: 'Pátio Centro',
+			endereco: SEM_ENDERECO,
+		});
+
+		expect(editado.endereco).toEqual(SEM_ENDERECO);
+	});
+
+	it('apaga o estacionamento', async () => {
+		const repo = new MysqlEstacionamentoRepository(db());
+		const criado = await repo.create({ donoId, nome: 'Pátio Centro', endereco: SEM_ENDERECO });
+
+		await repo.delete(criado.id);
+
+		expect(await repo.findById(criado.id)).toBeNull();
+	});
+
+	it('leva topologia e vagas junto, por cascade', async () => {
+		const repo = new MysqlEstacionamentoRepository(db());
+		const criado = await repo.create({ donoId, nome: 'Pátio Centro', endereco: SEM_ENDERECO });
+		await db().execute('INSERT INTO topologias (estacionamento_id, grafo) VALUES (?, ?)', [
+			criado.id,
+			JSON.stringify(GRAFO),
+		]);
+		await db().execute(
+			'INSERT INTO vagas (estacionamento_id, no_id, numero) VALUES (?, ?, ?)',
+			[criado.id, 's1', 'A-01'],
+		);
+
+		await repo.delete(criado.id);
+
+		const [topologias] = await db().execute<RowDataPacket[]>(
+			'SELECT id FROM topologias WHERE estacionamento_id = ?',
+			[criado.id],
+		);
+		const [vagas] = await db().execute<RowDataPacket[]>(
+			'SELECT id FROM vagas WHERE estacionamento_id = ?',
+			[criado.id],
+		);
+		expect(topologias).toEqual([]);
+		expect(vagas).toEqual([]);
 	});
 
 	it('recusa dono inexistente', async () => {
