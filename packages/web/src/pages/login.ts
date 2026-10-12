@@ -1,6 +1,6 @@
 import { ApiError, login } from '../api';
 import { saveSession } from '../auth';
-import { renderAccountPanel } from '../dom/script';
+import { renderAccountPanel } from '../dom/navegacao';
 import { limparFormularioDepois, mostrarMensagem } from '../dom/ui';
 
 const loginForm = document.getElementById('login-form') as HTMLFormElement | null;

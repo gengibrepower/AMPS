@@ -1,5 +1,5 @@
 import { ApiError, cadastrarCliente } from '../api';
-import { showAccountView } from '../dom/script';
+import { showAccountView } from '../dom/navegacao';
 import { limparFormularioDepois, mostrarMensagem } from '../dom/ui';
 
 const clientForm = document.getElementById('client-form') as HTMLFormElement | null;

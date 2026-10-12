@@ -34,7 +34,7 @@ export function destinosDe(tipo: string | null): readonly Destino[]
 precise de teste unitário no front tem que viver fora do DOM — `sessao.test.ts`
 cobre a tabela inteira sem abrir navegador.
 
-`dom/script.ts` monta a sidebar e o botão do meio da barra de baixo a partir dessa
+`dom/navegacao.ts` monta a sidebar e o botão do meio da barra de baixo a partir dessa
 lista, em `renderNavegacao()`, chamada por `renderAccountPanel()`. Ou seja: a
 navegação se refaz a cada login e logout, sem recarregar a página. Os itens
 fixos ("Configurações", "Sobre", "Contato") continuam no HTML, abaixo dos

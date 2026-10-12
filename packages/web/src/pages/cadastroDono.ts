@@ -1,5 +1,5 @@
 import { ApiError, cadastrarDono } from '../api';
-import { showAccountView } from '../dom/script';
+import { showAccountView } from '../dom/navegacao';
 import { limparFormularioDepois, mostrarMensagem } from '../dom/ui';
 
 const ownerForm = document.getElementById('owner-form') as HTMLFormElement | null;
