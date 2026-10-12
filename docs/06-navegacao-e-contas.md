@@ -45,9 +45,9 @@ página e o 403 da API. O menu é conveniência — e há um teste em
 `sessao.test.ts` que garante que `meusPatios` nunca aparece para quem não é
 dono, que é a versão testável dessa promessa.
 
-Os `href` de `DESTINOS` são relativos à raiz do site. Só `index.html` e
-`search.html` montam este menu, e ambas estão na raiz. Uma página em
-subdiretório que queira o mesmo menu vai precisar de um prefixo.
+Os `href` de `DESTINOS` são absolutos (`/index.html`, `/client/carro.html`).
+O menu é montado no `index.html`, na raiz, e no `client/search.html`: um
+caminho relativo apontaria para um lugar diferente em cada uma.
 
 ## O cadastro de dono
 

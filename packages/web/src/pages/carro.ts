@@ -193,7 +193,7 @@ formNovo?.addEventListener('submit', async (event) => {
 
 sair?.addEventListener('click', () => {
     clearSession();
-    window.location.href = 'index.html';
+    window.location.href = '../index.html';
 });
 
 const usuario = usuarioAtual();

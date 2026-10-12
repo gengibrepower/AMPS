@@ -32,8 +32,8 @@ describe('areasDe', () => {
 describe('destinosDe', () => {
     it('leva o dono ao hub do editor', () => {
         expect(destinosDe('dono').map((destino) => destino.href)).toEqual([
-            'index.html',
-            'owner/estacionamentos.html',
+            '/index.html',
+            '/owner/estacionamentos.html',
         ]);
     });
 

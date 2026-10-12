@@ -309,8 +309,8 @@ seguinte sem conferir o anterior.
 
 ## Passo 1 — A página HTML
 
-Crie `packages/web/carro.html`, **na raiz de `packages/web`** (mesmo nível do
-`index.html`, não dentro de `src/`).
+Crie `packages/web/client/carro.html`, **em `client/`**, ao lado da
+`search.html` (as páginas do dono ficam em `owner/`, nunca dentro de `src/`).
 
 Copie a estrutura de `owner/estacionamentos.html` e adapte. Ela tem duas seções
 irmãs que você precisa manter:
@@ -321,10 +321,11 @@ irmãs que você precisa manter:
 Os campos do formulário são só dois: a placa (`<input>`) e o modelo
 (`<select>`, que você vai preencher pela API — deixe vazio no HTML).
 
-Atenção aos caminhos: `estacionamentos.html` está em `owner/`, então referencia
-`../css/...`. A sua página está na raiz, então é `css/...`, sem o `../`.
+Atenção aos caminhos: `estacionamentos.html` está em `owner/` e referencia
+`../css/...`. A sua página está em `client/`, um nível abaixo também, então vale o
+mesmo `../`.
 
-**Confira:** abra <http://localhost:5173/carro.html>. Tem que aparecer alguma
+**Confira:** abra <http://localhost:5173/client/carro.html>. Tem que aparecer alguma
 coisa, ainda sem comportamento nenhum.
 
 ## Passo 2 — Registrar a página no Vite

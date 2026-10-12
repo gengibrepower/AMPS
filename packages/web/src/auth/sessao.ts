@@ -13,11 +13,10 @@ const POR_TIPO: Record<string, readonly Area[]> = {
     p_admin: ['buscar', 'meusCarros'],
 };
 
-// Os href são relativos à raiz do site: só as páginas da raiz montam este menu.
 const DESTINOS: Record<Area, Destino> = {
-    buscar: { area: 'buscar', rotulo: 'Buscar estacionamento', icone: 'search', href: 'index.html' },
-    meusCarros: { area: 'meusCarros', rotulo: 'Meus carros', icone: 'directions_car', href: 'carro.html' },
-    meusPatios: { area: 'meusPatios', rotulo: 'Meus pátios', icone: 'grid_view', href: 'owner/estacionamentos.html' },
+    buscar: { area: 'buscar', rotulo: 'Buscar estacionamento', icone: 'search', href: '/index.html' },
+    meusCarros: { area: 'meusCarros', rotulo: 'Meus carros', icone: 'directions_car', href: '/client/carro.html' },
+    meusPatios: { area: 'meusPatios', rotulo: 'Meus pátios', icone: 'grid_view', href: '/owner/estacionamentos.html' },
 };
 
 // Esconder item de menu não é segurança: quem protege é o #bloqueio da página

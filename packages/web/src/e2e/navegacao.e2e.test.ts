@@ -138,7 +138,7 @@ describe('navegação por tipo de conta', () => {
         expect(await itensDoMenu()).toEqual(['Buscar estacionamento', 'Meus pátios']);
 
         await clicar('#menu-button');
-        await clicar('.nav-item-area a[href="owner/estacionamentos.html"]');
+        await clicar('.nav-item-area a[href="/owner/estacionamentos.html"]');
         await espere(2500);
 
         expect(await navegador.js<string>('location.pathname')).toContain(

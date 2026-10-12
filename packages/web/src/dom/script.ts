@@ -27,7 +27,7 @@ const bottomAreaIcon = document.getElementById('navAreaIcone') as HTMLElement | 
 const bottomAreaLabel = document.getElementById('navAreaRotulo') as HTMLElement | null;
 const logoutButton = document.getElementById('logoutBtn') as HTMLButtonElement | null;
 
-let destinoDaBarra = 'index.html';
+let destinoDaBarra = '/index.html';
 
 export type AccountView = 'login' | 'loggedIn' | 'forgot' | 'registerClient' | 'registerOwner';
 
@@ -109,7 +109,7 @@ function toggleAccountContent(): void {
 bottomAccountButton?.addEventListener('click', toggleAccountContent);
 
 bottomHomeButton?.addEventListener('click', () => {
-    window.location.href = 'index.html';
+    window.location.href = '/index.html';
 });
 
 bottomAreaButton?.addEventListener('click', () => {
