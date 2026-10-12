@@ -1,6 +1,6 @@
-import { getSession, clearSession } from './auth';
-import { destinosDe } from './sessao';
-import type { Destino } from './sessao';
+import { getSession, clearSession } from '../auth';
+import { destinosDe } from '../auth/sessao';
+import type { Destino } from '../auth/sessao';
 
 export const menuButton = document.getElementById('menu-button') as HTMLButtonElement | null;
 export const closeSidebarButton = document.getElementById('close-sidebar-button') as HTMLButtonElement | null;

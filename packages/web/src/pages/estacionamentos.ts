@@ -7,7 +7,7 @@ import {
 } from '../api';
 import type { DadosEstacionamento, EnderecoWire, EstacionamentoWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
-import { limparMensagem, mostrarMensagem } from '../ui';
+import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const bloqueio = document.getElementById('bloqueio') as HTMLElement | null;
 const bloqueioTexto = document.getElementById('bloqueioTexto') as HTMLElement | null;

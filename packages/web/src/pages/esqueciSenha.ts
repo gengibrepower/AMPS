@@ -1,4 +1,4 @@
-import { mostrarMensagem } from './ui';
+import { mostrarMensagem } from '../dom/ui';
 
 const forgotForm = document.getElementById('forgot-form') as HTMLFormElement | null;
 const forgotMsg = document.getElementById('forgot-msg') as HTMLDivElement | null;

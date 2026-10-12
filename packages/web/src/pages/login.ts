@@ -1,7 +1,7 @@
-import { ApiError, login } from './api';
-import { saveSession } from './auth';
-import { renderAccountPanel } from './script';
-import { limparFormularioDepois, mostrarMensagem } from './ui';
+import { ApiError, login } from '../api';
+import { saveSession } from '../auth';
+import { renderAccountPanel } from '../dom/script';
+import { limparFormularioDepois, mostrarMensagem } from '../dom/ui';
 
 const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
 const emailInput = document.getElementById('email') as HTMLInputElement | null;

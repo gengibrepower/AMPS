@@ -265,7 +265,7 @@ Duas coisas importantes sobre o `POST /carros`:
 
 - **Autenticada** quer dizer que precisa do cabeçalho
   `Authorization: Bearer <token>`. Você não vai montar isso na mão: o
-  `src/api.ts` já tem uma função que faz isso sozinha (Passo 3).
+  `src/api/index.ts` já tem uma função que faz isso sozinha (Passo 3).
 - **`proprietario` não vai no corpo.** A API pega o nome do dono do token. Veja
   `packages/api/src/services/carroService.ts` — são 15 linhas, vale ler.
 
@@ -341,7 +341,7 @@ listagem do final.
 
 ## Passo 3 — As funções da API no front
 
-Abra `packages/web/src/api.ts`. Você vai acrescentar três coisas, seguindo o
+Abra `packages/web/src/api/index.ts`. Você vai acrescentar três coisas, seguindo o
 padrão que já está lá:
 
 1. Um tipo `ModeloWire` com `id`, `marca` e `nome`.
@@ -374,7 +374,7 @@ cada, com `value` = id e o texto `marca nome`.
 console do navegador (F12) — a mensagem de erro está lá.
 
 **4c. O cadastro.** No `submit` do formulário, leia a placa e o modelo
-escolhido e chame `cadastrarCarro()`. Use `mostrarMensagem` de `src/ui.ts` para
+escolhido e chame `cadastrarCarro()`. Use `mostrarMensagem` de `src/dom/ui.ts` para
 o retorno, como as outras páginas fazem.
 
 Cuidado: `select.value` é **string**. A API quer `modelo_id` número. Converta
@@ -462,7 +462,7 @@ com o código velho — e o sintoma é a sua rota nova dando 404.
 
 ## Passo 6 — Ligar a listagem
 
-Volte ao front. Acrescente `listarCarros()` em `src/api.ts` (com
+Volte ao front. Acrescente `listarCarros()` em `src/api/index.ts` (com
 `pedirAutenticado`) e chame-a de `src/pages/carro.ts`, no carregamento da
 página e depois de cada cadastro.
 
@@ -487,7 +487,7 @@ Para o que você escreveu:
 
 - **Se houver função pura** — cruzar carro com modelo, formatar placa —, ela
   merece um `.test.ts` ao lado, sem DOM. O repositório não tem jsdom, então
-  teste de unidade no front só serve para lógica pura. `src/sessao.test.ts` é
+  teste de unidade no front só serve para lógica pura. `src/auth/sessao.test.ts` é
   um exemplo curto.
 - **O adapter novo** tem um `.integration.test.ts` ao lado dos outros em
   `adapters/mysql/`. Veja `mysqlCarroRepository.integration.test.ts`.

@@ -1,6 +1,6 @@
-import { ApiError, cadastrarDono } from './api';
-import { showAccountView } from './script';
-import { limparFormularioDepois, mostrarMensagem } from './ui';
+import { ApiError, cadastrarDono } from '../api';
+import { showAccountView } from '../dom/script';
+import { limparFormularioDepois, mostrarMensagem } from '../dom/ui';
 
 const ownerForm = document.getElementById('owner-form') as HTMLFormElement | null;
 const ownerMsg = document.getElementById('owner-msg') as HTMLDivElement | null;

@@ -15,7 +15,7 @@ defendia e não se anunciava.
 
 ## A decisão num lugar só
 
-`src/sessao.ts`:
+`src/auth/sessao.ts`:
 
 ```ts
 export function areasDe(tipo: string | null): readonly Area[]
@@ -34,7 +34,7 @@ export function destinosDe(tipo: string | null): readonly Destino[]
 precise de teste unitário no front tem que viver fora do DOM — `sessao.test.ts`
 cobre a tabela inteira sem abrir navegador.
 
-`script.ts` monta a sidebar e o botão do meio da barra de baixo a partir dessa
+`dom/script.ts` monta a sidebar e o botão do meio da barra de baixo a partir dessa
 lista, em `renderNavegacao()`, chamada por `renderAccountPanel()`. Ou seja: a
 navegação se refaz a cada login e logout, sem recarregar a página. Os itens
 fixos ("Configurações", "Sobre", "Contato") continuam no HTML, abaixo dos
@@ -54,7 +54,7 @@ subdiretório que queira o mesmo menu vai precisar de um prefixo.
 `POST /donos` existia desde o começo e ninguém chamava. O painel de conta ganhou
 uma quinta vista — `registerOwner`, em `#accountRegisterOwner` — com os dois
 campos a mais, razão social e CNPJ, alcançada pelo link "Sou um estacionamento".
-`src/cadastro_dono.ts` espelha o `cadastro_cliente.ts`: mesmo `mostrarMensagem`,
+`src/pages/cadastroDono.ts` espelha o `cadastroCliente.ts`: mesmo `mostrarMensagem`,
 mesmo `limparFormularioDepois`, mesmo tratamento de 409.
 
 Depois do cadastro e do login o dono **fica no `index.html`** e chega ao hub

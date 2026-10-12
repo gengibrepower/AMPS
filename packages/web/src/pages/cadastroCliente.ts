@@ -1,6 +1,6 @@
-import { ApiError, cadastrarCliente } from './api';
-import { showAccountView } from './script';
-import { limparFormularioDepois, mostrarMensagem } from './ui';
+import { ApiError, cadastrarCliente } from '../api';
+import { showAccountView } from '../dom/script';
+import { limparFormularioDepois, mostrarMensagem } from '../dom/ui';
 
 const clientForm = document.getElementById('client-form') as HTMLFormElement | null;
 const clientMsg = document.getElementById('client-msg') as HTMLDivElement | null;

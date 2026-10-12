@@ -1,4 +1,4 @@
-import type { LoginResposta, UsuarioWire } from './api';
+import type { LoginResposta, UsuarioWire } from '../api';
 
 export type Session = LoginResposta;
 
