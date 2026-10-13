@@ -39,36 +39,13 @@
             <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
         </form>
 
-        <h2>Resultados para: </h2>
+        <h2 id="resultadoTitulo">Resultados para: </h2>
 
-        <ul class="result-list">
-            <li class="result-card">
-                <img src="../assets/images/default-img.png" alt="">
-                <div class="result-card-body">
-                    <h3 class="result-card-title">Título</h3>
-                    <p class="result-card-location">Localização</p>
-                    <p class="result-card-price">Preço: </p>
-                </div>
-            </li>
-            <li class="result-card">
-                <img src="../assets/images/default-img.png" alt="">
-                <div class="result-card-body">
-                    <h3 class="result-card-title">Título</h3>
-                    <p class="result-card-location">Localização</p>
-                    <p class="result-card-price">Preço: </p>
-                </div>
-            </li>
-            <li class="result-card">
-                <img src="../assets/images/default-img.png" alt="">
-                <div class="result-card-body">
-                    <h3 class="result-card-title">Título</h3>
-                    <p class="result-card-location">Localização</p>
-                    <p class="result-card-price">Preço: </p>
-                </div>
-            </li>
-        </ul>
+        <ul class="result-list" id="resultados"></ul>
+        <p id="mensagem"></p>
     </main>
 
     <script type="module" src="../src/dom/navegacao.ts"></script>
+    <script type="module" src="../src/pages/busca.ts"></script>
 </body>
 </html>

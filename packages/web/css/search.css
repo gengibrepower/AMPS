@@ -207,9 +207,25 @@ main > h2 {
     font-weight: 600;
 }
 
-.result-card-location,
-.result-card-price {
+.result-card-location {
     font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+.message {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.msg-success {
+    color: var(--status-available);
+}
+
+.msg-error {
+    color: var(--status-full);
+}
+
+.msg-info {
     opacity: 0.85;
 }
 

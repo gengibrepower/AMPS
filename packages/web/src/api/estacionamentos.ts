@@ -1,4 +1,4 @@
-import { pedirAutenticado } from './http';
+import { pedir, pedirAutenticado } from './http';
 
 export interface EnderecoWire {
     readonly cep: string | null;
@@ -57,4 +57,8 @@ export function editarEstacionamento(
 // 204 sem corpo; o 422 vem quando alguma vaga ainda está ocupada ou reservada.
 export function excluirEstacionamento(id: number): Promise<null> {
     return pedirAutenticado<null>(`/estacionamentos/${id}`, { method: 'DELETE' });
+}
+
+export function pesquisarEstacionamentos(q: string): Promise<readonly EstacionamentoWire[]> {
+    return pedir<readonly EstacionamentoWire[]>(`/busca?q=${encodeURIComponent(q)}`);
 }
