@@ -32,6 +32,10 @@ export class EstacionamentoService {
 		return this.estacionamentos.listByDono(dono.id);
 	}
 
+	async pesquisar(termo: string): Promise<readonly Estacionamento[]> {
+		return this.estacionamentos.searchPublicados(termo);
+	}
+
 	async editar(
 		usuarioId: number,
 		estacionamentoId: number,

@@ -239,6 +239,13 @@ export function createApp(deps: AppDeps): Express {
 		);
 	});
 
+	app.get('/busca', async (req, res) => {
+		const termo = req.query['q'];
+		const q = typeof termo === 'string' ? termo.trim() : '';
+		const estacionamentos = await deps.estacionamentoService.pesquisar(q);
+		res.status(200).json(estacionamentos.map(estacionamentoWire));
+	});
+
 	app.get('/carros', autenticar(deps.tokenService), async (req, res) => {
 		const auth = autenticado(req, res);
 		if (auth === null) return;

@@ -1091,3 +1091,100 @@ describe('publicacao', () => {
 		expect(resposta.status).toBe(403);
 	});
 });
+
+describe('GET /busca', () => {
+	const DONO = { ...CADASTRO, razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' };
+
+	async function cadastrar(token: string, dados: Record<string, string>): Promise<number> {
+		const resposta = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send(dados);
+		return resposta.body.id as number;
+	}
+
+	// Publicar pela rota exige topologia e vagas; aqui só importa o estado final.
+	async function publicar(id: number): Promise<void> {
+		await db().execute('UPDATE estacionamentos SET publicado = TRUE WHERE id = ?', [id]);
+	}
+
+	function nomes(body: { nome: string }[]): string[] {
+		return body.map((estacionamento) => estacionamento.nome);
+	}
+
+	beforeEach(async () => {
+		await request(app).post('/donos').send(DONO);
+		const entrada = await request(app)
+			.post('/auth/login')
+			.send({ email: DONO.email, senha: DONO.senha });
+		const token = entrada.body.token as string;
+
+		await publicar(
+			await cadastrar(token, {
+				nome: 'Pátio Centro',
+				logradouro: 'Rua XV de Novembro',
+				bairro: 'Centro',
+				cidade: 'Blumenau',
+			}),
+		);
+		await publicar(
+			await cadastrar(token, { nome: 'Estaciona & Cia', bairro: 'Velha', cidade: 'Joinville' }),
+		);
+		await cadastrar(token, { nome: 'Rascunho do Centro', cidade: 'Blumenau' });
+	});
+
+	it('lista todos os publicados, em ordem alfabética, sem token', async () => {
+		const resposta = await request(app).get('/busca');
+
+		expect(resposta.status).toBe(200);
+		expect(nomes(resposta.body)).toEqual(['Estaciona & Cia', 'Pátio Centro']);
+		expect(resposta.body[1]).toMatchObject({
+			publicado: true,
+			endereco: { bairro: 'Centro', cidade: 'Blumenau' },
+		});
+	});
+
+	it('nunca devolve estacionamento nao publicado (RN-05)', async () => {
+		const resposta = await request(app).get('/busca').query({ q: 'Rascunho' });
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toEqual([]);
+	});
+
+	it.each([
+		['nome', 'Pátio'],
+		['logradouro', 'Novembro'],
+		['bairro', 'Velha'],
+		['cidade', 'Joinville'],
+	])('procura pelo %s', async (_campo, termo) => {
+		const resposta = await request(app).get('/busca').query({ q: termo });
+
+		expect(resposta.body).toHaveLength(1);
+	});
+
+	it('ignora maiusculas, acentos e espacos nas pontas', async () => {
+		const resposta = await request(app).get('/busca').query({ q: '  PATIO ' });
+
+		expect(nomes(resposta.body)).toEqual(['Pátio Centro']);
+	});
+
+	it('trata o termo como texto, inclusive o &', async () => {
+		const resposta = await request(app).get('/busca').query({ q: '& Cia' });
+
+		expect(nomes(resposta.body)).toEqual(['Estaciona & Cia']);
+	});
+
+	it('lista vazia quando nada casa', async () => {
+		const resposta = await request(app).get('/busca').query({ q: 'Curitiba' });
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toEqual([]);
+	});
+
+	it('trata q repetido como busca vazia', async () => {
+		const resposta = await request(app).get('/busca?q=Centro&q=Velha');
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toHaveLength(2);
+	});
+});

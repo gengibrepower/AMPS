@@ -152,6 +152,7 @@ export interface CarroRepository {
 export interface EstacionamentoRepository {
 	create(novo: NovoEstacionamento): Promise<Estacionamento>;
 	listByDono(donoId: number): Promise<readonly Estacionamento[]>;
+	searchPublicados(termo: string): Promise<readonly Estacionamento[]>;
 	findById(id: number): Promise<Estacionamento | null>;
 	update(id: number, dados: DadosDoEstacionamento): Promise<Estacionamento>;
 	delete(id: number): Promise<void>;

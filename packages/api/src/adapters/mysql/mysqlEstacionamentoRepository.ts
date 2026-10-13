@@ -36,6 +36,20 @@ WHERE dono_id = ?
 ORDER BY id
 `;
 
+const SELECT_PUBLICADOS = `
+SELECT id, dono_id, nome_estacionamento, publicado,
+	   cep, logradouro, numero, bairro, complemento, cidade, estado
+FROM estacionamentos
+WHERE publicado = 1
+	AND (
+		nome_estacionamento LIKE CONCAT('%', ?, '%')
+		OR cidade LIKE CONCAT('%', ?, '%')
+		OR bairro LIKE CONCAT('%', ?, '%')
+		OR logradouro LIKE CONCAT('%', ?, '%')
+	)
+ORDER BY nome_estacionamento
+`;
+
 const SELECT_BY_ID = `
 SELECT id, dono_id, nome_estacionamento, publicado,
 	   cep, logradouro, numero, bairro, complemento, cidade, estado
@@ -109,6 +123,11 @@ export class MysqlEstacionamentoRepository implements EstacionamentoRepository {
 
 	async listByDono(donoId: number): Promise<readonly Estacionamento[]> {
 		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_BY_DONO, [donoId]);
+		return rows.map(toEstacionamento);
+	}
+
+	async searchPublicados(termo: string): Promise<readonly Estacionamento[]> {
+		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_PUBLICADOS, [termo, termo, termo, termo]);
 		return rows.map(toEstacionamento);
 	}
 
