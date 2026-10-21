@@ -1,5 +1,5 @@
 import type { EstacionamentoWire } from './estacionamentos';
-import { pedirAutenticado } from './http';
+import { pedir, pedirAutenticado } from './http';
 
 export interface VagaWire {
     readonly id: number;
@@ -20,8 +20,26 @@ export interface MapaWire {
     readonly vagas: readonly VagaWire[];
 }
 
+export interface VagaPublicaWire {
+    readonly no_id: string;
+    readonly numero: string;
+    readonly tipo: string;
+    readonly rotacao_graus: number;
+    readonly status: string;
+}
+
+export interface MapaPublicoWire {
+    readonly versao: number;
+    readonly grafo: unknown;
+    readonly vagas: readonly VagaPublicaWire[];
+}
+
 export function carregarMapa(estacionamentoId: number): Promise<MapaWire> {
     return pedirAutenticado<MapaWire>(`/estacionamentos/${estacionamentoId}/mapa`);
+}
+
+export function carregarMapaPublicado(estacionamentoId: number): Promise<MapaPublicoWire> {
+    return pedir<MapaPublicoWire>(`/busca/${estacionamentoId}/mapa`);
 }
 
 // O corpo do PUT de topologia **é** o grafo, na mesma forma que vai para o
