@@ -21,3 +21,15 @@ body {
     height: 100%;
     background-color: #ffffff;
 }
+
+.msg-success {
+    color: var(--status-available);
+}
+
+.msg-error {
+    color: var(--status-full);
+}
+
+.msg-info {
+    opacity: 0.85;
+}
