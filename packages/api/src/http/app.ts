@@ -5,6 +5,7 @@ import type { CarroService } from '../services/carroService.js';
 import type { DonoService } from '../services/donoService.js';
 import type { EstacionamentoService } from '../services/estacionamentoService.js';
 import type { MapaService } from '../services/mapaService.js';
+import type { MetricasService } from '../services/metricasService.js';
 import type { ModeloService } from '../services/modeloService.js';
 import type { PublicacaoService } from '../services/publicacaoService.js';
 import type { TopologiaService } from '../services/topologiaService.js';
@@ -25,6 +26,7 @@ export interface AppDeps {
 	readonly topologiaService: TopologiaService;
 	readonly vagaService: VagaService;
 	readonly mapaService: MapaService;
+	readonly metricasService: MetricasService;
 	readonly publicacaoService: PublicacaoService;
 	readonly tokenService: TokenService;
 	readonly corsOrigin: string;
@@ -426,6 +428,31 @@ export function createApp(deps: AppDeps): Express {
 			versao: mapa.versao,
 			grafo: mapa.grafo,
 			vagas: mapa.vagas.map(vagaWire),
+		});
+	});
+
+	app.get('/estacionamentos/:id/metricas', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		const metricas = await deps.metricasService.calcular(auth.sub, id);
+		res.status(200).json({
+			estacionamento: estacionamentoWire(metricas.estacionamento),
+			versao_desenho: metricas.versaoDesenho,
+			vagas: metricas.vagas,
+			taxa_ocupacao: metricas.taxaOcupacao,
+			por_tipo: metricas.porTipo,
+			com_sensor: metricas.comSensor,
+			desenho: {
+				entradas: metricas.desenho.entradas,
+				pontos_de_interesse: metricas.desenho.pontosDeInteresse,
+				vagas_desenhadas: metricas.desenho.vagasDesenhadas,
+				conexoes: metricas.desenho.conexoes,
+			},
+			vagas_sem_cadastro: metricas.vagasSemCadastro,
 		});
 	});
 
