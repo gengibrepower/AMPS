@@ -23,8 +23,9 @@ No front, `owner/estacionamentos.html` lista e cria pátios, e
 `owner/editor.html` abre o pátio, desenha o grafo em metros sobre uma grade e
 deixa criar, mover, ligar e apagar nó, com desfazer, mais o inspetor à direita
 para rótulo, número, tipo, rotação e peso. O botão Salvar grava na ordem que
-os triggers impõem, e o Publicar passa pela RN-11. `src/client-map/` continua
-vazia — a visão do cliente é outro trabalho.
+os triggers impõem, e o Publicar passa pela RN-11. A visão do cliente,
+`client/mapa.html` com `src/client-map/`, reaproveita o mesmo palco e a mesma
+cena em modo só de leitura — ver "O mapa do cliente" no fim.
 
 ## A ordem de gravação é obrigatória
 
@@ -278,8 +279,8 @@ o pátio no banco está inconsistente com o que o dono vê**.
 
 O editor acabou. O que sobra é de fora dele:
 
-- **`src/client-map/` continua vazia** — a visão do cliente, que é onde o
-  `JSON_TABLE` da consulta lá de cima finalmente serve.
+- **O mapa do cliente mostra a planta, mas não o estado das vagas.** O
+  `status` já chega na rota pública e a cena ainda não o pinta.
 - **RN-05** ("publicar exige metadados básicos") continua sem definição de
   quais metadados contam. Decisão de produto, não de código.
 
@@ -330,3 +331,24 @@ descobrir a conversão metro↔tela, como faz `ferramentas.e2e.test.ts`.
   banco, na mão.
 - **RN-05** ("publicar exige metadados básicos") não está implementada: falta
   definir quais metadados contam.
+
+## O mapa do cliente
+
+`GET /busca/:id/mapa` é a versão pública do `GET /estacionamentos/:id/mapa`: sem
+token, mesma forma `{ versao, grafo, vagas }`. Quem chega nela é o cartão da
+busca, que leva a `client/mapa.html?id=<id>`.
+
+- **Pátio não publicado responde igual ao inexistente.** 404 com o mesmo corpo,
+  e não 403: o 403 confirmaria que o id existe, e quem testasse ids em sequência
+  contaria os rascunhos de cada dono. O teste de integração compara os dois
+  corpos.
+- **A vaga pública tem tradutor próprio.** `vagaPublicaWire` manda só `no_id`,
+  `numero`, `tipo`, `rotacao_graus` e `status`. O `carro_id` diria qual carro
+  está em qual vaga a qualquer um (RNF-05), e o `sensor` é identificador
+  interno. No front o espelho é `VagaPublicaWire`, e o tradutor para a cena
+  grava `sensor: null`.
+- **O grafo vai inteiro, não pelo `JSON_TABLE`.** A cena precisa das arestas
+  para desenhar as vias, o mesmo motivo do editor.
+- **A cena roda em modo `ligar`.** É o único que impede arrastar sem deixar de
+  ouvir clique. O `criar` também impede, mas desliga a camada inteira, e um
+  clique numa vaga atravessaria até o palco.
