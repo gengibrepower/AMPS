@@ -44,8 +44,13 @@ function criarCard(estacionamento: EstacionamentoWire): HTMLLIElement {
     local.className = 'result-card-location';
     local.textContent = localizacao(estacionamento.endereco) || 'Endereço não informado';
 
+    const link = document.createElement('a');
+    link.className = 'result-card-link';
+    link.href = `/client/mapa.html?id=${estacionamento.id}`;
+
     corpo.append(titulo, local);
-    card.append(imagem, corpo);
+    link.append(imagem, corpo);
+    card.append(link);
     return card;
 }
 

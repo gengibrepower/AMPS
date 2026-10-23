@@ -188,6 +188,22 @@ main > h2 {
     overflow: hidden;
 }
 
+.result-card-link {
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+    text-decoration: none;
+}
+
+.result-card:hover {
+    outline: 2px solid var(--status-available);
+}
+
+.result-card-link:focus-visible {
+    outline: 2px solid var(--status-available);
+    outline-offset: -2px;
+}
+
 .result-card img {
     width: 100%;
     height: 160px;
