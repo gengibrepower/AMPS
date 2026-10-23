@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do pátio - AMPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/owner.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back,logout,refresh"/>
+</head>
+<body>
+    <header>
+        <a class="logo" href="../index.html">
+            <img src="../assets/images/logo_holder.png" alt="">
+            <span id="logo-text">AMPS</span>
+        </a>
+        <div class="conta" id="conta">
+            <span id="donoNome"></span>
+            <button type="button" id="sair" class="botao-texto" aria-label="Sair">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <a href="estacionamentos.html" class="voltar-lista">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Meus estacionamentos
+        </a>
+
+        <section id="bloqueio" class="bloqueio disabled">
+            <h2>Painel do pátio</h2>
+            <p id="bloqueioTexto"></p>
+            <a id="bloqueioLink" href="../index.html" class="botao-primario">Ir para o login</a>
+        </section>
+
+        <section id="area" class="disabled">
+            <div class="titulo-linha painel-cabecalho">
+                <div>
+                    <h2 id="patioNome"></h2>
+                    <p id="patioEndereco" class="item-endereco"></p>
+                </div>
+                <div class="item-acoes">
+                    <span id="patioEtiqueta" class="etiqueta"></span>
+                    <button type="button" id="atualizar" class="botao-icone" title="Atualizar" aria-label="Atualizar">
+                        <span class="material-symbols-outlined">refresh</span>
+                    </button>
+                    <a id="abrirEditor" class="abrir" href="editor.html">Abrir editor</a>
+                </div>
+            </div>
+
+            <p id="mensagem" class="message"></p>
+
+            <div class="kpis">
+                <div class="kpi">
+                    <p class="kpi-rotulo">Vagas</p>
+                    <p class="kpi-valor" id="kpiTotal"></p>
+                </div>
+                <div class="kpi">
+                    <p class="kpi-rotulo"><span class="ponto ponto-livre"></span>Livres</p>
+                    <p class="kpi-valor" id="kpiLivres"></p>
+                </div>
+                <div class="kpi">
+                    <p class="kpi-rotulo"><span class="ponto ponto-ocupada"></span>Ocupadas</p>
+                    <p class="kpi-valor" id="kpiOcupadas"></p>
+                </div>
+                <div class="kpi">
+                    <p class="kpi-rotulo"><span class="ponto ponto-reservada"></span>Reservadas</p>
+                    <p class="kpi-valor" id="kpiReservadas"></p>
+                </div>
+                <div class="kpi">
+                    <p class="kpi-rotulo">Ocupação</p>
+                    <p class="kpi-valor" id="kpiOcupacao"></p>
+                </div>
+            </div>
+
+            <section class="painel">
+                <h3 class="painel-titulo">Ocupação agora</h3>
+                <div id="barraOcupacao" class="barra" role="img"></div>
+                <p id="semVagas" class="vazio disabled">
+                    Nenhuma vaga cadastrada ainda. Desenhe e numere as vagas no editor.
+                </p>
+            </section>
+
+            <div class="paineis">
+                <section class="painel">
+                    <h3 class="painel-titulo">Por tipo de vaga</h3>
+                    <ul id="porTipo" class="tipos"></ul>
+                </section>
+
+                <section class="painel">
+                    <h3 class="painel-titulo">Desenho</h3>
+                    <dl id="desenho" class="numeros"></dl>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="../src/pages/metricasEstacionamentos.ts"></script>
+</body>
+</html>

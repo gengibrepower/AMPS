@@ -5,8 +5,9 @@ import {
     excluirEstacionamento,
     listarEstacionamentos,
 } from '../api';
-import type { DadosEstacionamento, EnderecoWire, EstacionamentoWire } from '../api';
+import type { DadosEstacionamento, EstacionamentoWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
+import { enderecoEmLinha } from '../dom/endereco';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const bloqueio = document.getElementById('bloqueio') as HTMLElement | null;
@@ -50,14 +51,6 @@ function campo(nome: string): string {
 function preencherCampo(nome: string, valor: string | null): void {
     const entrada = document.getElementById(nome) as HTMLInputElement | null;
     if (entrada) entrada.value = valor ?? '';
-}
-
-// "Rua XV, 1200 — Centro, Blumenau/SC", pulando o que não foi preenchido.
-function enderecoEmLinha(endereco: EnderecoWire): string {
-    const rua = [endereco.logradouro, endereco.numero].filter(Boolean).join(', ');
-    const cidade = [endereco.cidade, endereco.estado].filter(Boolean).join('/');
-    const local = [endereco.bairro, cidade].filter(Boolean).join(', ');
-    return [rua, local].filter((parte) => parte !== '').join(' — ');
 }
 
 function botaoDeIcone(icone: string, rotulo: string, classe: string): HTMLButtonElement {
@@ -135,7 +128,11 @@ function itemDaLista(estacionamento: EstacionamentoWire): HTMLLIElement {
     const item = document.createElement('li');
     item.className = 'item';
 
-    const info = document.createElement('div');
+    // O link se estica sobre o cartão inteiro pelo ::after; as ações ficam
+    // por cima dele para continuarem clicáveis.
+    const info = document.createElement('a');
+    info.className = 'item-info';
+    info.href = `metricas-estacionamentos.html?estacionamento=${estacionamento.id}`;
 
     const nome = document.createElement('p');
     nome.className = 'item-nome';
