@@ -335,8 +335,14 @@ descobrir a conversão metro↔tela, como faz `ferramentas.e2e.test.ts`.
 ## O mapa do cliente
 
 `GET /busca/:id/mapa` é a versão pública do `GET /estacionamentos/:id/mapa`: sem
-token, mesma forma `{ versao, grafo, vagas }`. Quem chega nela é o cartão da
-busca, que leva a `client/mapa.html?id=<id>`.
+token, mesma forma `{ versao, grafo, vagas }`. O caminho do cliente é busca →
+`client/estacionamento.html?id=<id>` → "Ver mapa" → `client/mapa.html?id=<id>`.
+
+A página de detalhes junta `GET /busca/:id` (nome e endereço, com o mesmo 404
+do rascunho) e o mapa público, de onde conta as vagas por tipo e lista os POIs
+pelo rótulo — as contas ficam em `client-map/resumo.ts`, puro e testado. O
+banco não tem telefone, horário, preço nem foto do pátio; o que a página mostra
+é tudo o que existe.
 
 - **Pátio não publicado responde igual ao inexistente.** 404 com o mesmo corpo,
   e não 403: o 403 confirmaria que o id existe, e quem testasse ids em sequência
