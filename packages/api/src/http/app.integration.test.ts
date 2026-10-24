@@ -1319,3 +1319,52 @@ describe('GET /busca/:id/mapa', () => {
 		expect(resposta.status).toBe(400);
 	});
 });
+
+describe('GET /busca/:id', () => {
+	const DONO = { ...CADASTRO, razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' };
+
+	let estacionamentoId: number;
+
+	beforeEach(async () => {
+		await request(app).post('/donos').send(DONO);
+		const entrada = await request(app)
+			.post('/auth/login')
+			.send({ email: DONO.email, senha: DONO.senha });
+
+		const criado = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${entrada.body.token as string}`)
+			.send({ nome: 'Pátio Centro', logradouro: 'Rua XV de Novembro', cidade: 'Blumenau' });
+		estacionamentoId = criado.body.id as number;
+	});
+
+	it('devolve nome e endereco do patio publicado sem token', async () => {
+		await db().execute('UPDATE estacionamentos SET publicado = TRUE WHERE id = ?', [
+			estacionamentoId,
+		]);
+
+		const resposta = await request(app).get(`/busca/${estacionamentoId}`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toMatchObject({
+			id: estacionamentoId,
+			nome: 'Pátio Centro',
+			endereco: { logradouro: 'Rua XV de Novembro', cidade: 'Blumenau' },
+		});
+		expect(resposta.body).not.toHaveProperty('dono_id');
+	});
+
+	it('responde ao patio nao publicado igual ao inexistente', async () => {
+		const rascunho = await request(app).get(`/busca/${estacionamentoId}`);
+		const inexistente = await request(app).get(`/busca/${estacionamentoId + 1000}`);
+
+		expect(rascunho.status).toBe(404);
+		expect(rascunho.body).toEqual(inexistente.body);
+	});
+
+	it('devolve 400 para id invalido', async () => {
+		const resposta = await request(app).get('/busca/abc');
+
+		expect(resposta.status).toBe(400);
+	});
+});
