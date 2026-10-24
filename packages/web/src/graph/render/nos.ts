@@ -66,7 +66,7 @@ export function recuoDoNo(no: No, saida: Ponto, angulo = 0): number {
 // acompanha o zoom como o resto.
 const ALTURA_DO_NUMERO = 0.9;
 
-function fundoDaVaga(dados: DadosDaVaga): string {
+export function fundoDaVaga(dados: DadosDaVaga): string {
     if (dados.status === 'ocupada' || dados.status === 'reservada'){
         return OCUPADA_FUNDO;
     }
