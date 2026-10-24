@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu,search,home,grid_view,directions_car,account_circle"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,chevron_right,directions_car,grid_view,home,menu,search"/>
 </head>
 <body>
     <header>
@@ -39,6 +39,11 @@
             <span class="material-symbols-outlined">search</span>
             <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
         </form>
+
+        <section id="historico" class="historico disabled">
+            <h2 class="historico-titulo">Abertos recentemente</h2>
+            <ul id="listaDoHistorico" class="historico-lista"></ul>
+        </section>
     </main>
  
     <div class="login disabled" id="accountPanel">
@@ -163,6 +168,7 @@
     <script type="module" src="src/pages/login.ts"></script>
     <script type="module" src="src/pages/cadastroCliente.ts"></script>
     <script type="module" src="src/pages/cadastroDono.ts"></script>
+    <script type="module" src="src/pages/home.ts"></script>
 </body>
 </html>
  

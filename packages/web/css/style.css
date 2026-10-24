@@ -328,6 +328,73 @@ main {
     text-decoration: none;
 }
 
+.historico {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.historico-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.historico-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    list-style: none;
+}
+
+.historico-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 96px;
+    padding: 20px;
+    border-radius: var(--radius-card);
+    background-color: var(--card-bg);
+    color: inherit;
+    text-decoration: none;
+}
+
+.historico-link:hover {
+    background-color: var(--search-bg);
+}
+
+.historico-link:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+}
+
+.historico-seta {
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+.historico-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.historico-nome {
+    font-size: 1.1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.historico-local {
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
 .disabled {
     display: none;
 }
