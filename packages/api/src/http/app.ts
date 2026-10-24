@@ -258,6 +258,14 @@ export function createApp(deps: AppDeps): Express {
 		res.status(200).json(estacionamentos.map(estacionamentoWire));
 	});
 
+	app.get('/busca/:id', async (req, res) => {
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		const estacionamento = await deps.estacionamentoService.buscarPublicado(id);
+		res.status(200).json(estacionamentoWire(estacionamento));
+	});
+
 	app.get('/busca/:id/mapa', async (req, res) => {
 		const id = idDaRota(req, res);
 		if (id === null) return;
