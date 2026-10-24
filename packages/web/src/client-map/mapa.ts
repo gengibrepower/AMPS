@@ -2,7 +2,7 @@ import { ApiError, buscarEstacionamentoPublicado, carregarMapaPublicado } from '
 import type { VagaPublicaWire } from '../api';
 import { criarPalco } from '../graph/render/palco';
 import { criarCena } from '../graph/render/cena';
-import { comoGrafo, comoTipoDeVaga } from '../graph/tipos';
+import { comoGrafo, comoStatusDeVaga, comoTipoDeVaga } from '../graph/tipos';
 import type { DadosDaVaga } from '../graph/tipos';
 import { mostrarMensagem } from '../dom/ui';
 
@@ -22,6 +22,7 @@ function comoDadosDaVaga(vaga: VagaPublicaWire): DadosDaVaga {
         tipo: comoTipoDeVaga(vaga.tipo),
         rotacaoGraus: vaga.rotacao_graus,
         sensor: null,
+        status: comoStatusDeVaga(vaga.status),
     };
 }
 

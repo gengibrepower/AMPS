@@ -16,6 +16,7 @@ import {
     VAGA_TRACO,
     VIA,
     VIA_FUNDO,
+    OCUPADA_FUNDO,
 } from './tinta';
 
 interface Estilo {
@@ -65,11 +66,18 @@ export function recuoDoNo(no: No, saida: Ponto, angulo = 0): number {
 // acompanha o zoom como o resto.
 const ALTURA_DO_NUMERO = 0.9;
 
+function fundoDaVaga(dados: DadosDaVaga): string {
+    if (dados.status === 'ocupada' || dados.status === 'reservada'){
+        return OCUPADA_FUNDO;
+    }
+    return FUNDO_POR_TIPO[dados.tipo] ?? VAGA_FUNDO;
+}
+
 function forma(no: No, dados: DadosDaVaga | undefined): Konva.Shape {
     const estilo = ESTILO[no.role];
     const comum = {
         fill: no.role === 'candidate' && dados !== undefined
-            ? FUNDO_POR_TIPO[dados.tipo] ?? estilo.preenchimento
+            ? fundoDaVaga(dados)
             : estilo.preenchimento,
         stroke: estilo.traco,
         strokeScaleEnabled: false,

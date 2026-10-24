@@ -61,6 +61,7 @@ export function comoGrafo(valor: unknown): Grafo {
 }
 
 export type TipoDeVaga = 'comum' | 'pcd' | 'idoso' | 'moto' | 'eletrico';
+export type StatusDeVaga = 'livre' | 'ocupada' | 'reservada';
 
 // O que a tabela `vagas` guarda além do grafo. O Merlian não tem orientação no
 // contrato: a rotação vive aqui, e é por isso que ela manda no desenho.
@@ -74,10 +75,17 @@ export interface DadosDaVaga {
     readonly tipo: TipoDeVaga;
     readonly rotacaoGraus: number;
     readonly sensor: string | null;
+    readonly status?: StatusDeVaga;
 }
 
 const TIPOS: readonly string[] = ['comum', 'pcd', 'idoso', 'moto', 'eletrico'];
 
 export function comoTipoDeVaga(valor: unknown): TipoDeVaga {
     return typeof valor === 'string' && TIPOS.includes(valor) ? (valor as TipoDeVaga) : 'comum';
+}
+
+const TIPOS_STATUS: readonly string[] = ['livre', 'ocupada', 'reservada'];
+
+export function comoStatusDeVaga(valor: unknown): StatusDeVaga {
+    return typeof valor === 'string' && TIPOS_STATUS.includes(valor) ? (valor as StatusDeVaga) : 'ocupada';
 }
