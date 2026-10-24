@@ -1,5 +1,11 @@
 @import url(vars.css);
 
+:root {
+    --linha: rgba(255, 255, 255, 0.12);
+    --apagado: rgba(232, 232, 233, 0.65);
+    --altura-header: 48px;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -14,6 +20,41 @@ body {
     background-color: var(--bg-color);
     color: var(--text-primary);
     font-family: var(--font-main);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: var(--altura-header);
+    flex-shrink: 0;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--linha);
+}
+
+.voltar {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    color: var(--apagado);
+    text-decoration: none;
+}
+
+.voltar:hover {
+    color: var(--text-primary);
+}
+
+.nome {
+    min-width: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#mensagem:not(:empty) {
+    padding: 8px 12px;
 }
 
 .palco {

@@ -1,4 +1,4 @@
-import { ApiError, carregarMapaPublicado } from '../api';
+import { ApiError, buscarEstacionamentoPublicado, carregarMapaPublicado } from '../api';
 import type { VagaPublicaWire } from '../api';
 import { criarPalco } from '../graph/render/palco';
 import { criarCena } from '../graph/render/cena';
@@ -11,6 +11,8 @@ const params = new URLSearchParams(queryString);
 const id = Number(params.get('id'));
 const palcoDiv = document.getElementById('palco') as HTMLDivElement | null;
 const mensagem = document.querySelector<HTMLElement>('#mensagem');
+const voltar = document.querySelector<HTMLAnchorElement>('#voltar');
+const nomeDoPatio = document.querySelector<HTMLElement>('#nomeDoPatio');
 
 // A rota pública não manda o sensor, e o público não tem por que saber qual é.
 function comoDadosDaVaga(vaga: VagaPublicaWire): DadosDaVaga {
@@ -24,6 +26,7 @@ function comoDadosDaVaga(vaga: VagaPublicaWire): DadosDaVaga {
 }
 
 if (!Number.isInteger(id) || id <= 0) {
+    if (nomeDoPatio) nomeDoPatio.textContent = 'Mapa do estacionamento';
     mostrarMensagem(
         mensagem,
         'Link inválido',
@@ -32,7 +35,14 @@ if (!Number.isInteger(id) || id <= 0) {
 } else if (palcoDiv !== null) {
     void (async () => {
         try {
-            const mapa = await carregarMapaPublicado(id);
+            if (voltar) voltar.href = `/client/estacionamento.html?id=${id}`;
+            const [estacionamento, mapa] = await Promise.all([
+                buscarEstacionamentoPublicado(id),
+                carregarMapaPublicado(id),
+            ]);
+            document.title = `${estacionamento.nome} - Mapa - AMPS`;
+            if (nomeDoPatio) nomeDoPatio.textContent = estacionamento.nome;
+
             const palco = criarPalco(palcoDiv);
             const cena = criarCena(palco);
             cena.modo('ligar');
@@ -40,6 +50,7 @@ if (!Number.isInteger(id) || id <= 0) {
             cena.desenhar(comoGrafo(mapa.grafo), mapa.vagas.map(comoDadosDaVaga));
             cena.enquadrar();
         } catch (erro) {
+            if (nomeDoPatio) nomeDoPatio.textContent = 'Mapa do estacionamento';
             mostrarMensagem(
                 mensagem,
                 erro instanceof ApiError ? erro.message : 'Algo deu errado.',

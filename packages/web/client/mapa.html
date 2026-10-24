@@ -4,9 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa do estacionamento - AMPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/mapa.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back"/>
 </head>
 <body>
+    <header>
+        <a id="voltar" href="search.html" class="voltar" aria-label="Voltar">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <span id="nomeDoPatio" class="nome">Carregando…</span>
+    </header>
+
     <p id="mensagem"></p>
     <div id="palco" class="palco"></div>
     <script type="module" src="../src/client-map/mapa.ts"></script>
