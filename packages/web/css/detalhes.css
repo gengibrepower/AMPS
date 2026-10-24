@@ -119,15 +119,39 @@ main.pagina-detalhes {
     opacity: 0.7;
 }
 
-.total {
-    margin-bottom: 12px;
-    font-size: 1rem;
-    opacity: 0.85;
+.disponiveis {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin-bottom: 6px;
 }
 
-.total-numero {
-    font-size: 2rem;
+.disponiveis-numero {
+    font-size: 3rem;
     font-weight: 700;
+    line-height: 1;
+}
+
+.disponiveis-rotulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.disponiveis.lotado .disponiveis-numero,
+.disponiveis.lotado .disponiveis-rotulo {
+    color: var(--status-full);
+}
+
+.total {
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    opacity: 0.7;
+}
+
+/* O separador só aparece quando a ocupação foi preenchida. */
+.ocupacao:not(:empty)::before {
+    content: " · ";
 }
 
 .etiquetas {

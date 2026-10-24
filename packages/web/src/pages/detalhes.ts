@@ -4,7 +4,7 @@ import {
     carregarMapaPublicado,
 } from '../api';
 import type { EnderecoWire } from '../api';
-import { pontosDeInteresse, vagasPorTipo } from '../client-map/resumo';
+import { pontosDeInteresse, vagasLivres, vagasPorTipo } from '../client-map/resumo';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 import { comoGrafo } from '../graph/tipos';
 import type { TipoDeVaga } from '../graph/tipos';
@@ -26,8 +26,12 @@ const nome = document.querySelector<HTMLElement>('#nome');
 const local = document.querySelector<HTMLElement>('#local');
 const endereco = document.querySelector<HTMLUListElement>('#endereco');
 const verMapa = document.querySelector<HTMLAnchorElement>('#verMapa');
+const disponiveis = document.querySelector<HTMLElement>('#disponiveis');
+const totalDeVagasLivres = document.querySelector<HTMLElement>('#totalDeVagasLivres');
+const rotuloDoTotalLivres = document.querySelector<HTMLElement>('#rotuloDoTotalLivres');
 const totalDeVagas = document.querySelector<HTMLElement>('#totalDeVagas');
 const rotuloDoTotal = document.querySelector<HTMLElement>('#rotuloDoTotal');
+const ocupacao = document.querySelector<HTMLElement>('#ocupacao');
 const listaDeTipos = document.querySelector<HTMLUListElement>('#vagasPorTipo');
 const secaoPois = document.querySelector<HTMLElement>('#secaoPois');
 const listaDePontos = document.querySelector<HTMLUListElement>('#pontos');
@@ -74,8 +78,23 @@ if (!Number.isInteger(id) || id <= 0) {
             if (verMapa) verMapa.href = `/client/mapa.html?id=${estacionamento.id}`;
 
             const total = mapa.vagas.length;
+            const livres = vagasLivres(mapa.vagas);
+            const lotado = total > 0 && livres === 0;
+
+            if (totalDeVagasLivres) totalDeVagasLivres.textContent = String(livres);
+            if (rotuloDoTotalLivres) {
+                if (lotado) rotuloDoTotalLivres.textContent = 'Lotado';
+                else rotuloDoTotalLivres.textContent = livres === 1 ? 'vaga disponível' : 'vagas disponíveis';
+            }
+            disponiveis?.classList.toggle('lotado', lotado);
+
             if (totalDeVagas) totalDeVagas.textContent = String(total);
             if (rotuloDoTotal) rotuloDoTotal.textContent = total === 1 ? 'vaga' : 'vagas';
+            if (ocupacao) {
+                ocupacao.textContent = total === 0
+                    ? ''
+                    : `${Math.round(((total - livres) / total) * 100)}% ocupado`;
+            }
             listaDeTipos?.replaceChildren(
                 ...vagasPorTipo(mapa.vagas).map(({ tipo, quantidade }) =>
                     itemDaLista(`${ROTULOS[tipo]}: ${quantidade}`),

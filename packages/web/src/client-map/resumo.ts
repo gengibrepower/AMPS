@@ -25,3 +25,13 @@ export function pontosDeInteresse(grafo: Grafo): readonly string[] {
         .filter((no) => no.role === 'attractor')
         .map((no) => no.label?.trim() || 'Ponto sem nome');
 }
+
+export function vagasLivres(vagas: readonly { readonly status: string }[]): number {
+    let contagem = 0;
+    for (const vaga of vagas) {
+        if (vaga.status === 'livre') {
+            contagem += 1;
+        }
+    }
+    return contagem;
+}
