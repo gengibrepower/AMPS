@@ -99,139 +99,6 @@ main {
     opacity: 0.6;
 }
 
-.filters {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-
-.filters::-webkit-scrollbar {
-    display: none;
-}
-
-.filter-pill {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    height: 40px;
-    padding: 0 16px;
-    white-space: nowrap;
-    background-color: var(--btn-green-bg);
-    border: 1px solid var(--btn-green-border);
-    border-radius: var(--radius-pill);
-    color: var(--btn-green-border);
-    font-size: 0.85rem;
-    cursor: pointer;
-}
-
-.filter-pill .material-symbols-outlined {
-    font-size: 18px;
-}
-
-main > h2 {
-    align-self: flex-start;
-    margin-top: 8px;
-}
-
-.parking-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    margin-top: 1.2rem;
-}
-
-.parking-card {
-    background-color: var(--card-bg);
-    border-radius: var(--radius-card);
-    height: 180px;
-}
-
-.parking-card-link {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 20px 44px 20px 20px;
-    color: inherit;
-    text-decoration: none;
-}
-
-.parking-card-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.parking-card-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    min-width: 0;
-}
-
-.parking-card-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.parking-card-location,
-.parking-card-price {
-    font-size: 0.9rem;
-    opacity: 0.85;
-}
-
-.rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    flex-shrink: 0;
-}
-
-.star-icon {
-    color: var(--star-color);
-}
-
-.parking-card-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    opacity: 0.85;
-}
-
-.status-dot {
-    width: 12px;
-    height: 12px;
-    border: 2px solid transparent;
-    border-radius: 50%;
-}
-
-.status-dot.available {
-    border-color: var(--status-available);
-}
-
-.status-dot.full {
-    border-color: var(--status-full);
-}
-
-.chevron {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    opacity: 0.6;
-}
-
 /* Bottom nav (mobile) */
 .bottom-nav {
     position: fixed;
@@ -482,12 +349,6 @@ main > h2 {
         gap: 24px;
     }
 
-    .parking-list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
     .bottom-nav {
         display: none;
     }
@@ -505,11 +366,5 @@ main > h2 {
         width: 280px;
         max-height: 100%;
         border-radius: 0;
-    }
-}
-
-@media (min-width: 1200px) {
-    .parking-list {
-        grid-template-columns: repeat(3, 1fr);
     }
 }

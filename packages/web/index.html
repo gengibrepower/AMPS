@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu,search,chevron_right,home,grid_view,directions_car,account_circle,my_location,local_fire_department,bookmark"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu,search,home,grid_view,directions_car,account_circle"/>
 </head>
 <body>
     <header>
@@ -24,9 +24,6 @@
         <div class="sidebar">
             <button id="close-sidebar-button" aria-label="Fechar menu">X</button>
             <ul class="nav-list" id="navLista">
-                <li class="nav-item"><a href="">Configurações</a></li>
-                <li class="nav-item"><a href="">Sobre</a></li>
-                <li class="nav-item"><a href="">Contato</a></li>
                 <li class="nav-item nav-item-account">
                     <button type="button" id="sidebarAccountBtn" aria-label="Conta">
                         <span class="material-symbols-outlined">account_circle</span>
@@ -42,57 +39,6 @@
             <span class="material-symbols-outlined">search</span>
             <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
         </form>
- 
-        <div class="filters">
-            <button type="button" class="filter-pill">
-                <span class="material-symbols-outlined">my_location</span>
-                Localização Atual
-            </button>
-            <button type="button" class="filter-pill">
-                <span class="material-symbols-outlined">local_fire_department</span>
-                Recomendados
-            </button>
-            <button type="button" class="filter-pill">
-                <span class="material-symbols-outlined">bookmark</span>
-                Salvos
-            </button>
-        </div>
- 
-        <h2>Ver histórico ></h2>
-        <ul class="parking-list">
-            <li class="parking-card">
-                <a href="" class="parking-card-link">
-                    <div class="parking-card-info">
-                        <div class="parking-card-title-row">
-                            <h2 class="parking-card-title">Estacionamento A</h2>
-                            <span class="rating"><span class="star-icon">★</span>4.8</span>
-                        </div>
-                        <p class="parking-card-location">Localização</p>
-                        <p class="parking-card-price">R$ 15,00</p>
-                    </div>
-                    <div class="parking-card-status">
-                        <span class="status-dot available"></span>
-                        <span>26 vagas</span>
-                    </div>
-                    <span class="material-symbols-outlined chevron">chevron_right</span>
-                </a>
-            </li>
-            <li class="parking-card">
-                <a href="" class="parking-card-link">
-                    <div class="parking-card-info">
-                        <div class="parking-card-title-row">
-                            <h2 class="parking-card-title">Estacionamento B</h2>
-                            <span class="rating"><span class="star-icon">★</span>4,9</span>
-                        </div>
-                    </div>
-                    <div class="parking-card-status">
-                        <span class="status-dot full"></span>
-                        <span>3 vagas</span>
-                    </div>
-                    <span class="material-symbols-outlined chevron">chevron_right</span>
-                </a>
-            </li>
-        </ul>
     </main>
  
     <div class="login disabled" id="accountPanel">
