@@ -5,6 +5,7 @@ import { criarCena } from '../graph/render/cena';
 import { comoGrafo, comoStatusDeVaga, comoTipoDeVaga } from '../graph/tipos';
 import type { DadosDaVaga } from '../graph/tipos';
 import { mostrarMensagem } from '../dom/ui';
+import { salvarHistorico } from '../historico';
 
 const queryString = window.location.search;
 const params = new URLSearchParams(queryString);
@@ -50,6 +51,7 @@ if (!Number.isInteger(id) || id <= 0) {
 
             cena.desenhar(comoGrafo(mapa.grafo), mapa.vagas.map(comoDadosDaVaga));
             cena.enquadrar();
+            salvarHistorico(estacionamento);
         } catch (erro) {
             if (nomeDoPatio) nomeDoPatio.textContent = 'Mapa do estacionamento';
             mostrarMensagem(
