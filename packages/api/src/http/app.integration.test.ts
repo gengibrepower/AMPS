@@ -1188,3 +1188,85 @@ describe('GET /busca', () => {
 		expect(resposta.body).toHaveLength(2);
 	});
 });
+
+describe('GET /busca/:id/mapa', () => {
+	const DONO = { ...CADASTRO, razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' };
+
+	const GRAFO = {
+		nodes: [
+			{ id: 'e1', role: 'source', position: { x: 0, y: 0 } },
+			{
+				id: 's1',
+				role: 'candidate',
+				position: { x: 2, y: 0 },
+				dimensions: { width: 2.5, length: 5 },
+			},
+		],
+		edges: [{ from: 'e1', to: 's1', weight: 2 }],
+	};
+
+	let estacionamentoId: number;
+
+	// Publicar pela rota exige o Merlian; aqui só importa o estado final.
+	async function publicar(id: number): Promise<void> {
+		await db().execute('UPDATE estacionamentos SET publicado = TRUE WHERE id = ?', [id]);
+	}
+
+	beforeEach(async () => {
+		await request(app).post('/donos').send(DONO);
+		const entrada = await request(app)
+			.post('/auth/login')
+			.send({ email: DONO.email, senha: DONO.senha });
+		const token = entrada.body.token as string;
+
+		const criado = await request(app)
+			.post('/estacionamentos')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Pátio Centro' });
+		estacionamentoId = criado.body.id as number;
+
+		await request(app)
+			.put(`/estacionamentos/${estacionamentoId}/topologia`)
+			.set('Authorization', `Bearer ${token}`)
+			.send(GRAFO);
+		await request(app)
+			.put(`/estacionamentos/${estacionamentoId}/vagas`)
+			.set('Authorization', `Bearer ${token}`)
+			.send([{ no_id: 's1', numero: 'A-01', tipo: 'pcd', rotacao_graus: 90, sensor: 'SN-01' }]);
+	});
+
+	it('devolve o mapa do patio publicado sem token', async () => {
+		await publicar(estacionamentoId);
+
+		const resposta = await request(app).get(`/busca/${estacionamentoId}/mapa`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body.versao).toBe(1);
+		expect(resposta.body.grafo).toEqual(GRAFO);
+	});
+
+	it('entrega a vaga sem sensor, carro nem id interno', async () => {
+		await publicar(estacionamentoId);
+
+		const resposta = await request(app).get(`/busca/${estacionamentoId}/mapa`);
+
+		expect(resposta.body.vagas).toEqual([
+			{ no_id: 's1', numero: 'A-01', tipo: 'pcd', rotacao_graus: 90, status: 'livre' },
+		]);
+	});
+
+	it('responde ao patio nao publicado igual ao inexistente', async () => {
+		const rascunho = await request(app).get(`/busca/${estacionamentoId}/mapa`);
+		const inexistente = await request(app).get(`/busca/${estacionamentoId + 1000}/mapa`);
+
+		expect(rascunho.status).toBe(404);
+		expect(inexistente.status).toBe(404);
+		expect(rascunho.body).toEqual(inexistente.body);
+	});
+
+	it('devolve 400 para id invalido', async () => {
+		const resposta = await request(app).get('/busca/abc/mapa');
+
+		expect(resposta.status).toBe(400);
+	});
+});

@@ -110,6 +110,6 @@ Symbols é carregado pela lista `icon_names=` na URL da fonte, uma por página.
   seria prometer o que o 403 nega. Quando o perfil ganhar sentido, o lugar de
   decidir é `POR_TIPO` em `sessao.ts` — e junto com ele, `acessoDono.ts`.
 - **"Configurações", "Sobre" e "Contato" continuam `href=""`.**
-- **A busca não busca.** `index.html` e `search.html` mostram cartões
-  inventados em HTML. A área `buscar` aponta para uma página que ainda não fala
-  com a API.
+- **A home ainda inventa cartões.** `search.html` já pesquisa pela API e cada
+  cartão abre o mapa do pátio, mas os cartões do `index.html` continuam
+  escritos à mão em HTML.
