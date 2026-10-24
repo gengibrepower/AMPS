@@ -184,6 +184,16 @@ function vagaWire(vaga: Vaga): Record<string, unknown> {
 	};
 }
 
+function vagaPublicaWire(vaga: Vaga): Record<string, unknown> {
+	return {
+		no_id: vaga.noId,
+		numero: vaga.numero,
+		tipo: vaga.tipo,
+		rotacao_graus: vaga.rotacaoGraus,
+		status: vaga.status,
+	};
+}
+
 function usuarioWire(usuario: Usuario): Record<string, unknown> {
 	return {
 		id: usuario.id,
@@ -246,6 +256,18 @@ export function createApp(deps: AppDeps): Express {
 		const q = typeof termo === 'string' ? termo.trim() : '';
 		const estacionamentos = await deps.estacionamentoService.pesquisar(q);
 		res.status(200).json(estacionamentos.map(estacionamentoWire));
+	});
+
+	app.get('/busca/:id/mapa', async (req, res) => {
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		const mapa = await deps.mapaService.carregarPublicado(id);
+		res.status(200).json({
+			versao: mapa.versao,
+			grafo: mapa.grafo,
+			vagas: mapa.vagas.map(vagaPublicaWire),
+		});
 	});
 
 	app.get('/carros', autenticar(deps.tokenService), async (req, res) => {

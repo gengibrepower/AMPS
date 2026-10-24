@@ -116,9 +116,8 @@
                         </form>
                     <div id="login-msg" class="message"></div>
                         <div class="links">
-                            <a href="#" id="linkForgotPassword">Esqueci minha senha</a>
                             <a href="#" id="linkRegisterClient">Criar conta</a>
-                            <a href="#" id="linkRegisterOwner">Sou um estacionamento</a>
+                            <a href="#" id="linkRegisterOwner">Sou Dono de um estacionamento</a>
                         </div>
                 </div>
             </div>
@@ -127,24 +126,6 @@
             <div id="accountLoggedIn" class="account-view disabled">
                 <p>Logado como <strong id="accountEmail"></strong></p>
                 <button type="button" id="logoutBtn">Sair</button>
-            </div>
-
-            <!-- Esqueci a senha -->
-            <div id="accountForgotPassword" class="account-view disabled">
-                <div class="accountLogin">
-                    <h2>Recuperar Senha</h2>
-                    <form id="forgot-form">
-                        <div class="form-group">
-                            <label for="email-recuperacao">Digite seu e-mail cadastrado</label>
-                            <input type="email" id="email-recuperacao" required />
-                        </div>
-                        <button type="submit" class="btn-primary">Enviar Link de Recuperação</button>
-                    </form>
-                    <div id="forgot-msg" class="message"></div>
-                    <div class="links">
-                        <a href="#" id="linkBackToLoginFromForgot">Voltar para o Login</a>
-                    </div>
-                </div>
             </div>
 
             <!-- Criar conta -->
@@ -236,7 +217,6 @@
     <script type="module" src="src/pages/login.ts"></script>
     <script type="module" src="src/pages/cadastroCliente.ts"></script>
     <script type="module" src="src/pages/cadastroDono.ts"></script>
-    <script type="module" src="src/pages/esqueciSenha.ts"></script>
 </body>
 </html>
  

@@ -55,7 +55,7 @@ export function montarApp({
 		estacionamentoService: new EstacionamentoService(estacionamentos, vagas, acessoDono),
 		topologiaService: new TopologiaService(topologias, acessoDono),
 		vagaService: new VagaService(vagas, acessoDono),
-		mapaService: new MapaService(topologias, vagas, acessoDono),
+		mapaService: new MapaService(topologias, vagas, acessoDono, estacionamentos),
 		metricasService: new MetricasService(topologias, vagas, acessoDono),
 		publicacaoService: new PublicacaoService(
 			estacionamentos,

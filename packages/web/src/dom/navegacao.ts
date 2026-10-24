@@ -29,12 +29,11 @@ const logoutButton = document.getElementById('logoutBtn') as HTMLButtonElement |
 
 let destinoDaBarra = '/index.html';
 
-export type AccountView = 'login' | 'loggedIn' | 'forgot' | 'registerClient' | 'registerOwner';
+export type AccountView = 'login' | 'loggedIn' | 'registerClient' | 'registerOwner';
 
 const views: Record<AccountView, HTMLElement | null> = {
     login: document.getElementById('accountLoggedOut'),
     loggedIn: document.getElementById('accountLoggedIn'),
-    forgot: document.getElementById('accountForgotPassword'),
     registerClient: document.getElementById('accountRegisterClient'),
     registerOwner: document.getElementById('accountRegisterOwner'),
 };
@@ -131,11 +130,9 @@ logoutButton?.addEventListener('click', () => {
 });
 
 const navegacao: ReadonlyArray<readonly [string, AccountView]> = [
-    ['linkForgotPassword', 'forgot'],
     ['linkRegisterClient', 'registerClient'],
     ['linkRegisterOwner', 'registerOwner'],
     ['linkBackToLoginFromOwner', 'login'],
-    ['linkBackToLoginFromForgot', 'login'],
     ['linkBackToLoginFromRegister', 'login'],
 ];
 

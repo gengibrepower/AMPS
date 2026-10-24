@@ -1,4 +1,5 @@
-import type { TopologiaRepository, Vaga, VagaRepository } from '../ports.js';
+import type { EstacionamentoRepository, TopologiaRepository, Vaga, VagaRepository } from '../ports.js';
+import { NotFoundError } from '../errors.js';
 import type { AcessoDono } from './acessoDono.js';
 
 export interface Mapa {
@@ -16,10 +17,31 @@ export class MapaService {
 		private readonly topologias: TopologiaRepository,
 		private readonly vagas: VagaRepository,
 		private readonly acesso: AcessoDono,
+		private readonly estacionamentos: EstacionamentoRepository,
 	) {}
 
 	async carregar(usuarioId: number, estacionamentoId: number): Promise<Mapa> {
 		const estacionamento = await this.acesso.estacionamento(usuarioId, estacionamentoId);
+		const topologia = await this.topologias.findByEstacionamento(estacionamento.id);
+		const vagas = await this.vagas.listByEstacionamento(estacionamento.id);
+
+		return {
+			versao: topologia?.versao ?? 0,
+			grafo: topologia?.grafo ?? GRAFO_VAZIO,
+			vagas,
+		};
+	}
+
+	async carregarPublicado(estacionamentoId: number): Promise<Mapa> {
+		const estacionamento = await this.estacionamentos.findById(estacionamentoId);
+
+		if (estacionamento === null) {
+			throw new NotFoundError('estacionamento');
+		}
+		if (!estacionamento.publicado) {
+			throw new NotFoundError('estacionamento');
+		}
+
 		const topologia = await this.topologias.findByEstacionamento(estacionamento.id);
 		const vagas = await this.vagas.listByEstacionamento(estacionamento.id);
 
