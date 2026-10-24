@@ -62,3 +62,7 @@ export function excluirEstacionamento(id: number): Promise<null> {
 export function pesquisarEstacionamentos(q: string): Promise<readonly EstacionamentoWire[]> {
     return pedir<readonly EstacionamentoWire[]>(`/busca?q=${encodeURIComponent(q)}`);
 }
+
+export function buscarEstacionamentoPublicado(id: number): Promise<EstacionamentoWire> {
+    return pedir<EstacionamentoWire>(`/busca/${id}`);
+}

@@ -46,7 +46,7 @@ function criarCard(estacionamento: EstacionamentoWire): HTMLLIElement {
 
     const link = document.createElement('a');
     link.className = 'result-card-link';
-    link.href = `/client/mapa.html?id=${estacionamento.id}`;
+    link.href = `/client/estacionamento.html?id=${estacionamento.id}`;
 
     corpo.append(titulo, local);
     link.append(imagem, corpo);

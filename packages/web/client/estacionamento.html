@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estacionamento - AMPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/search.css">
+    <link rel="stylesheet" href="../css/detalhes.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,arrow_back,directions_car,grid_view,map,menu,search"/>
+</head>
+<body>
+    <header>
+        <button id="menu-button" aria-label="Abrir menu"><span class="material-symbols-outlined">menu</span></button>
+        <div class="logo">
+            <img id="logo-holder" src="../assets/images/logo_holder.png" alt="AMPS">
+            <h1 id="logo-text">AMPS</h1>
+        </div>
+        <a href="../index.html" class="login-link">Entrar</a>
+    </header>
+
+    <nav class="sidebar-nav disabled">
+        <div class="sidebar">
+            <button id="close-sidebar-button" aria-label="Fechar menu">X</button>
+            <ul class="nav-list" id="navLista">
+                <li class="nav-item nav-item-account">
+                    <a href="/index.html">
+                        <span class="material-symbols-outlined">account_circle</span>
+                        <span id="sidebarAccountLabel">Entrar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="pagina-detalhes">
+        <p id="mensagem"></p>
+
+        <article id="detalhes" class="detalhes disabled">
+            <section class="capa">
+                <img src="../assets/images/default-img.png" alt="" class="capa-imagem">
+                <div class="capa-texto">
+                    <a href="search.html" class="voltar">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Voltar à busca
+                    </a>
+                    <h2 id="nome" class="capa-nome"></h2>
+                    <p id="local" class="capa-local"></p>
+                </div>
+            </section>
+
+            <div class="conteudo">
+                <aside class="lateral">
+                    <a id="verMapa" href="" class="botao-principal">
+                        <span class="material-symbols-outlined">map</span>
+                        Ver mapa
+                    </a>
+
+                    <section class="bloco">
+                        <h3>Endereço</h3>
+                        <ul id="endereco" class="endereco"></ul>
+                    </section>
+                </aside>
+
+                <div class="principal">
+                    <section class="bloco">
+                        <h3>Vagas</h3>
+                        <p class="total"><span id="totalDeVagas" class="total-numero"></span> <span id="rotuloDoTotal"></span></p>
+                        <ul id="vagasPorTipo" class="etiquetas"></ul>
+                    </section>
+
+                    <section id="secaoPois" class="bloco disabled">
+                        <h3>Pontos de interesse</h3>
+                        <p class="bloco-dica">Lugares do pátio marcados pelo estacionamento.</p>
+                        <ul id="pontos" class="etiquetas"></ul>
+                    </section>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <script type="module" src="../src/dom/navegacao.ts"></script>
+    <script type="module" src="../src/pages/detalhes.ts"></script>
+</body>
+</html>

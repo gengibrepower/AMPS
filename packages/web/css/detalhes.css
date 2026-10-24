@@ -1,0 +1,210 @@
+/* A página ocupa a largura toda: a capa vai de borda a borda e o conteúdo
+   centraliza por dentro, em vez do <main> estreito e centrado da busca. */
+main.pagina-detalhes {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 48px;
+}
+
+.pagina-detalhes > #mensagem {
+    padding: 0 20px;
+}
+
+.capa {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+    background-color: var(--search-bg);
+}
+
+.capa-imagem {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* O degradê garante leitura do nome sobre qualquer foto que o pátio venha a ter. */
+.capa-texto {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(16, 17, 19, 0.95) 0%, rgba(16, 17, 19, 0.6) 45%, rgba(16, 17, 19, 0) 75%);
+}
+
+.voltar {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background-color: rgba(16, 17, 19, 0.7);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.voltar .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.voltar:focus-visible,
+.botao-principal:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+}
+
+.capa-nome {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.capa-local {
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+.conteudo {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 24px 20px 0;
+}
+
+.lateral,
+.principal {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.botao-principal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: var(--radius-pill);
+    background-color: var(--btn-green-border);
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.bloco h3 {
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.principal .bloco + .bloco {
+    padding-top: 28px;
+    border-top: 1px solid var(--search-border);
+}
+
+.bloco-dica {
+    margin: -6px 0 12px;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.total {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    opacity: 0.85;
+}
+
+.total-numero {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+}
+
+.etiquetas li {
+    padding: 8px 14px;
+    border: 1px solid var(--search-border);
+    border-radius: var(--radius-pill);
+    background-color: var(--card-bg);
+    font-size: 0.9rem;
+}
+
+.endereco {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    list-style: none;
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+/* A utilitária precisa vir depois das classes de componente para vencer. */
+.detalhes.disabled,
+.bloco.disabled {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .pagina-detalhes > #mensagem {
+        padding: 0 48px;
+    }
+
+    .capa {
+        height: 340px;
+    }
+
+    .capa-texto {
+        padding: 32px max(48px, calc((100% - 1040px) / 2));
+    }
+
+    .voltar {
+        left: max(48px, calc((100% - 1040px) / 2));
+    }
+
+    .capa-nome {
+        font-size: 2.4rem;
+    }
+
+    /* Ações e endereço à direita, fixos ao rolar; o conteúdo longo à esquerda. */
+    .conteudo {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        align-items: start;
+        gap: 48px;
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 36px 48px 0;
+    }
+
+    .lateral {
+        grid-column: 2;
+        grid-row: 1;
+        position: sticky;
+        top: 24px;
+        padding: 24px;
+        border: 1px solid var(--search-border);
+        border-radius: var(--radius-card);
+        background-color: var(--card-bg);
+    }
+
+    .principal {
+        grid-column: 1;
+        grid-row: 1;
+    }
+}
