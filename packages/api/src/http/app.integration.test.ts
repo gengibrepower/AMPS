@@ -894,6 +894,55 @@ describe('vagas e mapa', () => {
 		expect(mapa.status).toBe(401);
 		expect(gravacao.status).toBe(401);
 	});
+
+	it('resume vagas e desenho nas metricas do patio', async () => {
+		await comTopologia();
+		await comAutorizacao('put', `/estacionamentos/${estacionamentoId}/vagas`).send([
+			{ no_id: 's1', numero: 'A-01', tipo: 'pcd', sensor: 'sensor-1' },
+		]);
+		await db().execute(
+			"UPDATE vagas SET status = 'reservada' WHERE estacionamento_id = ? AND no_id = ?",
+			[estacionamentoId, 's1'],
+		);
+
+		const resposta = await comAutorizacao(
+			'get',
+			`/estacionamentos/${estacionamentoId}/metricas`,
+		);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toMatchObject({
+			estacionamento: { id: estacionamentoId, nome: 'Pátio Centro', publicado: false },
+			versao_desenho: 1,
+			vagas: { total: 1, livre: 0, ocupada: 0, reservada: 1 },
+			taxa_ocupacao: 1,
+			por_tipo: [{ tipo: 'pcd', total: 1, livres: 0 }],
+			com_sensor: 1,
+			desenho: { entradas: 1, pontos_de_interesse: 0, vagas_desenhadas: 2, conexoes: 2 },
+			vagas_sem_cadastro: 1,
+		});
+	});
+
+	it('abre as metricas zeradas num patio sem topologia', async () => {
+		const resposta = await comAutorizacao(
+			'get',
+			`/estacionamentos/${estacionamentoId}/metricas`,
+		);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body.versao_desenho).toBe(0);
+		expect(resposta.body.taxa_ocupacao).toBeNull();
+	});
+
+	it('devolve 403 nas metricas de outro dono', async () => {
+		const tokenDoBruno = await tokenDeDono(OUTRO_DONO);
+
+		const resposta = await request(app)
+			.get(`/estacionamentos/${estacionamentoId}/metricas`)
+			.set('Authorization', `Bearer ${tokenDoBruno}`);
+
+		expect(resposta.status).toBe(403);
+	});
 });
 
 describe('publicacao', () => {

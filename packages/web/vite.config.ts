@@ -12,6 +12,7 @@ export default defineConfig({
         mapa: resolve(__dirname, "client/mapa.html"),
         estacionamentos: resolve(__dirname, "owner/estacionamentos.html"),
         editor: resolve(__dirname, "owner/editor.html"),
+        metricasEstacionamentos: resolve(__dirname, "owner/metricas-estacionamentos.html"),
       },
     },
   },

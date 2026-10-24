@@ -15,6 +15,7 @@ import { CarroService } from './services/carroService.js';
 import { DonoService } from './services/donoService.js';
 import { EstacionamentoService } from './services/estacionamentoService.js';
 import { MapaService } from './services/mapaService.js';
+import { MetricasService } from './services/metricasService.js';
 import { PublicacaoService } from './services/publicacaoService.js';
 import { ModeloService } from './services/modeloService.js';
 import { TopologiaService } from './services/topologiaService.js';
@@ -55,6 +56,7 @@ export function montarApp({
 		topologiaService: new TopologiaService(topologias, acessoDono),
 		vagaService: new VagaService(vagas, acessoDono),
 		mapaService: new MapaService(topologias, vagas, acessoDono, estacionamentos),
+		metricasService: new MetricasService(topologias, vagas, acessoDono),
 		publicacaoService: new PublicacaoService(
 			estacionamentos,
 			topologias,

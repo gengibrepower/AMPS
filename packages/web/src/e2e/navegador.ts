@@ -72,7 +72,7 @@ async function acharAlvo(porta: number): Promise<string> {
 export async function abrirNavegador(): Promise<Navegador> {
     const porta = 9300 + Math.floor(Math.random() * 400);
     const perfil = await mkdtemp(join(tmpdir(), 'amps-e2e-'));
-    const processo: ChildProcess = spawn('chromium', [
+    const processo: ChildProcess = spawn(process.env['CHROMIUM'] ?? 'chromium', [
         '--headless',
         '--disable-gpu',
         '--hide-scrollbars',
