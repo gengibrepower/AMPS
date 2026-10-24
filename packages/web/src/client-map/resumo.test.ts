@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pontosDeInteresse, vagasPorTipo } from './resumo';
+import { pontosDeInteresse, vagasLivres, vagasPorTipo } from './resumo';
 import type { Grafo } from '../graph/tipos';
 
 describe('vagasPorTipo', () => {
@@ -39,5 +39,26 @@ describe('pontosDeInteresse', () => {
 
     it('dá nome a POI sem rótulo ou com rótulo em branco', () => {
         expect(pontosDeInteresse(grafo).slice(1)).toEqual(['Ponto sem nome', 'Ponto sem nome']);
+    });
+});
+
+describe('vagasLivres', () => {
+    it('conta só as livres, deixando ocupada e reservada de fora', () => {
+        const vagas = [
+            { status: 'livre' },
+            { status: 'ocupada' },
+            { status: 'livre' },
+            { status: 'reservada' },
+        ];
+
+        expect(vagasLivres(vagas)).toBe(2);
+    });
+
+    it('não conta status desconhecido como livre', () => {
+        expect(vagasLivres([{ status: 'livr' }, { status: '' }])).toBe(0);
+    });
+
+    it('devolve zero sem vagas', () => {
+        expect(vagasLivres([])).toBe(0);
     });
 });
