@@ -1,16 +1,19 @@
-import { ApiError, carregarMapaPublicado } from '../api';
+import { ApiError, buscarEstacionamentoPublicado, carregarMapaPublicado } from '../api';
 import type { VagaPublicaWire } from '../api';
 import { criarPalco } from '../graph/render/palco';
 import { criarCena } from '../graph/render/cena';
-import { comoGrafo, comoTipoDeVaga } from '../graph/tipos';
+import { comoGrafo, comoStatusDeVaga, comoTipoDeVaga } from '../graph/tipos';
 import type { DadosDaVaga } from '../graph/tipos';
 import { mostrarMensagem } from '../dom/ui';
+import { salvarHistorico } from '../historico';
 
 const queryString = window.location.search;
 const params = new URLSearchParams(queryString);
 const id = Number(params.get('id'));
 const palcoDiv = document.getElementById('palco') as HTMLDivElement | null;
 const mensagem = document.querySelector<HTMLElement>('#mensagem');
+const voltar = document.querySelector<HTMLAnchorElement>('#voltar');
+const nomeDoPatio = document.querySelector<HTMLElement>('#nomeDoPatio');
 
 // A rota pública não manda o sensor, e o público não tem por que saber qual é.
 function comoDadosDaVaga(vaga: VagaPublicaWire): DadosDaVaga {
@@ -20,10 +23,12 @@ function comoDadosDaVaga(vaga: VagaPublicaWire): DadosDaVaga {
         tipo: comoTipoDeVaga(vaga.tipo),
         rotacaoGraus: vaga.rotacao_graus,
         sensor: null,
+        status: comoStatusDeVaga(vaga.status),
     };
 }
 
 if (!Number.isInteger(id) || id <= 0) {
+    if (nomeDoPatio) nomeDoPatio.textContent = 'Mapa do estacionamento';
     mostrarMensagem(
         mensagem,
         'Link inválido',
@@ -32,14 +37,23 @@ if (!Number.isInteger(id) || id <= 0) {
 } else if (palcoDiv !== null) {
     void (async () => {
         try {
-            const mapa = await carregarMapaPublicado(id);
+            if (voltar) voltar.href = `/client/estacionamento.html?id=${id}`;
+            const [estacionamento, mapa] = await Promise.all([
+                buscarEstacionamentoPublicado(id),
+                carregarMapaPublicado(id),
+            ]);
+            document.title = `${estacionamento.nome} - Mapa - AMPS`;
+            if (nomeDoPatio) nomeDoPatio.textContent = estacionamento.nome;
+
             const palco = criarPalco(palcoDiv);
             const cena = criarCena(palco);
             cena.modo('ligar');
 
             cena.desenhar(comoGrafo(mapa.grafo), mapa.vagas.map(comoDadosDaVaga));
             cena.enquadrar();
+            salvarHistorico(estacionamento);
         } catch (erro) {
+            if (nomeDoPatio) nomeDoPatio.textContent = 'Mapa do estacionamento';
             mostrarMensagem(
                 mensagem,
                 erro instanceof ApiError ? erro.message : 'Algo deu errado.',

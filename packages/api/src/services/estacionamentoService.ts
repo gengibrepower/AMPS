@@ -1,4 +1,4 @@
-import { UnprocessableError } from '../errors.js';
+import { NotFoundError, UnprocessableError } from '../errors.js';
 import type {
 	DadosDoEstacionamento,
 	Estacionamento,
@@ -34,6 +34,15 @@ export class EstacionamentoService {
 
 	async pesquisar(termo: string): Promise<readonly Estacionamento[]> {
 		return this.estacionamentos.searchPublicados(termo);
+	}
+
+	// Rascunho responde como inexistente, igual ao mapa público.
+	async buscarPublicado(estacionamentoId: number): Promise<Estacionamento> {
+		const estacionamento = await this.estacionamentos.findById(estacionamentoId);
+		if (estacionamento === null || !estacionamento.publicado) {
+			throw new NotFoundError('estacionamento');
+		}
+		return estacionamento;
 	}
 
 	async editar(

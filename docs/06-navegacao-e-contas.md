@@ -36,9 +36,9 @@ cobre a tabela inteira sem abrir navegador.
 
 `dom/navegacao.ts` monta a sidebar e o botão do meio da barra de baixo a partir dessa
 lista, em `renderNavegacao()`, chamada por `renderAccountPanel()`. Ou seja: a
-navegação se refaz a cada login e logout, sem recarregar a página. Os itens
-fixos ("Configurações", "Sobre", "Contato") continuam no HTML, abaixo dos
-dinâmicos.
+navegação se refaz a cada login e logout, sem recarregar a página. O único item
+fixo no HTML é o botão de conta do `index.html`; os links que não levavam a
+lugar nenhum saíram.
 
 **Esconder item de menu não é segurança.** Quem protege é o `#bloqueio` da
 página e o 403 da API. O menu é conveniência — e há um teste em
@@ -109,7 +109,11 @@ Symbols é carregado pela lista `icon_names=` na URL da fonte, uma por página.
   um `p_admin` leva o mesmo 403 que um cliente. Dar-lhe "Meus pátios" no menu
   seria prometer o que o 403 nega. Quando o perfil ganhar sentido, o lugar de
   decidir é `POR_TIPO` em `sessao.ts` — e junto com ele, `acessoDono.ts`.
-- **"Configurações", "Sobre" e "Contato" continuam `href=""`.**
-- **A home ainda inventa cartões.** `search.html` já pesquisa pela API e cada
-  cartão abre o mapa do pátio, mas os cartões do `index.html` continuam
-  escritos à mão em HTML.
+- **A home tem só a pesquisa.** Os cartões inventados (nota, preço, contagem de
+  vagas que não existem no banco) e os filtros "Localização atual",
+  "Recomendados" e "Salvos" saíram, porque nenhum fazia nada. O lugar dos
+  cartões é do histórico de pátios abertos; os filtros dependem de coisas que o
+  AMPS não tem — coordenadas, um critério de recomendação de pátio, uma tabela
+  de favoritos.
+- **"Configurações", "Sobre" e "Contato" saíram do menu** até existirem páginas
+  para eles.

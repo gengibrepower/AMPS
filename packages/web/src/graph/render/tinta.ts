@@ -15,6 +15,8 @@ export const PINTURA = '#5C636C';
 export const VAGA_TRACO = '#2B3038';
 export const VAGA_FUNDO = '#FFFFFF';
 
+export const OCUPADA_FUNDO = 'rgba(232, 26, 26, 0.24)';
+
 export const ENTRADA = '#0E7A4E';
 export const ENTRADA_FUNDO = 'rgba(14, 122, 78, 0.16)';
 
