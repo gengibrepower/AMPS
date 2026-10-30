@@ -1,5 +1,5 @@
 import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import type { NovoUsuario, TipoConta, Usuario, UsuarioComSenha, UsuarioRepository } from '../../ports.js';
+import type { DadosDoPerfil, NovoUsuario, TipoConta, Usuario, UsuarioComSenha, UsuarioRepository } from '../../ports.js';
 import { asConflict } from './duplicate.js';
 
 interface UsuarioRow extends RowDataPacket {
@@ -9,6 +9,10 @@ interface UsuarioRow extends RowDataPacket {
 	cpf: string;
 	senha: string;
 	tipo_conta: TipoConta;
+}
+
+interface SenhaRow extends RowDataPacket {
+	senha: string;
 }
 
 const INSERT = `
@@ -26,6 +30,24 @@ const SELECT_BY_EMAIL = `
 SELECT id, nome, email, cpf, senha, tipo_conta
 FROM usuarios
 WHERE email = ?
+`;
+
+const UPDATE_PERFIL = `
+UPDATE usuarios
+SET nome = ?, email = ?
+WHERE id = ?
+`;
+
+const SELECT_SENHA_BY_ID = `
+SELECT senha
+FROM usuarios
+WHERE id = ?
+`;
+
+const UPDATE_SENHA = `
+UPDATE usuarios
+SET senha = ?
+WHERE id = ?
 `;
 
 function toUsuario(row: UsuarioRow): Usuario {
@@ -72,5 +94,23 @@ export class MysqlUsuarioRepository implements UsuarioRepository {
 		const [rows] = await this.pool.execute<UsuarioRow[]>(SELECT_BY_EMAIL, [email]);
 		const row = rows[0];
 		return row === undefined ? null : { ...toUsuario(row), senhaHash: row.senha };
+	}
+
+	async updatePerfil(id: number, dados: DadosDoPerfil): Promise<Usuario | null> {
+		try {
+			await this.pool.execute<ResultSetHeader>(UPDATE_PERFIL, [dados.nome, dados.email, id]);
+		} catch (error) {
+			throw asConflict(error);
+		}
+		return this.findById(id);
+	}
+
+	async findSenhaHash(id: number): Promise<string | null> {
+		const [rows] = await this.pool.execute<SenhaRow[]>(SELECT_SENHA_BY_ID, [id]);
+		return rows[0]?.senha ?? null;
+	}
+
+	async updateSenha(id: number, senhaHash: string): Promise<void> {
+		await this.pool.execute<ResultSetHeader>(UPDATE_SENHA, [senhaHash, id]);
 	}
 }

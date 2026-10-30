@@ -244,6 +244,35 @@ export function createApp(deps: AppDeps): Express {
 		});
 	});
 
+	app.get('/perfil', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		res.status(200).json(usuarioWire(await deps.usuarioService.perfil(auth.sub)));
+	});
+
+	app.put('/perfil', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const dados = exigir(req, res, ['nome', 'email']);
+		if (dados === null) return;
+
+		const usuario = await deps.usuarioService.atualizarPerfil(auth.sub, dados);
+		res.status(200).json(usuarioWire(usuario));
+	});
+
+	app.put('/perfil/senha', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const dados = exigir(req, res, ['senha_atual', 'senha_nova']);
+		if (dados === null) return;
+
+		await deps.usuarioService.alterarSenha(auth.sub, dados.senha_atual, dados.senha_nova);
+		res.status(204).end();
+	});
+
 	app.get('/modelos', async (_req, res) => {
 		const modelos = await deps.modeloService.listar();
 		res.status(200).json(
