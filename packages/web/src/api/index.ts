@@ -4,3 +4,4 @@ export * from './estacionamentos';
 export * from './mapa';
 export * from './metricas';
 export * from './carros';
+export * from './perfil';

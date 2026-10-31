@@ -1,4 +1,4 @@
-export type Area = 'buscar' | 'meusCarros' | 'meusPatios';
+export type Area = 'buscar' | 'meusCarros' | 'meusPatios' | 'perfil';
 
 export interface Destino {
     readonly area: Area;
@@ -8,15 +8,16 @@ export interface Destino {
 }
 
 const POR_TIPO: Record<string, readonly Area[]> = {
-    common_user: ['buscar', 'meusCarros'],
-    dono: ['buscar', 'meusPatios'],
-    p_admin: ['buscar', 'meusCarros'],
+    common_user: ['buscar', 'meusCarros', 'perfil'],
+    dono: ['buscar', 'meusPatios', 'perfil'],
+    p_admin: ['buscar', 'meusCarros', 'perfil'],
 };
 
 const DESTINOS: Record<Area, Destino> = {
     buscar: { area: 'buscar', rotulo: 'Buscar estacionamento', icone: 'search', href: '/index.html' },
     meusCarros: { area: 'meusCarros', rotulo: 'Meus carros', icone: 'directions_car', href: '/client/carro.html' },
     meusPatios: { area: 'meusPatios', rotulo: 'Meus pátios', icone: 'grid_view', href: '/owner/estacionamentos.html' },
+    perfil: { area: 'perfil', rotulo: 'Meu perfil', icone: 'person', href: '/client/perfil.html' },
 };
 
 // Esconder item de menu não é segurança: quem protege é o #bloqueio da página
