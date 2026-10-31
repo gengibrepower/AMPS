@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu perfil - AMPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/owner.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=logout"/>
+</head>
+<body>
+    <header>
+        <a class="logo" href="../index.html">
+            <img src="../assets/images/logo_holder.png" alt="">
+            <span id="logo-text">AMPS</span>
+        </a>
+        <div class="conta" id="conta">
+            <span id="usuarioNome"></span>
+            <button type="button" id="sair" class="botao-texto" aria-label="Sair">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="bloqueio" class="bloqueio disabled">
+            <h2>Meu perfil</h2>
+            <p id="bloqueioTexto"></p>
+            <a href="../index.html" class="botao-primario">Ir para o login</a>
+        </section>
+
+        <section id="area" class="disabled">
+            <div class="titulo-linha">
+                <h2>Meu perfil</h2>
+            </div>
+
+            <form id="formDados" class="formulario" novalidate>
+                <h3>Dados da conta</h3>
+
+                <div class="campo">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome" maxlength="255" required autocomplete="name">
+                </div>
+
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" maxlength="255" required autocomplete="email">
+                </div>
+
+                <div class="formulario-acoes">
+                    <button type="submit" id="salvarDados" class="botao-primario">Salvar</button>
+                </div>
+
+                <p id="mensagemDados" class="message"></p>
+            </form>
+
+            <form id="formSenha" class="formulario" novalidate>
+                <h3>Alterar senha</h3>
+
+                <div class="campo">
+                    <label for="senhaAtual">Senha atual</label>
+                    <input type="password" id="senhaAtual" name="senhaAtual" required autocomplete="current-password">
+                </div>
+
+                <div class="campo">
+                    <label for="senhaNova">Nova senha</label>
+                    <input type="password" id="senhaNova" name="senhaNova" required autocomplete="new-password">
+                </div>
+
+                <div class="campo">
+                    <label for="senhaConfirmacao">Confirmar nova senha</label>
+                    <input type="password" id="senhaConfirmacao" name="senhaConfirmacao" required autocomplete="new-password">
+                </div>
+
+                <div class="formulario-acoes">
+                    <button type="submit" id="salvarSenha" class="botao-primario">Alterar senha</button>
+                </div>
+
+                <p id="mensagemSenha" class="message"></p>
+            </form>
+        </section>
+    </main>
+
+    <script type="module" src="../src/pages/perfil.ts"></script>
+</body>
+</html>
