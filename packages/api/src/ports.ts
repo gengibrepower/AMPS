@@ -123,6 +123,11 @@ export interface Alcancabilidade {
 	readonly vagasInalcancaveis: readonly string[];
 }
 
+export interface DadosDoPerfil {
+	readonly nome: string;
+	readonly email: string;
+}
+
 // O motor de grafo vive no Merlian. Aqui é só a fronteira.
 export interface MotorDeGrafo {
 	alcancabilidade(grafo: unknown): Promise<Alcancabilidade>;
@@ -132,6 +137,9 @@ export interface UsuarioRepository {
 	create(novo: NovoUsuario): Promise<Usuario>;
 	findById(id: number): Promise<Usuario | null>;
 	findByEmail(email: string): Promise<UsuarioComSenha | null>;
+	updatePerfil(id: number, dados: DadosDoPerfil): Promise<Usuario | null>;
+	findSenhaHash(id: number): Promise<string | null>;
+	updateSenha(id: number, senhaHash: string): Promise<void>;
 }
 
 export interface DonoRepository {

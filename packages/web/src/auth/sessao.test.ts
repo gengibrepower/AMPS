@@ -7,11 +7,11 @@ describe('areasDe', () => {
     });
 
     it('cliente busca e vê os carros', () => {
-        expect(areasDe('common_user')).toEqual(['buscar', 'meusCarros']);
+        expect(areasDe('common_user')).toEqual(['buscar', 'meusCarros', 'perfil']);
     });
 
     it('dono busca e vê os pátios', () => {
-        expect(areasDe('dono')).toEqual(['buscar', 'meusPatios']);
+        expect(areasDe('dono')).toEqual(['buscar', 'meusPatios', 'perfil']);
     });
 
     it('p_admin vê o mesmo que cliente', () => {
@@ -34,6 +34,7 @@ describe('destinosDe', () => {
         expect(destinosDe('dono').map((destino) => destino.href)).toEqual([
             '/index.html',
             '/owner/estacionamentos.html',
+            '/client/perfil.html',
         ]);
     });
 

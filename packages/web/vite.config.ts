@@ -14,6 +14,7 @@ export default defineConfig({
         estacionamentos: resolve(__dirname, "owner/estacionamentos.html"),
         editor: resolve(__dirname, "owner/editor.html"),
         metricasEstacionamentos: resolve(__dirname, "owner/metricas-estacionamentos.html"),
+        perfil: resolve(__dirname, "client/perfil.html"),
       },
     },
   },
