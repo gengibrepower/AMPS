@@ -1,5 +1,6 @@
 import { hashPassword } from '../security/password.js';
 import type { DonoRepository, UsuarioComDono } from '../ports.js';
+import { exigirSenhaValida } from './senha.js';
 
 export interface CadastroDono {
 	readonly nome: string;
@@ -14,6 +15,7 @@ export class DonoService {
 	constructor(private readonly donos: DonoRepository) {}
 
 	async cadastrar(dados: CadastroDono): Promise<UsuarioComDono> {
+		exigirSenhaValida(dados.senha);
 		return this.donos.create(
 			{
 				nome: dados.nome,

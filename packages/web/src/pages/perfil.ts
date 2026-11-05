@@ -8,6 +8,8 @@ import {
 import { clearSession, getSession, saveSession } from '../auth';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
+const SENHA_MINIMA = 8;
+
 const bloqueio = document.querySelector<HTMLElement>('#bloqueio');
 const bloqueioTexto = document.querySelector<HTMLElement>('#bloqueioTexto');
 const area = document.querySelector<HTMLElement>('#area');
@@ -111,6 +113,15 @@ formSenha?.addEventListener('submit', async (event) => {
 
     if (atual === '' || nova === '' || confirmacao === '') {
         mostrarMensagem(mensagemSenha, 'Preencha todos os campos de senha.', 'error');
+        return;
+    }
+
+    if (nova.length < SENHA_MINIMA) {
+        mostrarMensagem(
+            mensagemSenha,
+            `A nova senha precisa ter pelo menos ${SENHA_MINIMA} caracteres.`,
+            'error',
+        );
         return;
     }
 

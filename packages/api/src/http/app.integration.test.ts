@@ -88,6 +88,12 @@ describe('POST /usuarios', () => {
 		expect(resposta.status).toBe(400);
 		expect(resposta.body.campos).toEqual(['email', 'cpf', 'senha']);
 	});
+
+	it('devolve 422 para senha com menos de 8 caracteres', async () => {
+		const resposta = await request(app).post('/usuarios').send({ ...CADASTRO, senha: '1234567' });
+
+		expect(resposta.status).toBe(422);
+	});
 });
 
 describe('POST /donos', () => {
@@ -115,6 +121,14 @@ describe('POST /donos', () => {
 
 		expect(resposta.status).toBe(409);
 		expect(resposta.body.campo).toBe('cnpj');
+	});
+
+	it('devolve 422 para senha com menos de 8 caracteres', async () => {
+		const resposta = await request(app)
+			.post('/donos')
+			.send({ ...CADASTRO, senha: '1234567', razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' });
+
+		expect(resposta.status).toBe(422);
 	});
 });
 
@@ -160,6 +174,130 @@ describe('POST /auth/login', () => {
 			.send({ email: 'ninguem@ex.com', senha: 'seja-la' });
 
 		expect(resposta.status).toBe(401);
+	});
+});
+
+describe('perfil', () => {
+	async function tokenDeAna(): Promise<string> {
+		await request(app).post('/usuarios').send(CADASTRO);
+		const login = await request(app)
+			.post('/auth/login')
+			.send({ email: CADASTRO.email, senha: CADASTRO.senha });
+		return login.body.token as string;
+	}
+
+	it('devolve o perfil do usuario do token sem vazar senha', async () => {
+		const token = await tokenDeAna();
+
+		const resposta = await request(app)
+			.get('/perfil')
+			.set('Authorization', `Bearer ${token}`);
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toMatchObject({ nome: 'Ana', email: 'ana@ex.com' });
+		expect(JSON.stringify(resposta.body)).not.toContain('senha');
+	});
+
+	it('devolve 401 sem token', async () => {
+		const resposta = await request(app).get('/perfil');
+
+		expect(resposta.status).toBe(401);
+	});
+
+	it('atualiza nome e email', async () => {
+		const token = await tokenDeAna();
+
+		const resposta = await request(app)
+			.put('/perfil')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Ana Maria', email: 'ana.maria@ex.com' });
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toMatchObject({ nome: 'Ana Maria', email: 'ana.maria@ex.com' });
+
+		const login = await request(app)
+			.post('/auth/login')
+			.send({ email: 'ana.maria@ex.com', senha: CADASTRO.senha });
+		expect(login.status).toBe(200);
+	});
+
+	it('devolve 409 ao trocar para email de outra conta', async () => {
+		const token = await tokenDeAna();
+		await request(app)
+			.post('/usuarios')
+			.send({ ...CADASTRO, email: 'bia@ex.com', cpf: '555.666.777-88' });
+
+		const resposta = await request(app)
+			.put('/perfil')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Ana', email: 'bia@ex.com' });
+
+		expect(resposta.status).toBe(409);
+		expect(resposta.body.campo).toBe('email');
+	});
+
+	it('devolve 400 quando falta campo no perfil', async () => {
+		const token = await tokenDeAna();
+
+		const resposta = await request(app)
+			.put('/perfil')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ nome: 'Ana' });
+
+		expect(resposta.status).toBe(400);
+		expect(resposta.body.campos).toEqual(['email']);
+	});
+
+	it('troca a senha e o login passa a exigir a nova', async () => {
+		const token = await tokenDeAna();
+
+		const resposta = await request(app)
+			.put('/perfil/senha')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ senha_atual: CADASTRO.senha, senha_nova: 'outra-senha' });
+
+		expect(resposta.status).toBe(204);
+
+		const antiga = await request(app)
+			.post('/auth/login')
+			.send({ email: CADASTRO.email, senha: CADASTRO.senha });
+		const nova = await request(app)
+			.post('/auth/login')
+			.send({ email: CADASTRO.email, senha: 'outra-senha' });
+		expect(antiga.status).toBe(401);
+		expect(nova.status).toBe(200);
+	});
+
+	it('devolve 422 e mantem a senha quando a atual esta errada', async () => {
+		const token = await tokenDeAna();
+
+		const resposta = await request(app)
+			.put('/perfil/senha')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ senha_atual: 'errada', senha_nova: 'outra-senha' });
+
+		expect(resposta.status).toBe(422);
+
+		const login = await request(app)
+			.post('/auth/login')
+			.send({ email: CADASTRO.email, senha: CADASTRO.senha });
+		expect(login.status).toBe(200);
+	});
+
+	it('devolve 422 e mantem a senha quando a nova e curta demais', async () => {
+		const token = await tokenDeAna();
+
+		const resposta = await request(app)
+			.put('/perfil/senha')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ senha_atual: CADASTRO.senha, senha_nova: '1234567' });
+
+		expect(resposta.status).toBe(422);
+
+		const login = await request(app)
+			.post('/auth/login')
+			.send({ email: CADASTRO.email, senha: CADASTRO.senha });
+		expect(login.status).toBe(200);
 	});
 });
 
@@ -1221,6 +1359,13 @@ describe('GET /busca', () => {
 		const resposta = await request(app).get('/busca').query({ q: '& Cia' });
 
 		expect(nomes(resposta.body)).toEqual(['Estaciona & Cia']);
+	});
+
+	it.each(['%', '_', '!'])('trata %s como caractere, nao como curinga', async (termo) => {
+		const resposta = await request(app).get('/busca').query({ q: termo });
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toEqual([]);
 	});
 
 	it('lista vazia quando nada casa', async () => {

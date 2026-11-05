@@ -42,12 +42,13 @@ SELECT id, dono_id, nome_estacionamento, publicado,
 FROM estacionamentos
 WHERE publicado = 1
 	AND (
-		nome_estacionamento LIKE CONCAT('%', ?, '%')
-		OR cidade LIKE CONCAT('%', ?, '%')
-		OR bairro LIKE CONCAT('%', ?, '%')
-		OR logradouro LIKE CONCAT('%', ?, '%')
+		nome_estacionamento LIKE CONCAT('%', ?, '%') ESCAPE '!'
+		OR cidade LIKE CONCAT('%', ?, '%') ESCAPE '!'
+		OR bairro LIKE CONCAT('%', ?, '%') ESCAPE '!'
+		OR logradouro LIKE CONCAT('%', ?, '%') ESCAPE '!'
 	)
 ORDER BY nome_estacionamento
+LIMIT 50
 `;
 
 const SELECT_BY_ID = `
@@ -127,7 +128,8 @@ export class MysqlEstacionamentoRepository implements EstacionamentoRepository {
 	}
 
 	async searchPublicados(termo: string): Promise<readonly Estacionamento[]> {
-		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_PUBLICADOS, [termo, termo, termo, termo]);
+		const literal = termo.replace(/[!%_]/g, '!$&');
+		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_PUBLICADOS, [literal, literal, literal, literal]);
 		return rows.map(toEstacionamento);
 	}
 

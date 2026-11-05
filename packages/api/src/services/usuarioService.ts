@@ -1,6 +1,7 @@
 import { NotFoundError, UnprocessableError } from '../errors.js';
 import { hashPassword, verifyPassword } from '../security/password.js';
 import type { DadosDoPerfil, Usuario, UsuarioRepository } from '../ports.js';
+import { exigirSenhaValida } from './senha.js';
 
 export interface CadastroUsuario {
 	readonly nome: string;
@@ -13,6 +14,7 @@ export class UsuarioService {
 	constructor(private readonly usuarios: UsuarioRepository) {}
 
 	async cadastrar(dados: CadastroUsuario): Promise<Usuario> {
+		exigirSenhaValida(dados.senha);
 		return this.usuarios.create({
 			nome: dados.nome,
 			email: dados.email,
@@ -39,6 +41,7 @@ export class UsuarioService {
 	}
 
 	async alterarSenha(id: number, senhaAtual: string, senhaNova: string): Promise<void> {
+		exigirSenhaValida(senhaNova);
 		const senhaHash = await this.usuarios.findSenhaHash(id);
 		if (senhaHash === null) {
 			throw new NotFoundError('usuario');

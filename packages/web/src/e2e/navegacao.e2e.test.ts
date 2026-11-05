@@ -135,7 +135,7 @@ describe('navegação por tipo de conta', () => {
     it('o dono passa a ver os pátios, e o menu leva ao hub', async () => {
         await entrar(emailDono);
 
-        expect(await itensDoMenu()).toEqual(['Buscar estacionamento', 'Meus pátios']);
+        expect(await itensDoMenu()).toEqual(['Buscar estacionamento', 'Meus pátios', 'Meu perfil']);
 
         await clicar('#menu-button');
         await clicar('.nav-item-area a[href="/owner/estacionamentos.html"]');
@@ -156,10 +156,21 @@ describe('navegação por tipo de conta', () => {
         await gravarSessao(sessaoCliente);
         await navegador.ir(`${WEB}/index.html`);
 
-        expect(await itensDoMenu()).toEqual(['Buscar estacionamento', 'Meus carros']);
+        expect(await itensDoMenu()).toEqual(['Buscar estacionamento', 'Meus carros', 'Meu perfil']);
     });
 
-    // "Meus carros" aponta para `carro.html`, que ainda não existe: criá-la é o
-    // primeiro passo de docs/07-cadastro-de-carro.md. Por isso o teste para no
-    // menu e não segue o link.
+    it('"Meus carros" leva o cliente à página de carros já liberada', async () => {
+        await navegador.ir(`${WEB}/index.html`);
+        await gravarSessao(sessaoCliente);
+        await navegador.ir(`${WEB}/index.html`);
+
+        await clicar('#menu-button');
+        await clicar('.nav-item-area a[href="/client/carro.html"]');
+        await espere(1500);
+
+        expect(await navegador.js<string>('location.pathname')).toBe('/client/carro.html');
+        expect(
+            await navegador.js<boolean>(`document.querySelector('#area').classList.contains('disabled')`),
+        ).toBe(false);
+    });
 });
