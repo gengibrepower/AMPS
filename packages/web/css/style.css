@@ -123,7 +123,7 @@ main {
     max-width: 600px;
     margin: 20px auto 0;
     font-size: clamp(17px, 2vw, 20px);
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.6;
 }
 

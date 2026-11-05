@@ -423,10 +423,9 @@ main {
 }
 
 .kpi-valor {
-    margin-top: 8px;
-    font-family: var(--fonte-numero);
-    font-size: 40px;
-    font-weight: 400;
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 600;
     line-height: 1;
     font-variant-numeric: tabular-nums;
 }
