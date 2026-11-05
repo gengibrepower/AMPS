@@ -39,7 +39,7 @@ o fundo onde a cor aparece.
 | `--cor-ouro-texto` | `#7A5C1E` | rótulos dourados sobre o claro | 5,4:1 no creme |
 | `--cor-ouro-claro` | `#E7C977` | texto e números sobre o preto | 10,8:1 no preto |
 | `--cor-ambar` | `#E3A23B` | "quase cheio", lâmpadas do portal | 7,9:1 no preto; só preenchimento no claro, sempre com traço tinta |
-| `--cor-ferro` | `#2F4F3A` | entrada da planta, informação | 7,9:1 no creme |
+| `--cor-ferro` | `#2F4F3A` | entrada da planta, informação; segundo escuro (área do dono, "Como funciona") | 7,9:1 no creme |
 | `--cor-lotado` | `#8C2F2B` | lotado, erro | 7,1:1 com texto creme |
 | `--cor-areia` | `#E9DEC4` | raios de sol, trilho do mostrador | — |
 
@@ -140,6 +140,15 @@ A Baunk sai.
   escalonadas, com janelas acesas em ouro, sobre uma faixa preta com "AMPS"
   entre losangos e chevron no pé. O corpo é coluna flex e o rodapé tem
   `margin-top: auto`, então mesmo página curta assenta embaixo.
+- **Verde-ferro, o segundo escuro.** Alterna com o preto para a página não
+  virar só preto e creme: a faixa "Como funciona" da home e o frontão da área
+  do dono são verde-ferro com ouro; o frontão do cliente continua preto.
+- **Como funciona.** Três cartões de papel com texto em tinta (nunca creme
+  sobre o verde, que lia mal), medalhão preto em arco escalonado montado no
+  topo, algarismo romano em Limelight e chevron em ouro entre os cartões no
+  desktop. Fecha com o botão dourado para a busca.
+- **Lista vazia.** Painel de papel com moldura de canto e a garagem de portão
+  fechado em traço de tinta e ouro, para a página não parecer quebrada.
 
 O `clip-path` corta a borda. Para moldura com recorte, use dois elementos: o de
 fora com o fundo da cor da borda e `padding: 1.5px`, e o de dentro com o mesmo
