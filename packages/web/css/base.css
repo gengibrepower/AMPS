@@ -121,17 +121,10 @@ textarea {
     transform: rotate(45deg);
 }
 
-.marca-p {
+.marca-emblema {
+    display: block;
     width: 44px;
     height: 44px;
-    padding-top: 10px;
-    background-color: var(--cor-tinta);
-    color: var(--cor-ouro-claro);
-    font-family: var(--fonte-marca);
-    font-size: 27px;
-    line-height: 1;
-    text-align: center;
-    clip-path: polygon(0 9px, 9px 9px, 9px 0, calc(100% - 9px) 0, calc(100% - 9px) 9px, 100% 9px, 100% 100%, 0 100%);
 }
 
 .marca-nome {
@@ -376,11 +369,9 @@ textarea {
         gap: 8px;
     }
 
-    .marca-p {
+    .marca-emblema {
         width: 34px;
         height: 34px;
-        padding-top: 8px;
-        font-size: 21px;
     }
 
     .marca-nome {
