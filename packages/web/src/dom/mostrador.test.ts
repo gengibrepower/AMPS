@@ -105,4 +105,17 @@ describe('desenharMostrador', () => {
         expect(svg).toContain('width="240"');
         expect(svg).toContain('height="140"');
     });
+
+    it('no fundo escuro troca a tinta por ouro no arco e creme no ponteiro', () => {
+        const svg = desenharMostrador({ livres: 12, total: 48, tamanho: 120, fundo: 'escuro' });
+
+        expect(atributo(svg, 'mostrador-arco', 'stroke')).toBe('#B08A3E');
+        expect(atributo(svg, 'mostrador-ponteiro', 'stroke')).toBe('#F4EEDF');
+    });
+
+    it('no fundo escuro clareia o vermelho do lotado', () => {
+        const svg = desenharMostrador({ livres: 0, total: 48, tamanho: 120, fundo: 'escuro' });
+
+        expect(atributo(svg, 'mostrador-arco', 'stroke')).toBe('#C4554D');
+    });
 });

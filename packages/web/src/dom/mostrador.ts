@@ -1,9 +1,11 @@
 export type EstadoDaOcupacao = 'normal' | 'quase-cheio' | 'lotado';
+export type Fundo = 'claro' | 'escuro';
 
 export interface Mostrador {
     readonly livres: number;
     readonly total: number;
     readonly tamanho: number;
+    readonly fundo?: Fundo;
 }
 
 const OURO = '#B08A3E';
@@ -12,11 +14,30 @@ const AREIA = '#E9DEC4';
 const TINTA = '#1A1A17';
 const AMBAR = '#E3A23B';
 const LOTADO = '#8C2F2B';
+const CREME = '#F4EEDF';
 
-const COR_DO_ARCO: Record<EstadoDaOcupacao, string> = {
-    normal: TINTA,
-    'quase-cheio': AMBAR,
-    lotado: LOTADO,
+interface Paleta {
+    readonly trilho: string;
+    readonly ponteiro: string;
+    readonly escala: string;
+    readonly arco: Record<EstadoDaOcupacao, string>;
+}
+
+// No preto, a tinta some e o vermelho do lotado fica abaixo de 3:1: o arco
+// normal vira ouro e o lotado, um vermelho mais claro.
+const PALETA: Record<Fundo, Paleta> = {
+    claro: {
+        trilho: AREIA,
+        ponteiro: TINTA,
+        escala: OURO_TEXTO,
+        arco: { normal: TINTA, 'quase-cheio': AMBAR, lotado: LOTADO },
+    },
+    escuro: {
+        trilho: '#3A3A34',
+        ponteiro: CREME,
+        escala: OURO,
+        arco: { normal: OURO, 'quase-cheio': AMBAR, lotado: '#C4554D' },
+    },
 };
 
 const LARGURA = 120;
@@ -62,7 +83,8 @@ const ESCRITO: Record<EstadoDaOcupacao, string> = {
 
 // O SVG leva só número e cor constante, nada vindo de texto do usuário, e por
 // isso pode entrar por innerHTML.
-export function desenharMostrador({ livres, total, tamanho }: Mostrador): string {
+export function desenharMostrador({ livres, total, tamanho, fundo = 'claro' }: Mostrador): string {
+    const paleta = PALETA[fundo];
     const valido = contagem(livres, total);
     const fracao = ocupacao(livres, total);
     const estado = estadoDaOcupacao(livres, total);
@@ -75,21 +97,21 @@ export function desenharMostrador({ livres, total, tamanho }: Mostrador): string
         `<path d="${arco(60)}" fill="none" stroke="${OURO}" stroke-width="1"/>`,
         `<path d="${arco(56)}" fill="none" stroke="${OURO}" stroke-width="1"/>`,
         `<path d="${arco(52)}" fill="none" stroke="${OURO}" stroke-width="3" stroke-dasharray="1.2 6.96"/>`,
-        `<path d="${arco(RAIO_DO_ARCO)}" fill="none" stroke="${AREIA}" stroke-width="7"/>`,
+        `<path d="${arco(RAIO_DO_ARCO)}" fill="none" stroke="${paleta.trilho}" stroke-width="7"/>`,
     ];
     if (fracao > 0) {
         partes.push(
-            `<path class="mostrador-arco" d="${arco(RAIO_DO_ARCO)}" fill="none" stroke="${COR_DO_ARCO[estado]}" stroke-width="7" stroke-dasharray="${n(COMPRIMENTO_DO_ARCO * fracao)} ${n(COMPRIMENTO_DO_ARCO)}"/>`,
+            `<path class="mostrador-arco" d="${arco(RAIO_DO_ARCO)}" fill="none" stroke="${paleta.arco[estado]}" stroke-width="7" stroke-dasharray="${n(COMPRIMENTO_DO_ARCO * fracao)} ${n(COMPRIMENTO_DO_ARCO)}"/>`,
         );
     }
     partes.push(
-        `<path class="mostrador-ponteiro" d="M${CX} ${CY}L${n(pontaX)} ${n(pontaY)}" stroke="${TINTA}" stroke-width="1.6" stroke-linecap="round"/>`,
+        `<path class="mostrador-ponteiro" d="M${CX} ${CY}L${n(pontaX)} ${n(pontaY)}" stroke="${paleta.ponteiro}" stroke-width="1.6" stroke-linecap="round"/>`,
         `<circle cx="${CX}" cy="${CY}" r="4" fill="${OURO}"/>`,
     );
     if (tamanho >= TAMANHO_COM_ESCALA) {
         partes.push(
-            `<text x="6" y="70" font-family="Josefin Sans, sans-serif" font-size="6" fill="${OURO_TEXTO}">0</text>`,
-            `<text x="114" y="70" text-anchor="end" font-family="Josefin Sans, sans-serif" font-size="6" fill="${OURO_TEXTO}">${valido.total}</text>`,
+            `<text x="6" y="70" font-family="Josefin Sans, sans-serif" font-size="6" fill="${paleta.escala}">0</text>`,
+            `<text x="114" y="70" text-anchor="end" font-family="Josefin Sans, sans-serif" font-size="6" fill="${paleta.escala}">${valido.total}</text>`,
         );
     }
 
