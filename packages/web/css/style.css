@@ -631,6 +631,7 @@ main {
     display: grid;
     gap: 100px;
     width: 100%;
+    max-width: 440px;
     margin-top: 88px;
     list-style: none;
 }
@@ -732,9 +733,12 @@ main {
 }
 
 /* Em linha, um chevron em ouro entre um cartão e o próximo aponta o
-   caminho. Empilhado não cabe: o medalhão do cartão de baixo ocupa o vão. */
-@media (min-width: 768px) {
+   caminho. Empilhado não cabe: o medalhão do cartão de baixo ocupa o vão.
+   Três colunas só a partir de 960: no tablet o cartão ficava estreito demais
+   e "Diga o destino" quebrava. */
+@media (min-width: 960px) {
     .como-passos {
+        max-width: none;
         grid-template-columns: repeat(3, 1fr);
         gap: 40px;
     }
