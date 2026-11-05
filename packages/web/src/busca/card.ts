@@ -2,6 +2,7 @@ import imagemPadrao from '../../assets/images/capa-padrao.svg';
 import { carregarMapaPublicado } from '../api';
 import type { EnderecoWire, EstacionamentoNaBuscaWire } from '../api';
 import { comoDadosDaVaga } from '../client-map/vagas';
+import { desenharMostrador, estadoDaOcupacao } from '../dom/mostrador';
 import { desenharMiniatura } from '../graph/miniatura';
 import { comoGrafo } from '../graph/tipos';
 
@@ -11,21 +12,32 @@ function localizacao(endereco: EnderecoWire): string {
     return [rua, endereco.bairro, cidade].filter(Boolean).join(' · ');
 }
 
-function criarVagas(vagas: EstacionamentoNaBuscaWire['vagas']): HTMLParagraphElement {
-    const linha = document.createElement('p');
+function criarVagas(vagas: EstacionamentoNaBuscaWire['vagas']): HTMLDivElement {
+    const linha = document.createElement('div');
     linha.className = 'result-card-vagas';
+    linha.innerHTML = desenharMostrador({ livres: vagas.livres, total: vagas.total, tamanho: 88 });
 
-    const livres = document.createElement('strong');
-    livres.className = vagas.livres === 0 ? 'vagas-livres lotado' : 'vagas-livres';
-    livres.textContent = vagas.livres === 0
-        ? 'Lotado'
-        : `${vagas.livres} ${vagas.livres === 1 ? 'vaga livre' : 'vagas livres'}`;
+    const contagem = document.createElement('div');
+    contagem.className = 'vagas-contagem';
 
-    const total = document.createElement('span');
-    total.className = 'vagas-total';
-    total.textContent = vagas.livres === 0 ? `todas as ${vagas.total} ocupadas` : `de ${vagas.total}`;
+    const numero = document.createElement('strong');
+    numero.className = 'vagas-numero';
+    numero.textContent = String(vagas.livres);
 
-    linha.append(livres, total);
+    const rotulo = document.createElement('span');
+    rotulo.className = 'vagas-rotulo';
+    rotulo.textContent = `${vagas.livres === 1 ? 'livre' : 'livres'} · de ${vagas.total}`;
+    contagem.append(numero, rotulo);
+
+    const estado = estadoDaOcupacao(vagas.livres, vagas.total);
+    if (estado !== 'normal') {
+        const escrito = document.createElement('span');
+        escrito.className = `vagas-estado vagas-${estado}`;
+        escrito.textContent = estado === 'lotado' ? 'Lotado' : 'Quase cheio';
+        contagem.append(escrito);
+    }
+
+    linha.append(contagem);
     return linha;
 }
 
@@ -36,7 +48,8 @@ async function trocarPelaPlanta(planta: HTMLElement, id: number): Promise<void> 
         const mapa = await carregarMapaPublicado(id);
         const svg = desenharMiniatura(comoGrafo(mapa.grafo), mapa.vagas.map(comoDadosDaVaga));
         if (svg === null) return;
-        planta.innerHTML = svg;
+        planta.querySelector('img')?.remove();
+        planta.insertAdjacentHTML('afterbegin', svg);
         planta.classList.add('com-planta');
     } catch {
         return;
@@ -58,7 +71,8 @@ const observador = typeof IntersectionObserver === 'undefined'
 
 export function criarCardDeEstacionamento(estacionamento: EstacionamentoNaBuscaWire): HTMLLIElement {
     const card = document.createElement('li');
-    card.className = 'result-card';
+    const lotado = estadoDaOcupacao(estacionamento.vagas.livres, estacionamento.vagas.total) === 'lotado';
+    card.className = lotado ? 'result-card lotado' : 'result-card';
 
     const planta = document.createElement('div');
     planta.className = 'result-card-planta';
@@ -67,6 +81,12 @@ export function criarCardDeEstacionamento(estacionamento: EstacionamentoNaBuscaW
     imagem.src = imagemPadrao;
     imagem.alt = '';
     planta.append(imagem);
+    if (lotado) {
+        const etiqueta = document.createElement('span');
+        etiqueta.className = 'result-card-etiqueta';
+        etiqueta.textContent = 'Lotado';
+        planta.append(etiqueta);
+    }
 
     const corpo = document.createElement('div');
     corpo.className = 'result-card-body';

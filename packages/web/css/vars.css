@@ -62,6 +62,7 @@
        foco dele é desenhado por dentro (outline-offset negativo). */
     --recorte-entalhe: polygon(0 8px, 8px 8px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 8px, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 8px), 0 calc(100% - 8px));
     --recorte-losango: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    --recorte-degrau: polygon(0 20px, 10px 20px, 10px 10px, 20px 10px, 20px 0, calc(100% - 20px) 0, calc(100% - 20px) 10px, calc(100% - 10px) 10px, calc(100% - 10px) 20px, 100% 20px, 100% 100%, 0 100%);
 
     /* Três alturas de controle (escala do IBM Carbon): ação principal, padrão
        e compacta. A busca da home vai a 56, a barra do Material 3. */

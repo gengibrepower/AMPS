@@ -46,8 +46,6 @@ main {
 
 main > h2 {
     align-self: flex-start;
-    font-size: var(--texto-lg);
-    font-weight: 600;
 }
 
 .message {

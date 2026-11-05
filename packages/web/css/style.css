@@ -16,32 +16,12 @@ main {
     padding: 24px 16px;
 }
 
-.boas-vindas {
-    width: 100%;
-    margin: 24px 0 8px;
-}
-
-.boas-vindas-titulo {
-    font-size: var(--texto-2xl);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-}
-
-.boas-vindas-texto {
-    max-width: 52ch;
-    margin-top: 10px;
-    color: var(--cor-texto-apagado);
-    font-size: var(--texto-md);
-    line-height: 1.5;
-}
-
 .search-box {
     display: flex;
     align-items: center;
     gap: 10px;
     width: 100%;
-    min-height: var(--altura-busca);
+    min-height: 64px;
     border-radius: var(--raio-pilula);
     border: 1.5px solid var(--cor-borda-campo);
     box-shadow: inset 0 0 0 4px var(--cor-superficie), inset 0 0 0 5px var(--cor-ouro);
@@ -69,6 +49,204 @@ main {
 
 .search-box input::placeholder {
     color: var(--cor-texto-apagado);
+}
+
+/* Raios de sol atrás do título: o leque de areia e creme e, por cima, o
+   meio-círculo com aro duplo ouro. Só a home usa. */
+.vitrine {
+    position: relative;
+    overflow: hidden;
+    padding: 56px 16px 64px;
+    text-align: center;
+}
+
+.vitrine::before,
+.vitrine::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+}
+
+.vitrine::before {
+    bottom: -500px;
+    width: 1100px;
+    height: 1100px;
+    background: repeating-conic-gradient(from 0deg, var(--cor-areia) 0deg 3deg, var(--cor-creme) 3deg 6deg);
+}
+
+.vitrine::after {
+    bottom: -250px;
+    width: 900px;
+    height: 620px;
+    background-color: var(--cor-creme);
+    box-shadow: 0 0 0 1.5px var(--cor-ouro), 0 0 0 12px var(--cor-creme), 0 0 0 13.5px var(--cor-ouro);
+}
+
+.vitrine-conteudo {
+    position: relative;
+    z-index: 1;
+    max-width: 940px;
+    margin: 0 auto;
+}
+
+.vitrine-sobretitulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--cor-ouro-texto);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.vitrine-titulo {
+    margin-top: 24px;
+    font-family: var(--fonte-marca);
+    font-size: clamp(40px, 7.2vw, 96px);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.vitrine-divisa {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 24px auto 0;
+}
+
+.vitrine-texto {
+    max-width: 600px;
+    margin: 20px auto 0;
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+.vitrine-busca {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 660px;
+    margin: 32px auto 0;
+}
+
+.vitrine-busca .search-box {
+    flex: 4 1 300px;
+    height: 64px;
+    cursor: text;
+}
+
+.vitrine-buscar {
+    flex: 1 1 140px;
+    height: 64px;
+    padding: 4px 32px 0;
+    border: none;
+    clip-path: var(--recorte-entalhe);
+    background-color: var(--cor-marca);
+    color: var(--cor-sobre-marca);
+    font-family: inherit;
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.vitrine-buscar:hover {
+    background-color: var(--cor-marca-hover);
+}
+
+.vitrine-buscar:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
+}
+
+/* Faixa preta: o total de vagas livres de agora e o portal. A linha tripla
+   abre a faixa e o chevron a fecha. */
+.faixa {
+    background-color: var(--cor-tinta);
+    color: var(--cor-creme);
+}
+
+.faixa::before,
+.faixa::after {
+    content: "";
+    display: block;
+}
+
+.faixa::before {
+    height: 9px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
+}
+
+.faixa::after {
+    height: 16px;
+    background:
+        linear-gradient(135deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 16px repeat-x,
+        linear-gradient(225deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 16px repeat-x,
+        var(--cor-tinta);
+}
+
+.faixa.disabled {
+    display: none;
+}
+
+.faixa-conteudo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 24px 64px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 16px 0;
+}
+
+.faixa-agora {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.faixa-agora svg {
+    display: block;
+}
+
+.faixa-numero {
+    color: var(--cor-ouro-claro);
+    font-family: var(--fonte-numero);
+    font-size: 72px;
+    line-height: 0.85;
+}
+
+.faixa-rotulo {
+    max-width: 24ch;
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    line-height: 1.6;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.faixa-portal {
+    width: min(340px, 100%);
+}
+
+.faixa-portal svg {
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .bottom-nav {
@@ -271,22 +449,12 @@ main {
     margin-top: 8px;
 }
 
-.patios-titulo {
-    font-size: var(--texto-md);
-    font-weight: 600;
-}
-
 .historico {
     display: flex;
     flex-direction: column;
     gap: 12px;
     width: 100%;
     margin-top: 8px;
-}
-
-.historico-titulo {
-    font-size: var(--texto-md);
-    font-weight: 600;
 }
 
 .historico-lista {
@@ -302,7 +470,7 @@ main {
     gap: 12px;
     min-height: 96px;
     padding: 20px;
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     background-color: var(--cor-superficie);
     color: inherit;
     text-decoration: none;
@@ -352,9 +520,29 @@ main {
         padding-bottom: 0;
     }
 
+    .vitrine {
+        padding: 72px 48px 80px;
+    }
+
+    .vitrine::before {
+        bottom: -620px;
+        width: 1500px;
+        height: 1240px;
+    }
+
+    .vitrine::after {
+        bottom: -395px;
+        width: 1100px;
+        height: 700px;
+    }
+
+    .faixa-agora {
+        padding-bottom: 48px;
+    }
+
     main {
         width: 100%;
-        max-width: 860px;
+        max-width: 1100px;
         margin: 0 auto;
         padding: 24px 48px 64px;
         gap: 24px;

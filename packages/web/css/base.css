@@ -290,6 +290,37 @@ textarea {
     text-overflow: ellipsis;
 }
 
+.losango {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 9px;
+    height: 9px;
+    background-color: var(--cor-ouro);
+    transform: rotate(45deg);
+}
+
+.titulo-tripla {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.titulo-tripla::after {
+    content: "";
+    flex: 1;
+    min-width: 24px;
+    height: 9px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
+}
+
 @media (max-width: 479px) {
     .conta-nome {
         display: none;

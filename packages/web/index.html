@@ -39,27 +39,44 @@
         </div>
     </nav>
  
-    <main>
-        <section class="boas-vindas">
-            <h1 class="boas-vindas-titulo">Saiba sua vaga antes de entrar</h1>
-            <p class="boas-vindas-texto">
+    <section class="vitrine">
+        <div class="vitrine-conteudo">
+            <p class="vitrine-sobretitulo"><span class="losango" aria-hidden="true"></span>Garagem inteligente<span class="losango" aria-hidden="true"></span></p>
+            <h1 class="vitrine-titulo">Saiba sua vaga antes de entrar</h1>
+            <svg class="vitrine-divisa" viewBox="0 0 300 24" width="300" aria-hidden="true"><path d="M0 12H110M190 12H300M0 6H100M200 6H300M0 18H100M200 18H300" stroke="#B08A3E" stroke-width="1.5"/><path d="M120 18L130 6L140 18L150 6L160 18L170 6L180 18" fill="none" stroke="#1A1A17" stroke-width="2"/></svg>
+            <p class="vitrine-texto">
                 Busque o estacionamento, diga para onde você vai e o AMPS mostra a
                 vaga livre mais perto e o caminho até ela.
             </p>
-        </section>
+            <form action="client/search.html" method="GET" class="vitrine-busca">
+                <label class="search-box">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                    <input type="search" name="q" placeholder="Nome, rua ou bairro" autocomplete="off" aria-label="Pesquisar estacionamento">
+                </label>
+                <button type="submit" class="vitrine-buscar">Buscar</button>
+            </form>
+        </div>
+    </section>
 
-        <form action="client/search.html" method="GET" class="search-box">
-            <span class="material-symbols-outlined">search</span>
-            <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
-        </form>
+    <section id="faixa" class="faixa disabled" aria-labelledby="faixaRotulo">
+        <div class="faixa-conteudo">
+            <div class="faixa-agora">
+                <div id="faixaMostrador"></div>
+                <p class="faixa-numero" id="faixaNumero"></p>
+                <p class="faixa-rotulo" id="faixaRotulo"></p>
+            </div>
+            <div class="faixa-portal" id="faixaPortal"></div>
+        </div>
+    </section>
 
+    <main>
         <section id="historico" class="historico disabled">
-            <h2 class="historico-titulo">Abertos recentemente</h2>
+            <h2 class="historico-titulo titulo-tripla">Abertos recentemente</h2>
             <ul id="listaDoHistorico" class="historico-lista"></ul>
         </section>
 
         <section id="patios" class="patios disabled" aria-labelledby="patiosTitulo">
-            <h2 id="patiosTitulo" class="patios-titulo">Estacionamentos no AMPS</h2>
+            <h2 id="patiosTitulo" class="patios-titulo titulo-tripla">Estacionamentos no AMPS</h2>
             <ul id="listaDePatios" class="result-list"></ul>
         </section>
     </main>
