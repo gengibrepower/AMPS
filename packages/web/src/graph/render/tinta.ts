@@ -1,48 +1,48 @@
-// Paleta do desenho. O canvas é papel: fundo claro, traço escuro, como a planta
-// impressa. A interface em volta (vars.css) continua escura.
-export const PAPEL = '#FFFFFF';
+// Paleta do desenho: o pátio à noite, asfalto escuro e pintura clara. Os
+// valores são passos do Radix Colors (sage, blue, amber, red, teal) e de
+// propósito não leem o vars.css: o Konva pinta no canvas, sem CSS. Todo traço
+// fica acima de 3:1 contra o que tem ao lado (WCAG 1.4.11); o asfalto contra o
+// papel é só preenchimento, quem marca a borda da via é o meio-fio.
+export const PAPEL = '#101211';
 
-export const GRADE_FINA = 'rgba(17, 19, 22, 0.07)';
-export const GRADE_GROSSA = 'rgba(17, 19, 22, 0.16)';
-export const EIXO = 'rgba(23, 114, 76, 0.45)';
+export const GRADE_FINA = 'rgba(236, 238, 237, 0.05)';
+export const GRADE_GROSSA = 'rgba(236, 238, 237, 0.11)';
+export const EIXO = 'rgba(9, 195, 130, 0.45)';
 
-export const ASFALTO = '#ECEEF1';
-export const ASFALTO_SELECIONADO = '#DCE8FB';
-export const MEIO_FIO = '#9AA1AA';
-export const MEIO_FIO_SELECIONADO = '#1A73E8';
-export const PINTURA = '#5C636C';
+export const ASFALTO = '#272A29';
+export const ASFALTO_SELECIONADO = '#0D2847';
+export const MEIO_FIO = '#63706B';
+export const MEIO_FIO_SELECIONADO = '#70B8FF';
+export const PINTURA = '#ADB5B2';
 
-export const VAGA_TRACO = '#2B3038';
-export const VAGA_FUNDO = '#FFFFFF';
+export const VAGA_TRACO = '#ADB5B2';
+export const VAGA_FUNDO = '#171918';
 
-export const OCUPADA_FUNDO = 'rgba(232, 26, 26, 0.24)';
+export const OCUPADA_FUNDO = 'rgba(229, 72, 77, 0.32)';
 
-export const ENTRADA = '#0E7A4E';
-export const ENTRADA_FUNDO = 'rgba(14, 122, 78, 0.16)';
+export const ENTRADA = '#09C382';
+export const ENTRADA_FUNDO = 'rgba(9, 195, 130, 0.16)';
 
-export const POI = '#B07400';
-export const POI_FUNDO = 'rgba(176, 116, 0, 0.16)';
+export const POI = '#FFCA16';
+export const POI_FUNDO = 'rgba(255, 202, 22, 0.14)';
 
-export const VIA = '#5C636C';
-export const VIA_FUNDO = '#FFFFFF';
+export const VIA = '#ADB5B2';
+export const VIA_FUNDO = '#171918';
 
-export const SELECIONADO = '#1A73E8';
+export const SELECIONADO = '#70B8FF';
 
-// Vaga que a publicação recusou. Vermelho de traço sobre papel branco, mais
-// escuro que o `--status-full` da interface, que sobre fundo claro clareia
-// demais para um traço de 1 px.
-export const RECUSADO = '#C62828';
-export const RECUSADO_FUNDO = 'rgba(198, 40, 40, 0.14)';
+export const RECUSADO = '#FF9592';
+export const RECUSADO_FUNDO = 'rgba(229, 72, 77, 0.2)';
 
-export const PESO = '#3C4249';
+export const PESO = '#ECEEED';
 
 // Hachura por tipo de vaga: a tinta do traço continua a mesma, muda o fundo.
 export const FUNDO_POR_TIPO: Record<string, string> = {
     comum: VAGA_FUNDO,
-    pcd: 'rgba(26, 115, 232, 0.16)',
-    idoso: 'rgba(176, 116, 0, 0.16)',
-    moto: 'rgba(14, 122, 78, 0.14)',
-    eletrico: 'rgba(0, 150, 136, 0.16)',
+    pcd: 'rgba(0, 144, 255, 0.24)',
+    idoso: 'rgba(255, 197, 61, 0.2)',
+    moto: 'rgba(9, 195, 130, 0.16)',
+    eletrico: 'rgba(18, 165, 148, 0.24)',
 };
 
-export const NUMERO_DA_VAGA = '#5C636C';
+export const NUMERO_DA_VAGA = '#ADB5B2';
