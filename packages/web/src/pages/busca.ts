@@ -1,6 +1,6 @@
 import imagemPadrao from '../../assets/images/capa-padrao.svg';
 import { ApiError, pesquisarEstacionamentos } from '../api';
-import type { EnderecoWire, EstacionamentoWire } from '../api';
+import type { EnderecoWire, EstacionamentoNaBuscaWire } from '../api';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const resultadoTitulo = document.querySelector<HTMLHeadingElement>('#resultadoTitulo');
@@ -25,7 +25,25 @@ function localizacao(endereco: EnderecoWire): string {
     return [rua, endereco.bairro, cidade].filter(Boolean).join(' · ');
 }
 
-function criarCard(estacionamento: EstacionamentoWire): HTMLLIElement {
+function criarVagas(vagas: EstacionamentoNaBuscaWire['vagas']): HTMLParagraphElement {
+    const linha = document.createElement('p');
+    linha.className = 'result-card-vagas';
+
+    const livres = document.createElement('strong');
+    livres.className = vagas.livres === 0 ? 'vagas-livres lotado' : 'vagas-livres';
+    livres.textContent = vagas.livres === 0
+        ? 'Lotado'
+        : `${vagas.livres} ${vagas.livres === 1 ? 'vaga livre' : 'vagas livres'}`;
+
+    const total = document.createElement('span');
+    total.className = 'vagas-total';
+    total.textContent = vagas.livres === 0 ? `todas as ${vagas.total} ocupadas` : `de ${vagas.total}`;
+
+    linha.append(livres, total);
+    return linha;
+}
+
+function criarCard(estacionamento: EstacionamentoNaBuscaWire): HTMLLIElement {
     const card = document.createElement('li');
     card.className = 'result-card';
 
@@ -48,7 +66,7 @@ function criarCard(estacionamento: EstacionamentoWire): HTMLLIElement {
     link.className = 'result-card-link';
     link.href = `/client/estacionamento.html?id=${estacionamento.id}`;
 
-    corpo.append(titulo, local);
+    corpo.append(titulo, local, criarVagas(estacionamento.vagas));
     link.append(imagem, corpo);
     card.append(link);
     return card;

@@ -76,7 +76,7 @@ main > h2 {
 
 .result-card img {
     width: 100%;
-    height: 160px;
+    height: 112px;
     object-fit: cover;
     background-color: var(--cor-superficie);
 }
@@ -95,7 +95,41 @@ main > h2 {
 
 .result-card-location {
     font-size: var(--texto-sm);
-    opacity: 0.85;
+    color: var(--cor-texto-apagado);
+}
+
+.result-card-vagas {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: var(--texto-sm);
+}
+
+.vagas-livres {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cor-marca);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.vagas-livres::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.vagas-livres.lotado {
+    color: var(--cor-perigo);
+}
+
+.vagas-total {
+    color: var(--cor-texto-apagado);
+    font-variant-numeric: tabular-nums;
 }
 
 .message {
