@@ -2,6 +2,7 @@ import { NotFoundError, UnprocessableError } from '../errors.js';
 import type {
 	DadosDoEstacionamento,
 	Estacionamento,
+	EstacionamentoNaBusca,
 	EstacionamentoRepository,
 	VagaRepository,
 } from '../ports.js';
@@ -32,7 +33,7 @@ export class EstacionamentoService {
 		return this.estacionamentos.listByDono(dono.id);
 	}
 
-	async pesquisar(termo: string): Promise<readonly Estacionamento[]> {
+	async pesquisar(termo: string): Promise<readonly EstacionamentoNaBusca[]> {
 		return this.estacionamentos.searchPublicados(termo);
 	}
 
