@@ -571,3 +571,177 @@ main {
         display: block;
     }
 }
+
+/* Como funciona: a faixa verde-ferro entre o preto da faixa e o creme dos
+   cards. Cada passo é um cartão de papel, com o texto em tinta, e um medalhão
+   preto em arco escalonado montado no topo. */
+.como {
+    padding: 56px 16px 64px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28' viewBox='0 0 56 28'%3E%3Cg fill='none' stroke='%23E7C977' stroke-opacity='.09' stroke-width='1.2'%3E%3Cpath d='M0 28A28 28 0 0 1 56 28M8 28A20 20 0 0 1 48 28M16 28A12 12 0 0 1 40 28'/%3E%3Cpath d='M-28 14A28 28 0 0 1 28 14M28 14A28 28 0 0 1 84 14M-20 14A20 20 0 0 1 20 14M36 14A20 20 0 0 1 76 14M-12 14A12 12 0 0 1 12 14M44 14A12 12 0 0 1 68 14'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 56px 28px, var(--cor-ferro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    box-shadow: inset 0 -6px 0 var(--cor-ferro), inset 0 -7.5px 0 var(--cor-ouro);
+    color: var(--cor-creme);
+    text-align: center;
+}
+
+.como-conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.como-sobre {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--cor-ouro-claro);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.como-titulo {
+    margin-top: 10px;
+    font-family: var(--fonte-marca);
+    font-size: clamp(30px, 5vw, 44px);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.como-titulo::after {
+    content: "";
+    display: block;
+    width: 96px;
+    height: 7px;
+    margin: 16px auto 0;
+    border-block: 1.5px solid var(--cor-ouro);
+}
+
+.como-passos {
+    display: grid;
+    gap: 100px;
+    width: 100%;
+    margin-top: 88px;
+    list-style: none;
+}
+
+.como-passo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0 28px 32px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-papel);
+    color: var(--cor-texto);
+}
+
+.como-passo::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 22px solid transparent;
+    border-image: var(--ornamento-canto) 22 / 22px / 0 stretch;
+    pointer-events: none;
+}
+
+.como-medalhao {
+    position: relative;
+    z-index: 1;
+    width: 136px;
+    height: 136px;
+    margin-top: -68px;
+}
+
+.como-numero {
+    margin-top: 6px;
+    color: var(--cor-ouro-texto);
+    font-family: var(--fonte-marca);
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: 0.12em;
+}
+
+.como-nome {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+
+.como-nome::after {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 10px;
+    margin: 12px auto 4px;
+    background: var(--ornamento-losangos) no-repeat center / contain;
+}
+
+.como-texto {
+    max-width: 28ch;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.como-chamada {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 52px;
+    margin-top: 48px;
+    padding: 4px 32px 0;
+    clip-path: var(--recorte-entalhe);
+    background-color: var(--cor-ouro);
+    color: var(--cor-tinta);
+    font-size: var(--texto-sm);
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.como-chamada::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 14px solid transparent;
+    border-image: var(--ornamento-filete-tinta) 14 / 14px / 0 stretch;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.como-chamada:hover {
+    background-color: var(--cor-ouro-claro);
+}
+
+.como-chamada:focus-visible {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: -6px;
+}
+
+/* Em linha, um chevron em ouro entre um cartão e o próximo aponta o
+   caminho. Empilhado não cabe: o medalhão do cartão de baixo ocupa o vão. */
+@media (min-width: 768px) {
+    .como-passos {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+    }
+
+    .como-passo:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: -29px;
+        width: 14px;
+        height: 14px;
+        border-right: 3px solid var(--cor-ouro-claro);
+        border-bottom: 3px solid var(--cor-ouro-claro);
+        transform: translateY(-50%) rotate(-45deg);
+    }
+}
