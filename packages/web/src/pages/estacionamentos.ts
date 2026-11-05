@@ -13,6 +13,7 @@ import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const bloqueio = document.getElementById('bloqueio') as HTMLElement | null;
 const bloqueioTexto = document.getElementById('bloqueioTexto') as HTMLElement | null;
+const bloqueioLink = document.getElementById('bloqueioLink') as HTMLAnchorElement | null;
 const area = document.getElementById('area') as HTMLElement | null;
 const abrirNovo = document.getElementById('abrirNovo') as HTMLButtonElement | null;
 const cancelarPatio = document.getElementById('cancelarPatio') as HTMLButtonElement | null;
@@ -275,7 +276,11 @@ const usuario = usuarioAtual();
 if (getSession() === null) {
     bloquear('Entre com uma conta de dono para ver seus estacionamentos.');
 } else if (usuario?.tipo_conta !== 'dono') {
-    bloquear('Esta área é só para contas de dono.');
+    bloquear('Você entrou com uma conta de cliente. Esta área é das contas de dono.');
+    if (bloqueioLink) {
+        bloqueioLink.href = '../index.html';
+        bloqueioLink.textContent = 'Buscar estacionamento';
+    }
 } else {
     area?.classList.remove('disabled');
     void carregar();
