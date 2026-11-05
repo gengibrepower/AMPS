@@ -1,22 +1,49 @@
+/*
+ * Neutros: escala sage (escura) do Radix Colors 3.0, o cinza feito para
+ * acompanhar verde. O número no fim de cada linha é o passo da escala, e o
+ * passo diz o papel: 1-2 fundo, 3-5 componente, 6-8 borda, 11-12 texto.
+ * https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale
+ */
 :root {
-    --bg-color: #101113;
-    --text-primary: #E8E8E9;
- 
-    --btn-green-bg: rgba(15, 89, 58, 0.1);
-    --btn-green-border: #17724C;
- 
-    --card-bg: #141517;
- 
-    --search-bg: rgba(34, 36, 39, 0.44);
-    --search-border: rgba(255, 255, 255, 0.14);
- 
-    --status-available: #17724C;
-    --status-full: #D64545;
-    --star-color: #F4B400;
+    --cor-fundo: #101211;            /* 1 */
+    --cor-fundo-sutil: #171918;      /* 2 */
+    --cor-superficie: #202221;       /* 3 */
+    --cor-superficie-hover: #272A29; /* 4 */
+    --cor-superficie-ativa: #2E3130; /* 5 */
+    --cor-borda-sutil: #373B39;      /* 6 */
+    --cor-borda: #444947;            /* 7 */
+    --cor-borda-campo: #63706B;      /* 9: 3,6:1 no fundo, o mínimo de borda de controle (WCAG 1.4.11) */
+    --cor-texto-apagado: #ADB5B2;    /* 11 */
+    --cor-texto: #ECEEED;            /* 12 */
 
-    --font-main: "Montserrat", sans-serif;
-    --font-logo: "Baunk", sans-serif;
- 
-    --radius-pill: 999px;
-    --radius-card: 20px;
+    --cor-marca: #09C382;
+    --cor-marca-hover: #1FD8A4;      /* jade 11 */
+    --cor-marca-fundo: #0F2E22;      /* jade 3 */
+    --cor-marca-borda: #1B5745;      /* jade 6 */
+    --cor-sobre-marca: #04140E;
+
+    --cor-perigo: #FF9592;           /* red 11 */
+    --cor-perigo-solido: #E5484D;    /* red 9 */
+    --cor-perigo-fundo: #3B1219;     /* red 3 */
+    --cor-aviso: #FFCA16;            /* amber 11 */
+    --cor-info: #70B8FF;             /* blue 11 */
+
+    --cor-veu: rgba(0, 0, 0, 0.6);
+
+    --fonte-texto: "Montserrat", system-ui, sans-serif;
+    --fonte-marca: "Baunk", var(--fonte-texto);
+    --fonte-mono: ui-monospace, Menlo, Consolas, monospace;
+
+    --texto-xs: 0.75rem;
+    --texto-sm: 0.875rem;
+    --texto-md: 1rem;
+    --texto-lg: 1.25rem;
+    --texto-xl: 1.5rem;
+    --texto-2xl: 2rem;
+
+    --raio-campo: 8px;
+    --raio-card: 14px;
+    --raio-pilula: 999px;
+
+    --altura-cabecalho: 64px;
 }

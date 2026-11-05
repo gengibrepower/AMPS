@@ -1,9 +1,7 @@
 @import url(vars.css);
 
 :root {
-    --linha: rgba(255, 255, 255, 0.12);
-    --apagado: rgba(232, 232, 233, 0.65);
-    --altura-header: 48px;
+    --altura-cabecalho: 48px;
     --altura-status: 28px;
 }
 
@@ -18,31 +16,31 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: var(--font-main);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: var(--fonte-texto);
 }
 
 header {
     display: flex;
     align-items: center;
     gap: 12px;
-    height: var(--altura-header);
+    height: var(--altura-cabecalho);
     flex-shrink: 0;
     padding: 0 12px;
-    border-bottom: 1px solid var(--linha);
+    border-bottom: 1px solid var(--cor-borda-sutil);
 }
 
 .voltar {
     display: flex;
     align-items: center;
     padding: 4px;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
     text-decoration: none;
 }
 
 .voltar:hover {
-    color: var(--text-primary);
+    color: var(--cor-texto);
 }
 
 .titulo {
@@ -53,7 +51,7 @@ header {
 }
 
 .nome {
-    font-size: 0.95rem;
+    font-size: var(--texto-md);
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -62,18 +60,18 @@ header {
 
 .etiqueta {
     flex-shrink: 0;
-    border: 1px solid var(--linha);
-    border-radius: var(--radius-pill);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-pilula);
     padding: 2px 9px;
-    font-size: 0.68rem;
+    font-size: var(--texto-xs);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .etiqueta-publicado {
-    border-color: var(--status-available);
-    color: var(--status-available);
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
 }
 
 main {
@@ -90,7 +88,7 @@ main {
     flex-shrink: 0;
     width: 54px;
     padding: 8px 6px;
-    border-right: 1px solid var(--linha);
+    border-right: 1px solid var(--cor-borda-sutil);
 }
 
 .ferramenta {
@@ -100,22 +98,22 @@ main {
     justify-content: center;
     height: 40px;
     border: 1px solid transparent;
-    border-radius: 10px;
+    border-radius: var(--raio-campo);
     background: none;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
     font-family: inherit;
     cursor: pointer;
 }
 
 .ferramenta:hover:not(:disabled) {
-    background-color: var(--search-bg);
-    color: var(--text-primary);
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
 }
 
 .ferramenta[aria-pressed="true"] {
-    border-color: var(--btn-green-border);
-    background-color: var(--btn-green-bg);
-    color: var(--text-primary);
+    border-color: var(--cor-marca);
+    background-color: var(--cor-marca-fundo);
+    color: var(--cor-texto);
 }
 
 .ferramenta:disabled {
@@ -135,7 +133,7 @@ main {
 .separador {
     height: 1px;
     margin: 6px 4px;
-    background-color: var(--linha);
+    background-color: var(--cor-borda-sutil);
 }
 
 .quadro {
@@ -160,21 +158,21 @@ main {
     justify-content: center;
     gap: 16px;
     padding: 24px;
-    background-color: var(--bg-color);
-    color: var(--apagado);
-    font-size: 0.9rem;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-sm);
     text-align: center;
 }
 
 .botao-saida {
     display: inline-flex;
     align-items: center;
-    border: 1px solid var(--btn-green-border);
-    background-color: var(--btn-green-bg);
-    color: var(--text-primary);
+    border: 1px solid var(--cor-marca);
+    background-color: var(--cor-marca-fundo);
+    color: var(--cor-texto);
     padding: 8px 16px;
-    border-radius: var(--radius-pill);
-    font-size: 0.85rem;
+    border-radius: var(--raio-pilula);
+    font-size: var(--texto-sm);
     font-weight: 500;
     text-decoration: none;
 }
@@ -186,9 +184,9 @@ main {
     height: var(--altura-status);
     flex-shrink: 0;
     padding: 0 12px;
-    border-top: 1px solid var(--linha);
-    font-size: 0.72rem;
-    color: var(--apagado);
+    border-top: 1px solid var(--cor-borda-sutil);
+    font-size: var(--texto-xs);
+    color: var(--cor-texto-apagado);
 }
 
 .leitura {
@@ -201,7 +199,7 @@ main {
     min-width: 62px;
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     font-variant-numeric: tabular-nums;
-    color: var(--text-primary);
+    color: var(--cor-texto);
 }
 
 .numero.curto {
@@ -226,13 +224,13 @@ main {
     width: 216px;
     padding: 12px;
     overflow-y: auto;
-    border-left: 1px solid var(--linha);
-    font-size: 0.78rem;
+    border-left: 1px solid var(--cor-borda-sutil);
+    font-size: var(--texto-xs);
 }
 
 .inspetor-vazio {
-    color: var(--apagado);
-    font-size: 0.78rem;
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-xs);
 }
 
 .inspetor-corpo {
@@ -246,7 +244,7 @@ main {
     align-items: center;
     gap: 6px;
     margin-bottom: 2px;
-    font-size: 0.85rem;
+    font-size: var(--texto-sm);
     font-weight: 600;
 }
 
@@ -258,32 +256,32 @@ main {
     display: flex;
     gap: 8px;
     margin-bottom: 4px;
-    color: var(--apagado);
-    font-size: 0.72rem;
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-xs);
 }
 
 .campo {
     margin-top: 4px;
-    color: var(--apagado);
-    font-size: 0.7rem;
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-xs);
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
 .entrada {
     width: 100%;
-    border: 1px solid var(--search-border);
-    border-radius: 8px;
+    border: 1px solid var(--cor-borda-campo);
+    border-radius: var(--raio-campo);
     padding: 6px 8px;
-    background-color: var(--search-bg);
-    color: var(--text-primary);
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
     font-family: inherit;
-    font-size: 0.78rem;
+    font-size: var(--texto-xs);
 }
 
 .entrada:focus {
     outline: none;
-    border-color: var(--btn-green-border);
+    border-color: var(--cor-marca);
 }
 
 /* O caso comum é perpendicular à rua; o campo cobre espinha de peixe a 45°. */
@@ -295,45 +293,45 @@ main {
 
 .grau {
     flex: 1;
-    border: 1px solid var(--search-border);
-    border-radius: 8px;
+    border: 1px solid var(--cor-borda-campo);
+    border-radius: var(--raio-campo);
     padding: 4px 0;
     background: none;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
     font-family: inherit;
-    font-size: 0.7rem;
+    font-size: var(--texto-xs);
     cursor: pointer;
 }
 
 .grau:hover {
-    color: var(--text-primary);
-    background-color: var(--search-bg);
+    color: var(--cor-texto);
+    background-color: var(--cor-superficie);
 }
 
 .botao-inspetor {
     margin-top: 8px;
-    border: 1px solid var(--btn-green-border);
-    border-radius: var(--radius-pill);
+    border: 1px solid var(--cor-marca);
+    border-radius: var(--raio-pilula);
     padding: 6px 10px;
-    background-color: var(--btn-green-bg);
-    color: var(--text-primary);
+    background-color: var(--cor-marca-fundo);
+    color: var(--cor-texto);
     font-family: inherit;
-    font-size: 0.75rem;
+    font-size: var(--texto-xs);
     cursor: pointer;
 }
 
 .inspetor-dica {
-    color: var(--apagado);
-    font-size: 0.7rem;
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-xs);
 }
 
 .inspetor-erro {
-    color: var(--status-full);
-    font-size: 0.72rem;
+    color: var(--cor-perigo);
+    font-size: var(--texto-xs);
 }
 
 .seta {
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .acoes {
@@ -344,22 +342,22 @@ main {
 }
 
 .aviso {
-    font-size: 0.72rem;
-    color: var(--apagado);
+    font-size: var(--texto-xs);
+    color: var(--cor-texto-apagado);
 }
 
 .aviso-erro {
-    color: var(--status-full);
+    color: var(--cor-perigo);
 }
 
 .botao-salvar {
-    border: 1px solid var(--btn-green-border);
-    border-radius: var(--radius-pill);
+    border: 1px solid var(--cor-marca);
+    border-radius: var(--raio-pilula);
     padding: 6px 16px;
-    background-color: var(--btn-green-bg);
-    color: var(--text-primary);
+    background-color: var(--cor-marca-fundo);
+    color: var(--cor-texto);
     font-family: inherit;
-    font-size: 0.8rem;
+    font-size: var(--texto-sm);
     font-weight: 500;
     cursor: pointer;
 }
@@ -370,19 +368,19 @@ main {
 }
 
 .botao-publicar {
-    border: 1px solid var(--linha);
-    border-radius: var(--radius-pill);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-pilula);
     padding: 6px 16px;
     background: none;
-    color: var(--text-primary);
+    color: var(--cor-texto);
     font-family: inherit;
-    font-size: 0.8rem;
+    font-size: var(--texto-sm);
     font-weight: 500;
     cursor: pointer;
 }
 
 .botao-publicar:hover:not(:disabled) {
-    background-color: var(--search-bg);
+    background-color: var(--cor-superficie);
 }
 
 .botao-publicar:disabled {

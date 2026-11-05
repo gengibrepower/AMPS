@@ -1,9 +1,7 @@
 @import url(vars.css);
 
 :root {
-    --linha: rgba(255, 255, 255, 0.12);
-    --apagado: rgba(232, 232, 233, 0.65);
-    --altura-header: 48px;
+    --altura-cabecalho: 48px;
 }
 
 * {
@@ -17,36 +15,36 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: var(--font-main);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: var(--fonte-texto);
 }
 
 header {
     display: flex;
     align-items: center;
     gap: 12px;
-    height: var(--altura-header);
+    height: var(--altura-cabecalho);
     flex-shrink: 0;
     padding: 0 12px;
-    border-bottom: 1px solid var(--linha);
+    border-bottom: 1px solid var(--cor-borda-sutil);
 }
 
 .voltar {
     display: flex;
     align-items: center;
     padding: 4px;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
     text-decoration: none;
 }
 
 .voltar:hover {
-    color: var(--text-primary);
+    color: var(--cor-texto);
 }
 
 .nome {
     min-width: 0;
-    font-size: 0.95rem;
+    font-size: var(--texto-md);
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -64,11 +62,11 @@ header {
 }
 
 .msg-success {
-    color: var(--status-available);
+    color: var(--cor-marca);
 }
 
 .msg-error {
-    color: var(--status-full);
+    color: var(--cor-perigo);
 }
 
 .msg-info {

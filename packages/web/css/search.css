@@ -12,9 +12,9 @@
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: var(--font-main);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: var(--fonte-texto);
     min-height: 100vh;
 }
 
@@ -31,7 +31,7 @@ header {
     flex-shrink: 0;
     border: none;
     background-color: transparent;
-    color: var(--text-primary);
+    color: var(--cor-texto);
     padding: 8px;
     cursor: pointer;
 }
@@ -43,8 +43,8 @@ header {
 }
 
 #logo-text {
-    font-family: var(--font-logo);
-    font-size: 1.5rem;
+    font-family: var(--fonte-marca);
+    font-size: var(--texto-xl);
 }
 
 #logo-holder {
@@ -56,12 +56,12 @@ header {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    border: 1px solid var(--btn-green-border);
-    background-color: var(--btn-green-bg);
-    color: var(--text-primary);
+    border: 1px solid var(--cor-marca);
+    background-color: var(--cor-marca-fundo);
+    color: var(--cor-texto);
     padding: 8px 14px;
-    border-radius: var(--radius-pill);
-    font-size: 0.85rem;
+    border-radius: var(--raio-pilula);
+    font-size: var(--texto-sm);
     font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
@@ -82,7 +82,7 @@ header {
     position: relative;
     width: 100%;
     max-height: 80vh;
-    background-color: var(--card-bg);
+    background-color: var(--cor-superficie);
     padding: 2rem 1.5rem;
     border-radius: 24px 24px 0 0;
 }
@@ -93,7 +93,7 @@ header {
     right: 16px;
     border: none;
     background: transparent;
-    color: var(--text-primary);
+    color: var(--cor-texto);
     font-size: 1.2rem;
     cursor: pointer;
 }
@@ -115,10 +115,10 @@ header {
     padding: 14px 16px;
     border: none;
     background: transparent;
-    color: var(--text-primary);
+    color: var(--cor-texto);
     text-decoration: none;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--texto-md);
     text-align: left;
     cursor: pointer;
 }
@@ -157,14 +157,14 @@ main {
     align-items: center;
     gap: 10px;
     width: 100%;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--search-border);
-    background-color: var(--search-bg);
+    border-radius: var(--raio-pilula);
+    border: 1px solid var(--cor-borda-campo);
+    background-color: var(--cor-superficie);
     padding: 6px 18px;
 }
 
 .search-box .material-symbols-outlined {
-    color: var(--text-primary);
+    color: var(--cor-texto);
     opacity: 0.75;
 }
 
@@ -173,18 +173,18 @@ main {
     border: none;
     outline: none;
     background-color: transparent;
-    color: var(--text-primary);
-    font-size: 0.95rem;
+    color: var(--cor-texto);
+    font-size: var(--texto-md);
 }
 
 .search-box input::placeholder {
-    color: var(--text-primary);
+    color: var(--cor-texto);
     opacity: 0.6;
 }
 
 main > h2 {
     align-self: flex-start;
-    font-size: 1.1rem;
+    font-size: var(--texto-lg);
     font-weight: 600;
 }
 
@@ -199,8 +199,8 @@ main > h2 {
 .result-card {
     display: flex;
     flex-direction: column;
-    background-color: var(--card-bg);
-    border-radius: var(--radius-card);
+    background-color: var(--cor-superficie);
+    border-radius: var(--raio-card);
     overflow: hidden;
 }
 
@@ -212,11 +212,11 @@ main > h2 {
 }
 
 .result-card:hover {
-    outline: 2px solid var(--status-available);
+    outline: 2px solid var(--cor-marca);
 }
 
 .result-card-link:focus-visible {
-    outline: 2px solid var(--status-available);
+    outline: 2px solid var(--cor-marca);
     outline-offset: -2px;
 }
 
@@ -224,7 +224,7 @@ main > h2 {
     width: 100%;
     height: 160px;
     object-fit: cover;
-    background-color: var(--search-bg);
+    background-color: var(--cor-superficie);
 }
 
 .result-card-body {
@@ -235,26 +235,26 @@ main > h2 {
 }
 
 .result-card-title {
-    font-size: 1.1rem;
+    font-size: var(--texto-lg);
     font-weight: 600;
 }
 
 .result-card-location {
-    font-size: 0.9rem;
+    font-size: var(--texto-sm);
     opacity: 0.85;
 }
 
 .message {
-    font-size: 0.9rem;
+    font-size: var(--texto-sm);
     font-weight: 500;
 }
 
 .msg-success {
-    color: var(--status-available);
+    color: var(--cor-marca);
 }
 
 .msg-error {
-    color: var(--status-full);
+    color: var(--cor-perigo);
 }
 
 .msg-info {
