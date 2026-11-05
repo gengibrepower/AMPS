@@ -38,8 +38,8 @@
 
 .result-card-planta {
     position: relative;
-    height: 172px;
-    padding: 26px 18px 16px;
+    height: 180px;
+    padding: 34px 18px 16px;
     overflow: hidden;
     background-color: var(--cor-tinta);
 }

@@ -128,8 +128,8 @@ header {
 .painel-form select {
     width: 100%;
     padding: 2px 4px;
-    border: 12px solid transparent;
-    border-image: var(--moldura-entalhe) 12 fill / 12px / 0 stretch;
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
 
     background-color: transparent;
     color: var(--cor-texto);
@@ -142,7 +142,7 @@ header {
 .painel-form select {
     appearance: none;
     padding-right: 28px;
-    border-image: var(--moldura-entalhe) 12 / 12px / 0 stretch;
+    border-image: var(--moldura-entalhe) 14 / 14px / 0 stretch;
     background: var(--cor-papel) var(--seta-campo) no-repeat right 6px center / 14px 8px;
     background-clip: padding-box;
     cursor: pointer;

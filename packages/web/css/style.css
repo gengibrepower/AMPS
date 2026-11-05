@@ -22,8 +22,8 @@ main {
     gap: 10px;
     width: 100%;
     min-height: 64px;
-    border: 12px solid transparent;
-    border-image: var(--moldura-entalhe) 12 fill / 12px / 0 stretch;
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
     background: none;
     padding: 0 10px;
 }
@@ -388,8 +388,8 @@ main {
 
 .login input {
     padding: 4px 6px;
-    border: 12px solid transparent;
-    border-image: var(--moldura-entalhe) 12 fill / 12px / 0 stretch;
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
     background: none;
     color: var(--cor-texto);
     font-size: 19px;

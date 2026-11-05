@@ -179,8 +179,8 @@ main {
 
 .campo input,
 .campo select {
-    border: 12px solid transparent;
-    border-image: var(--moldura-entalhe) 12 fill / 12px / 0 stretch;
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
     background: none;
     color: var(--cor-texto);
     font-family: inherit;
@@ -199,7 +199,7 @@ main {
 .campo select {
     appearance: none;
     padding-right: 28px;
-    border-image: var(--moldura-entalhe) 12 / 12px / 0 stretch;
+    border-image: var(--moldura-entalhe) 14 / 14px / 0 stretch;
     background: var(--cor-papel) var(--seta-campo) no-repeat right 6px center / 14px 8px;
     background-clip: padding-box;
     cursor: pointer;
