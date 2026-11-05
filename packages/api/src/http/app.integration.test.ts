@@ -88,6 +88,12 @@ describe('POST /usuarios', () => {
 		expect(resposta.status).toBe(400);
 		expect(resposta.body.campos).toEqual(['email', 'cpf', 'senha']);
 	});
+
+	it('devolve 422 para senha com menos de 8 caracteres', async () => {
+		const resposta = await request(app).post('/usuarios').send({ ...CADASTRO, senha: '1234567' });
+
+		expect(resposta.status).toBe(422);
+	});
 });
 
 describe('POST /donos', () => {
@@ -115,6 +121,14 @@ describe('POST /donos', () => {
 
 		expect(resposta.status).toBe(409);
 		expect(resposta.body.campo).toBe('cnpj');
+	});
+
+	it('devolve 422 para senha com menos de 8 caracteres', async () => {
+		const resposta = await request(app)
+			.post('/donos')
+			.send({ ...CADASTRO, senha: '1234567', razao: 'Ana LTDA', cnpj: '12.345.678/0001-99' });
+
+		expect(resposta.status).toBe(422);
 	});
 });
 
@@ -261,6 +275,22 @@ describe('perfil', () => {
 			.put('/perfil/senha')
 			.set('Authorization', `Bearer ${token}`)
 			.send({ senha_atual: 'errada', senha_nova: 'outra-senha' });
+
+		expect(resposta.status).toBe(422);
+
+		const login = await request(app)
+			.post('/auth/login')
+			.send({ email: CADASTRO.email, senha: CADASTRO.senha });
+		expect(login.status).toBe(200);
+	});
+
+	it('devolve 422 e mantem a senha quando a nova e curta demais', async () => {
+		const token = await tokenDeAna();
+
+		const resposta = await request(app)
+			.put('/perfil/senha')
+			.set('Authorization', `Bearer ${token}`)
+			.send({ senha_atual: CADASTRO.senha, senha_nova: '1234567' });
 
 		expect(resposta.status).toBe(422);
 
