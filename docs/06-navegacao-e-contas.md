@@ -10,7 +10,7 @@ cadastro de carro quer o `docs/07-cadastro-de-carro.md`, não este.
 de três valores do `01_schema.sql` (`common_user`, `dono`, `p_admin`). O editor
 já se defendia com ele (`usuarioAtual()?.tipo_conta !== 'dono'`). Mas a
 navegação ignorava: os links da sidebar eram todos `href=""` e não havia
-caminho clicável nenhum até `owner/estacionamentos.html`. A página do dono se
+caminho clicável nenhum até `owner/meus-estacionamentos.html`. A página do dono se
 defendia e não se anunciava.
 
 ## A decisão num lugar só

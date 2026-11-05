@@ -107,13 +107,13 @@ afterAll(async () => {
 
 describe('painel do pátio', () => {
     it('o botão de editar do cartão não leva ao painel', async () => {
-        await navegador.ir(`${WEB}/owner/estacionamentos.html`);
+        await navegador.ir(`${WEB}/owner/meus-estacionamentos.html`);
         await espere(800);
 
         await clicar('.item button[title="Editar"]');
         await espere(300);
 
-        expect(await caminhoAtual()).toBe('/owner/estacionamentos.html');
+        expect(await caminhoAtual()).toBe('/owner/meus-estacionamentos.html');
         expect(
             await navegador.js<boolean>(
                 'document.getElementById("formPatio").classList.contains("disabled")',
@@ -122,7 +122,7 @@ describe('painel do pátio', () => {
     });
 
     it('clicar no cartão, fora do nome, abre o painel daquele pátio', async () => {
-        await navegador.ir(`${WEB}/owner/estacionamentos.html`);
+        await navegador.ir(`${WEB}/owner/meus-estacionamentos.html`);
         await espere(800);
 
         // Entre o texto e as ações: só o ::after do link cobre esse ponto.

@@ -280,7 +280,7 @@ funcionar sozinho.
 
 ## 2.3 A página que você pode copiar
 
-`owner/estacionamentos.html` + `src/pages/estacionamentos.ts` fazem exatamente
+`owner/meus-estacionamentos.html` + `src/pages/meusEstacionamentos.ts` fazem exatamente
 o que a sua página precisa fazer: bloqueiam quem não tem sessão, abrem um
 formulário, criam pela API e listam o resultado.
 
@@ -312,7 +312,7 @@ seguinte sem conferir o anterior.
 Crie `packages/web/client/carro.html`, **em `client/`**, ao lado da
 `search.html` (as páginas do dono ficam em `owner/`, nunca dentro de `src/`).
 
-Copie a estrutura de `owner/estacionamentos.html` e adapte. Ela tem duas seções
+Copie a estrutura de `owner/meus-estacionamentos.html` e adapte. Ela tem duas seções
 irmãs que você precisa manter:
 
 - `#bloqueio` — a mensagem para quem não está logado
@@ -321,7 +321,7 @@ irmãs que você precisa manter:
 Os campos do formulário são só dois: a placa (`<input>`) e o modelo
 (`<select>`, que você vai preencher pela API — deixe vazio no HTML).
 
-Atenção aos caminhos: `estacionamentos.html` está em `owner/` e referencia
+Atenção aos caminhos: `meus-estacionamentos.html` está em `owner/` e referencia
 `../css/...`. A sua página está em `client/`, um nível abaixo também, então vale o
 mesmo `../`.
 
@@ -364,7 +364,7 @@ final do `carro.html`.
 Faça nesta ordem, testando entre uma coisa e outra:
 
 **4a. O bloqueio.** No final do arquivo, decida se mostra `#area` ou
-`#bloqueio`. O molde está no final de `src/pages/estacionamentos.ts`. Uma
+`#bloqueio`. O molde está no final de `src/pages/meusEstacionamentos.ts`. Uma
 diferença importante: aquela página exige `tipo_conta === 'dono'`; a sua **não
 deve exigir tipo nenhum**. Qualquer conta autenticada pode ter carro — a API
 não olha o tipo. Basta ter sessão.

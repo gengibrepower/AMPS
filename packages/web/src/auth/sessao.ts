@@ -16,7 +16,7 @@ const POR_TIPO: Record<string, readonly Area[]> = {
 const DESTINOS: Record<Area, Destino> = {
     buscar: { area: 'buscar', rotulo: 'Buscar estacionamento', icone: 'search', href: '/index.html' },
     meusCarros: { area: 'meusCarros', rotulo: 'Meus carros', icone: 'directions_car', href: '/client/carro.html' },
-    meusPatios: { area: 'meusPatios', rotulo: 'Meus pátios', icone: 'grid_view', href: '/owner/estacionamentos.html' },
+    meusPatios: { area: 'meusPatios', rotulo: 'Meus pátios', icone: 'grid_view', href: '/owner/meus-estacionamentos.html' },
     perfil: { area: 'perfil', rotulo: 'Meu perfil', icone: 'person', href: '/client/perfil.html' },
 };
 

@@ -197,7 +197,7 @@ if (!Number.isInteger(id) || id <= 0) {
 } else if (palcoDiv !== null) {
     void (async () => {
         try {
-            if (voltar) voltar.href = `/client/estacionamento.html?id=${id}`;
+            if (voltar) voltar.href = `/client/estacionamento-publicado.html?id=${id}`;
             const [estacionamento, mapa] = await Promise.all([
                 buscarEstacionamentoPublicado(id),
                 carregarMapaPublicado(id),

@@ -19,7 +19,7 @@ fatias fecharam.
 | `GET /estacionamentos/:id/mapa` | `{ versao, grafo, vagas }` |
 | `POST`/`DELETE /estacionamentos/:id/publicacao` | RN-11: entrada, vaga e POI conferidos aqui; alcançabilidade no Merlian |
 
-No front, `owner/estacionamentos.html` lista e cria pátios, e
+No front, `owner/meus-estacionamentos.html` lista e cria pátios, e
 `owner/editor.html` abre o pátio, desenha o grafo em metros sobre uma grade e
 deixa criar, mover, ligar e apagar nó, com desfazer, mais o inspetor à direita
 para rótulo, número, tipo, rotação e peso. O botão Salvar grava na ordem que
@@ -344,7 +344,7 @@ descobrir a conversão metro↔tela, como faz `ferramentas.e2e.test.ts`.
 
 `GET /busca/:id/mapa` é a versão pública do `GET /estacionamentos/:id/mapa`: sem
 token, mesma forma `{ versao, grafo, vagas }`. O caminho do cliente é busca →
-`client/estacionamento.html?id=<id>` → "Ver mapa" → `client/mapa.html?id=<id>`.
+`client/estacionamento-publicado.html?id=<id>` → "Ver mapa" → `client/mapa.html?id=<id>`.
 
 A página de detalhes junta `GET /busca/:id` (nome e endereço, com o mesmo 404
 do rascunho) e o mapa público, de onde conta as vagas por tipo e lista os POIs
