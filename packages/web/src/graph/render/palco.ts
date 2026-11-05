@@ -6,7 +6,7 @@ import {
     metrosParaPixels,
     pixelsParaMetros,
 } from '../geometria';
-import type { Caixa, Ponto } from '../geometria';
+import type { Caixa, Cobertura, Ponto } from '../geometria';
 import { EIXO, GRADE_FINA, GRADE_GROSSA } from './tinta';
 
 const ZOOM_MIN = 0.2;
@@ -36,7 +36,7 @@ export interface Palco {
     zoom(): number;
     arrastouAgora(): boolean;
     emMetros(tela: Ponto): Ponto;
-    enquadrar(caixa: Caixa): void;
+    enquadrar(caixa: Caixa, coberto?: Cobertura, zoomMaximo?: number): void;
     aoMoverPonteiro(ouvinte: (metros: Ponto | null) => void): void;
     aoMudarZoom(ouvinte: (zoom: number) => void): void;
 }
@@ -265,14 +265,15 @@ export function criarPalco(container: HTMLDivElement): Palco {
         zoom: () => stage.scaleX(),
         arrastouAgora,
         emMetros,
-        enquadrar(caixa: Caixa): void {
+        enquadrar(caixa: Caixa, coberto?: Cobertura, zoomMaximo = ZOOM_MAX): void {
             const ajuste = ajusteParaCaixa(
                 caixa,
                 stage.width(),
                 stage.height(),
                 MARGEM,
                 ZOOM_MIN,
-                ZOOM_MAX,
+                Math.min(ZOOM_MAX, zoomMaximo),
+                coberto,
             );
             stage.scale({ x: ajuste.zoom, y: ajuste.zoom });
             stage.position({ x: ajuste.x, y: ajuste.y });

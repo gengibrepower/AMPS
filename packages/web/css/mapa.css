@@ -239,6 +239,35 @@ header {
 .amostra-eletrico { background-color: #B8EAE0; }
 .amostra-sua { background-color: #09C382; border-color: #1D3B31; border-width: 2.5px; }
 
+@media (max-width: 767px) {
+    .painel {
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .painel.com-resultado .painel-titulo,
+    .painel.com-resultado .legenda {
+        display: none;
+    }
+
+    .painel-form {
+        gap: 4px;
+    }
+
+    .painel-form label {
+        margin-top: 4px;
+    }
+
+    .botao-encontrar {
+        margin-top: 10px;
+        padding: 10px;
+    }
+
+    .legenda {
+        padding-top: 10px;
+    }
+}
+
 @media (min-width: 768px) {
     .painel {
         top: 12px;

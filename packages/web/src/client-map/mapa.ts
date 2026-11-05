@@ -11,6 +11,7 @@ import { getSession } from '../auth';
 import { criarPalco } from '../graph/render/palco';
 import { criarCena } from '../graph/render/cena';
 import type { Cena } from '../graph/render/cena';
+import type { Cobertura } from '../graph/geometria';
 import { comoGrafo, comoStatusDeVaga, comoTipoDeVaga } from '../graph/tipos';
 import type { DadosDaVaga, Grafo, Papel } from '../graph/tipos';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
@@ -36,6 +37,20 @@ const resultadoNumero = document.querySelector<HTMLElement>('#resultadoNumero');
 const resultadoDetalhe = document.querySelector<HTMLElement>('#resultadoDetalhe');
 const botaoLimpar = document.querySelector<HTMLButtonElement>('#limpar');
 const avisoVaga = document.querySelector<HTMLElement>('#avisoVaga');
+const painel = document.querySelector<HTMLElement>('.painel');
+
+// O painel flutua sobre o canvas: à esquerda no desktop, embaixo no celular.
+// O que ele cobre sai da conta do enquadramento, senão a vaga cai atrás dele.
+function cobertura(): Cobertura {
+    const sem = { topo: 0, direita: 0, base: 0, esquerda: 0 };
+    if (painel === null || palcoDiv === null) return sem;
+    const area = palcoDiv.getBoundingClientRect();
+    const caixa = painel.getBoundingClientRect();
+    if (caixa.width > area.width / 2) {
+        return { ...sem, base: Math.max(0, area.bottom - caixa.top) };
+    }
+    return { ...sem, esquerda: Math.max(0, caixa.right - area.left) };
+}
 
 // A rota pública não manda o sensor, e o público não tem por que saber qual é.
 function comoDadosDaVaga(vaga: VagaPublicaWire): DadosDaVaga {
@@ -98,13 +113,16 @@ function mostrarResultado(numero: string, detalhe: string): void {
     if (resultadoDetalhe) resultadoDetalhe.textContent = detalhe;
     resultado?.classList.remove('disabled');
     formVaga?.classList.add('disabled');
+    painel?.classList.add('com-resultado');
 }
 
 function esconderResultado(cena: Cena): void {
     cena.recomendar(null, []);
     resultado?.classList.add('disabled');
     formVaga?.classList.remove('disabled');
+    painel?.classList.remove('com-resultado');
     limparMensagem(avisoVaga);
+    cena.enquadrar(cobertura());
 }
 
 function ligarPainel(cena: Cena, grafo: Grafo): void {
@@ -142,6 +160,7 @@ function ligarPainel(cena: Cena, grafo: Grafo): void {
                 ? ''
                 : ` · cerca de ${Math.round(resposta.rota.peso_total)} m`;
             mostrarResultado(resposta.vaga.numero, `${entrada} até a vaga${distancia}`);
+            cena.enquadrarRecomendacao(cobertura());
         } catch (erro) {
             mostrarMensagem(
                 avisoVaga,
@@ -183,6 +202,7 @@ if (!Number.isInteger(id) || id <= 0) {
 
             ligarPainel(cena, grafo);
             await prepararCarros();
+            cena.enquadrar(cobertura());
         } catch (erro) {
             if (nomeDoPatio) nomeDoPatio.textContent = 'Mapa do estacionamento';
             mostrarMensagem(

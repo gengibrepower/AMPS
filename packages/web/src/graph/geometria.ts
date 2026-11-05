@@ -101,6 +101,17 @@ export interface Caixa {
     readonly maxY: number;
 }
 
+// Quanto de cada borda da tela está coberto por algo desenhado por cima do
+// canvas, como o painel do mapa do cliente. Em pixels de tela.
+export interface Cobertura {
+    readonly topo: number;
+    readonly direita: number;
+    readonly base: number;
+    readonly esquerda: number;
+}
+
+export const SEM_COBERTURA: Cobertura = { topo: 0, direita: 0, base: 0, esquerda: 0 };
+
 export interface Enquadramento {
     readonly zoom: number;
     readonly x: number;
@@ -115,10 +126,15 @@ export function ajusteParaCaixa(
     margem: number,
     zoomMin: number,
     zoomMax: number,
+    coberto: Cobertura = SEM_COBERTURA,
 ): Enquadramento {
     const larguraDaCaixa = metrosParaPixels(caixa.maxX - caixa.minX);
     const alturaDaCaixa = metrosParaPixels(caixa.maxY - caixa.minY);
-    const disponivel = { x: Math.max(1, largura - margem * 2), y: Math.max(1, altura - margem * 2) };
+    const visivel = {
+        x: largura - coberto.esquerda - coberto.direita,
+        y: altura - coberto.topo - coberto.base,
+    };
+    const disponivel = { x: Math.max(1, visivel.x - margem * 2), y: Math.max(1, visivel.y - margem * 2) };
 
     const cabe = larguraDaCaixa > 0 || alturaDaCaixa > 0
         ? Math.min(
@@ -132,7 +148,11 @@ export function ajusteParaCaixa(
         x: metrosParaPixels((caixa.minX + caixa.maxX) / 2),
         y: metrosParaPixels((caixa.minY + caixa.maxY) / 2),
     };
-    return { zoom, x: largura / 2 - centro.x * zoom, y: altura / 2 - centro.y * zoom };
+    return {
+        zoom,
+        x: coberto.esquerda + visivel.x / 2 - centro.x * zoom,
+        y: coberto.topo + visivel.y / 2 - centro.y * zoom,
+    };
 }
 
 // Pontos igualmente espaçados ao longo de um traço, centrados: é onde entram as

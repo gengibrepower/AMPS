@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { direcao, encaixarNaTela, encaixarPonto, metrosParaPixels, pixelsParaMetros } from '../geometria';
-import type { Ponto } from '../geometria';
+import type { Caixa, Cobertura, Ponto } from '../geometria';
 import {
     acharNo,
     anguloDeDesenho,
@@ -34,6 +34,12 @@ const ZOOM_MINIMO_DO_NUMERO = 0.6;
 // de via e não entra na caixa deles.
 const FOLGA_DO_ENQUADRAMENTO = 3.5;
 
+// Em volta do caminho, uma vaga de folga; e o zoom para em 1, onde a vaga tem
+// uns 50 px. Numa tela grande, um caminho curto aproximaria até o pátio sumir
+// e sobrar só a vaga, sem referência de onde ela fica.
+const FOLGA_DA_RECOMENDACAO = 5;
+const ZOOM_DA_RECOMENDACAO = 1;
+
 // Larguras do caminho em metros, como a via: o traço engrossa com o zoom junto
 // com o asfalto em vez de virar um fio no zoom alto.
 const LARGURA_DA_ROTA = 1.1;
@@ -41,7 +47,8 @@ const LARGURA_DO_CONTORNO = 1.9;
 
 export interface Cena {
     desenhar(grafo: Grafo, vagas: readonly DadosDaVaga[]): void;
-    enquadrar(): void;
+    enquadrar(coberto?: Cobertura): void;
+    enquadrarRecomendacao(coberto?: Cobertura): void;
     selecionar(selecao: Selecao): void;
     recusar(ids: readonly string[]): void;
     recomendar(vagaNoId: string | null, rota: readonly string[]): void;
@@ -226,6 +233,21 @@ export function criarCena(palco: Palco): Cena {
         docas.set(vaga.id, traco);
     }
 
+    function caixaDaRecomendacao(): Caixa | null {
+        const pontos = pontosDaRota(grafo, rota);
+        const vaga = recomendada === null ? null : acharNo(grafo, recomendada);
+        if (vaga !== null) pontos.push(vaga.position);
+        if (pontos.length === 0) return null;
+
+        const folga = FOLGA_DA_RECOMENDACAO;
+        return {
+            minX: Math.min(...pontos.map((ponto) => ponto.x)) - folga,
+            minY: Math.min(...pontos.map((ponto) => ponto.y)) - folga,
+            maxX: Math.max(...pontos.map((ponto) => ponto.x)) + folga,
+            maxY: Math.max(...pontos.map((ponto) => ponto.y)) + folga,
+        };
+    }
+
     function desenharRota(): void {
         camadaDaRota.destroyChildren();
         const pontos = pontosDaRota(grafo, rota);
@@ -343,10 +365,19 @@ export function criarCena(palco: Palco): Cena {
             // quando o grafo muda, não a cada quadro.
             palco.camadaConteudo.draw();
         },
-        enquadrar(): void {
+        enquadrar(coberto?: Cobertura): void {
             const caixa = caixaDoGrafo(grafo, FOLGA_DO_ENQUADRAMENTO);
             if (caixa === null) return;
-            palco.enquadrar(caixa);
+            palco.enquadrar(caixa, coberto);
+            ajustarPesos();
+        },
+
+        // Num celular o pátio inteiro vira miniatura: aproximar no caminho é o
+        // que deixa a vaga legível. Sem recomendação, volta ao pátio todo.
+        enquadrarRecomendacao(coberto?: Cobertura): void {
+            const caixa = caixaDaRecomendacao() ?? caixaDoGrafo(grafo, FOLGA_DO_ENQUADRAMENTO);
+            if (caixa === null) return;
+            palco.enquadrar(caixa, coberto, ZOOM_DA_RECOMENDACAO);
             ajustarPesos();
         },
         selecionar: definirSelecao,
