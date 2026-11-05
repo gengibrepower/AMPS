@@ -116,6 +116,17 @@ A Baunk sai.
   ornamento.
 - **Sem sombra, sem blur, sem gradiente suave.** Profundidade vem de moldura
   dupla: borda mais `outline` com `outline-offset` negativo.
+- **Ornamento** (`css/ornamentos.css`), sempre em pseudo-elemento ou fundo,
+  para não mexer em medida:
+  - painéis de papel levam, a 4px da borda de tinta, uma moldura em ouro com
+    canto em degrau duplo e um losango; em peça baixa (KPI, linha de lista,
+    painel do mapa) o mesmo canto vai a 14px em vez de 22px;
+  - botões de tinta têm um filete ouro claro seguindo o entalhe por dentro;
+  - títulos de seção abrem com um leque; o chapéu preto do card também;
+  - divisas são filete de tinta interrompido por três losangos;
+  - a faixa preta tem raios de sol quase pretos saindo do pé;
+  - o fundo da página é um padrão de escamas em leque a cerca de 1,05:1 do
+    creme, que dá textura sem competir com texto.
 
 O `clip-path` corta a borda. Para moldura com recorte, use dois elementos: o de
 fora com o fundo da cor da borda e `padding: 1.5px`, e o de dentro com o mesmo
