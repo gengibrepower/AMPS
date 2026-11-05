@@ -24,16 +24,20 @@ main {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid var(--cor-marca);
-    background-color: var(--cor-marca-fundo);
-    color: var(--cor-texto);
-    padding: 8px 14px;
+    border: none;
+    background-color: var(--cor-marca);
+    color: var(--cor-sobre-marca);
+    padding: 9px 16px;
     border-radius: var(--raio-pilula);
     font-family: inherit;
     font-size: var(--texto-sm);
-    font-weight: 500;
+    font-weight: 600;
     text-decoration: none;
     cursor: pointer;
+}
+
+.botao-primario:hover {
+    background-color: var(--cor-marca-hover);
 }
 
 .botao-primario:disabled {
@@ -115,6 +119,12 @@ main {
     border-radius: var(--raio-card);
     padding: 20px;
     margin-bottom: 20px;
+}
+
+.formulario > h3 {
+    grid-row: span 2;
+    font-size: var(--texto-md);
+    font-weight: 600;
 }
 
 .formulario-titulo {
@@ -397,9 +407,14 @@ main {
     flex-shrink: 0;
 }
 
-.ponto-livre,
-.fatia-livre {
+.ponto-livre {
     background-color: var(--cor-marca);
+}
+
+/* Na barra, livre é o trilho vazio: a cor só aparece onde há carro. Pintar o
+   livre de verde fazia o pátio vazio parecer lotado. */
+.fatia-livre {
+    background-color: var(--cor-superficie-ativa);
 }
 
 .ponto-ocupada,
@@ -530,5 +545,23 @@ main {
     .campo-logradouro,
     .campo-cidade {
         grid-column: span 1;
+    }
+
+    .formulario > h3 {
+        grid-row: auto;
+    }
+
+    .item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .item-acoes {
+        flex-wrap: wrap;
+    }
+
+    .item-acoes .etiqueta {
+        margin-right: auto;
     }
 }
