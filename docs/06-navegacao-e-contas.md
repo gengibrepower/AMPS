@@ -100,10 +100,6 @@ Symbols é carregado pela lista `icon_names=` na URL da fonte, uma por página.
 
 ## Pendências conhecidas
 
-- **`carro.html` ainda não existe.** "Meus carros" aponta para ela e o link
-  quebra até alguém criá-la — é o primeiro passo de
-  `docs/07-cadastro-de-carro.md`, escrito de propósito assim para que o menu já
-  esteja esperando a página.
 - **`p_admin` não tem área própria.** Ele vê o mesmo que `common_user` porque a
   API não lhe concede nada: `AcessoDono.dono()` só procura linha em `donos`, e
   um `p_admin` leva o mesmo 403 que um cliente. Dar-lhe "Meus pátios" no menu
