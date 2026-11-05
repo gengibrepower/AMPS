@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Limelight&family=Poiret+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/search.css">
     <link rel="stylesheet" href="../css/detalhes.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,arrow_back,chevron_right,close,directions_car,grid_view,location_on,logout,map,menu,near_me,open_in_new,person,search"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,arrow_back,chevron_right,close,directions_car,grid_view,location_on,logout,map,menu,open_in_new,person,search"/>
 </head>
 <body>
     <header class="cabecalho">
@@ -77,28 +77,28 @@
 
                 <div class="principal">
                     <section class="cartao" aria-labelledby="tituloAgora">
-                        <h3 id="tituloAgora" class="cartao-titulo">Vagas agora</h3>
-                        <p id="disponiveis" class="disponiveis">
-                            <span id="totalDeVagasLivres" class="disponiveis-numero"></span>
-                            <span id="rotuloDoTotalLivres" class="disponiveis-rotulo"></span>
-                        </p>
-                        <div id="barraDeOcupacao" class="barra" role="img">
-                            <span id="barraLivre" class="barra-livre"></span>
-                            <span id="barraOcupada" class="barra-ocupada"></span>
+                        <h3 id="tituloAgora" class="cartao-titulo titulo-tripla">Vagas agora</h3>
+                        <div id="disponiveis" class="disponiveis">
+                            <div id="mostradorAgora" class="disponiveis-mostrador"></div>
+                            <div class="disponiveis-texto">
+                                <span id="totalDeVagasLivres" class="disponiveis-numero"></span>
+                                <span id="rotuloDoTotalLivres" class="disponiveis-rotulo"></span>
+                                <span id="estadoAgora" class="disponiveis-estado"></span>
+                            </div>
                         </div>
-                        <ul class="barra-legenda">
-                            <li><i class="ponto ponto-livre"></i><span id="legendaLivres"></span></li>
-                            <li><i class="ponto ponto-ocupada"></i><span id="legendaOcupadas"></span></li>
+                        <ul class="disponiveis-legenda">
+                            <li><span class="losango" aria-hidden="true"></span><span id="legendaLivres"></span></li>
+                            <li><span class="losango losango-ocupada" aria-hidden="true"></span><span id="legendaOcupadas"></span></li>
                         </ul>
                     </section>
 
                     <section class="cartao" aria-labelledby="tituloTipos">
-                        <h3 id="tituloTipos" class="cartao-titulo">Tipos de vaga</h3>
+                        <h3 id="tituloTipos" class="cartao-titulo titulo-tripla">Tipos de vaga</h3>
                         <ul id="vagasPorTipo" class="tipos"></ul>
                     </section>
 
                     <section id="secaoPois" class="cartao disabled" aria-labelledby="tituloDestinos">
-                        <h3 id="tituloDestinos" class="cartao-titulo">Para onde você vai?</h3>
+                        <h3 id="tituloDestinos" class="cartao-titulo titulo-tripla">Para onde você vai?</h3>
                         <p class="cartao-dica">Escolha um destino e o mapa já abre procurando a vaga mais perto dele.</p>
                         <ul id="pontos" class="destinos"></ul>
                     </section>

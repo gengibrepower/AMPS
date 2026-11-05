@@ -35,16 +35,26 @@ main.pagina-detalhes {
 }
 
 .capa-com-planta .capa-imagem {
-    height: 220px;
-    padding: 56px 20px 16px;
-    background-color: #FBF8EF;
+    height: 236px;
+    padding: 68px 20px 20px;
+    background-color: var(--cor-tinta);
 }
 
 .capa-com-planta .capa-texto {
     position: static;
     background: none;
-    padding-top: 20px;
+    padding-top: 24px;
     padding-bottom: 0;
+}
+
+.capa-com-planta .capa-texto::after {
+    content: "";
+    display: block;
+    height: 9px;
+    margin-top: 14px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
 }
 
 /* O degradê garante leitura do nome sobre qualquer foto que o pátio venha a ter. */
@@ -67,11 +77,13 @@ main.pagina-detalhes {
     align-items: center;
     gap: 6px;
     min-height: var(--altura-controle);
-    padding: 0 14px;
-    border-radius: var(--raio-pilula);
-    background-color: color-mix(in srgb, var(--cor-fundo) 70%, transparent);
+    padding: 2px 14px 0;
+    background-color: var(--cor-papel);
     color: var(--cor-texto);
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
     text-decoration: none;
 }
 
@@ -90,14 +102,18 @@ main.pagina-detalhes {
 }
 
 .capa-nome {
-    font-size: var(--texto-xl);
-    font-weight: 700;
-    line-height: 1.2;
+    font-family: var(--fonte-marca);
+    font-size: clamp(28px, 4.4vw, 48px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
 }
 
 .capa-local {
     font-size: var(--texto-md);
-    opacity: 0.85;
+    font-weight: 300;
+    color: var(--cor-texto-apagado);
 }
 
 .conteudo {
@@ -122,7 +138,7 @@ main.pagina-detalhes {
    dos outros blocos em vez de ficar solto no fundo. */
 .bloco-endereco {
     padding: 20px;
-    border: 1px solid var(--cor-borda-sutil);
+    border: 1.5px solid var(--cor-tinta);
     border-radius: var(--raio-card);
     background-color: var(--cor-superficie);
 }
@@ -146,15 +162,13 @@ main.pagina-detalhes {
 
 .cartao {
     padding: 20px;
-    border: 1px solid var(--cor-borda-sutil);
+    border: 1.5px solid var(--cor-tinta);
     border-radius: var(--raio-card);
     background-color: var(--cor-superficie);
 }
 
 .cartao-titulo {
-    margin-bottom: 14px;
-    font-size: var(--texto-md);
-    font-weight: 600;
+    margin-bottom: 18px;
 }
 
 .cartao-dica {
@@ -169,8 +183,10 @@ main.pagina-detalhes {
     align-items: center;
     gap: 8px;
     margin-bottom: 10px;
-    font-size: var(--texto-md);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
 .titulo-com-icone .material-symbols-outlined {
@@ -178,133 +194,122 @@ main.pagina-detalhes {
     color: var(--cor-texto-apagado);
 }
 
-/* Vagas agora: o número é a resposta, a barra é o mesmo número de relance. */
+/* Vagas agora: o número é a resposta, o mostrador é o mesmo número de relance. */
 .disponiveis {
     display: flex;
-    align-items: baseline;
     flex-wrap: wrap;
-    gap: 4px 10px;
-    margin-bottom: 16px;
-}
-
-.disponiveis-numero {
-    font-size: 3rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--cor-marca);
-    font-variant-numeric: tabular-nums;
-}
-
-.disponiveis-rotulo {
-    font-size: var(--texto-lg);
-    font-weight: 600;
-    color: var(--cor-texto-apagado);
-}
-
-.disponiveis.lotado .disponiveis-numero,
-.disponiveis.lotado .disponiveis-rotulo {
-    color: var(--cor-perigo);
-}
-
-.barra {
-    display: flex;
-    gap: 3px;
-    height: 12px;
-    border-radius: var(--raio-pilula);
-    overflow: hidden;
-    background-color: var(--cor-superficie-ativa);
-}
-
-.barra-livre,
-.barra-ocupada {
-    flex-basis: 0;
-}
-
-.barra-livre {
-    background-color: var(--cor-marca);
-}
-
-.barra-ocupada {
-    background-color: var(--cor-perigo);
-}
-
-.barra-legenda {
-    display: flex;
-    gap: 18px;
-    margin-top: 10px;
-    list-style: none;
-    font-size: var(--texto-sm);
-    color: var(--cor-texto-apagado);
-    font-variant-numeric: tabular-nums;
-}
-
-.barra-legenda li,
-.tipo {
-    display: flex;
     align-items: center;
+    gap: 12px 28px;
+}
+
+.disponiveis-mostrador svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.disponiveis-texto {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
 }
 
-.ponto {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+.disponiveis-numero {
+    font-family: var(--fonte-numero);
+    font-size: 96px;
+    line-height: 0.85;
+    font-variant-numeric: tabular-nums;
 }
 
-.ponto-livre {
-    background-color: var(--cor-marca);
+.disponiveis-rotulo,
+.disponiveis-estado {
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
-.ponto-ocupada {
-    background-color: var(--cor-perigo);
+.disponiveis.lotado .disponiveis-numero {
+    color: var(--cor-lotado);
 }
 
-/* Tipos de vaga, com a mesma amostra da legenda do mapa (render/tinta.ts). */
-.tipos {
+.disponiveis-legenda {
     display: flex;
-    flex-direction: column;
+    gap: 24px;
+    margin-top: 16px;
+    list-style: none;
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
+    font-variant-numeric: tabular-nums;
+}
+
+.disponiveis-legenda li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.disponiveis-legenda .losango {
+    background-color: var(--cor-areia);
+    box-shadow: inset 0 0 0 1.5px var(--cor-ouro);
+}
+
+.disponiveis-legenda .losango-ocupada {
+    background-color: var(--cor-tinta);
+    box-shadow: none;
+}
+
+/* Tipos de vaga: um card por tipo, com a tinta do mapa (render/tinta.ts) na
+   faixa de cima e o mostrador do tipo. */
+.tipos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 12px;
     list-style: none;
 }
 
 .tipo {
-    display: grid;
-    grid-template-columns: 14px 5.5rem minmax(0, 1fr) 4.5rem;
-    gap: 12px;
-    font-size: var(--texto-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 14px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-papel);
+    text-align: center;
 }
 
-.amostra {
-    width: 14px;
-    height: 20px;
-    border-radius: 2px;
-    border: 1px solid var(--cor-borda);
+.tipo::before {
+    content: "";
+    align-self: stretch;
+    height: 10px;
+    margin: 0 -12px 4px;
+    border-bottom: 1.5px solid var(--cor-tinta);
 }
 
-.amostra-comum { background-color: #FBF8EF; }
-.amostra-pcd { background-color: #CFDCE8; }
-.amostra-idoso { background-color: #EFDFAE; }
-.amostra-moto { background-color: #D6DEC8; }
-.amostra-eletrico { background-color: #CFE3DC; }
+.tipo-comum::before { background-color: #FBF8EF; }
+.tipo-pcd::before { background-color: #CFDCE8; }
+.tipo-idoso::before { background-color: #EFDFAE; }
+.tipo-moto::before { background-color: #D6DEC8; }
+.tipo-eletrico::before { background-color: #CFE3DC; }
 
-.tipo-trilho {
-    height: 6px;
-    border-radius: var(--raio-pilula);
-    background-color: var(--cor-superficie-ativa);
-    overflow: hidden;
+.tipo-nome,
+.tipo-estado {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
-.tipo-cheio {
+.tipo-mostrador svg {
     display: block;
-    height: 100%;
-    background-color: var(--cor-marca);
 }
 
 .tipo-valor {
-    text-align: right;
+    font-size: var(--texto-sm);
     color: var(--cor-texto-apagado);
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
 }
 
 /* Destinos: cada um abre o mapa já procurando a vaga mais perto dele. */
@@ -336,13 +341,12 @@ main.pagina-detalhes {
 }
 
 .destino:focus-visible {
-    outline: 2px solid var(--cor-marca);
+    outline: 2px solid var(--cor-tinta);
     outline-offset: -2px;
 }
 
-.destino .material-symbols-outlined:first-child {
-    color: var(--cor-aviso);
-    font-size: 20px;
+.destino .losango {
+    margin: 0 4px;
 }
 
 .destino-nome {
@@ -369,14 +373,17 @@ main.pagina-detalhes {
     align-items: center;
     gap: 4px;
     margin-top: 12px;
-    color: var(--cor-marca);
+    color: var(--cor-texto);
     font-size: var(--texto-sm);
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: var(--cor-ouro);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
 }
 
 .link-externo:hover {
-    text-decoration: underline;
+    color: var(--cor-ouro-texto);
 }
 
 .link-externo .material-symbols-outlined {
@@ -386,7 +393,6 @@ main.pagina-detalhes {
 /* A utilitária precisa vir depois das classes de componente para vencer. */
 .detalhes.disabled,
 .cartao.disabled,
-.barra.disabled,
 .link-externo.disabled {
     display: none;
 }
@@ -405,8 +411,8 @@ main.pagina-detalhes {
     }
 
     .capa-com-planta .capa-imagem {
-        height: 300px;
-        padding: 60px max(48px, calc((100% - 1040px) / 2)) 20px;
+        height: 320px;
+        padding: 72px max(48px, calc((100% - 1040px) / 2 + 48px)) 24px;
     }
 
     /* Mesma borda esquerda da coluna de conteúdo: 1040 de largura máxima e
@@ -446,7 +452,7 @@ main.pagina-detalhes {
         position: sticky;
         top: 24px;
         padding: 24px;
-        border: 1px solid var(--cor-borda-sutil);
+        border: 1.5px solid var(--cor-tinta);
         border-radius: var(--raio-card);
         background-color: var(--cor-superficie);
     }

@@ -7,6 +7,7 @@ import {
 import type { EnderecoWire } from '../api';
 import { pontosDeInteresse, vagasLivres, vagasPorTipo } from '../client-map/resumo';
 import type { PontoDeInteresse, VagasDoTipo } from '../client-map/resumo';
+import { desenharMostrador, estadoDaOcupacao } from '../dom/mostrador';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 import { comoDadosDaVaga } from '../client-map/vagas';
 import { desenharMiniatura } from '../graph/miniatura';
@@ -34,9 +35,8 @@ const verMapa = document.querySelector<HTMLAnchorElement>('#verMapa');
 const disponiveis = document.querySelector<HTMLElement>('#disponiveis');
 const totalDeVagasLivres = document.querySelector<HTMLElement>('#totalDeVagasLivres');
 const rotuloDoTotalLivres = document.querySelector<HTMLElement>('#rotuloDoTotalLivres');
-const barraDeOcupacao = document.querySelector<HTMLElement>('#barraDeOcupacao');
-const barraLivre = document.querySelector<HTMLElement>('#barraLivre');
-const barraOcupada = document.querySelector<HTMLElement>('#barraOcupada');
+const mostradorAgora = document.querySelector<HTMLElement>('#mostradorAgora');
+const estadoAgora = document.querySelector<HTMLElement>('#estadoAgora');
 const legendaLivres = document.querySelector<HTMLElement>('#legendaLivres');
 const legendaOcupadas = document.querySelector<HTMLElement>('#legendaOcupadas');
 const abrirNoMaps = document.querySelector<HTMLAnchorElement>('#abrirNoMaps');
@@ -73,28 +73,30 @@ function icone(nome: string): HTMLSpanElement {
     return span;
 }
 
-// A amostra repete a tinta do mapa: o PCD azul daqui é o mesmo PCD azul que a
-// pessoa vai procurar no canvas.
-function linhaDoTipo({ tipo, quantidade, livres }: VagasDoTipo): HTMLLIElement {
-    const linha = elemento('li', 'tipo');
-    const amostra = elemento('i', `amostra amostra-${tipo}`);
+const ESTADO_ESCRITO = { normal: '', 'quase-cheio': 'Quase cheio', lotado: 'Lotado' } as const;
+
+// A faixa do topo repete a tinta do mapa: o PCD azul daqui é o mesmo PCD azul
+// que a pessoa vai procurar no canvas.
+function cardDoTipo({ tipo, quantidade, livres }: VagasDoTipo): HTMLLIElement {
+    const card = elemento('li', `tipo tipo-${tipo}`);
     const nomeDoTipo = elemento('span', 'tipo-nome', ROTULOS[tipo]);
+    const mostrador = elemento('span', 'tipo-mostrador');
+    mostrador.innerHTML = desenharMostrador({ livres, total: quantidade, tamanho: 96 });
+    const valor = elemento('span', 'tipo-valor', `${livres} ${livres === 1 ? 'livre' : 'livres'} de ${quantidade}`);
+    card.append(nomeDoTipo, mostrador, valor);
 
-    const trilho = elemento('span', 'tipo-trilho');
-    const cheio = elemento('span', 'tipo-cheio');
-    cheio.style.width = `${quantidade === 0 ? 0 : (livres / quantidade) * 100}%`;
-    trilho.append(cheio);
-
-    const valor = elemento('span', 'tipo-valor', `${livres} de ${quantidade}`);
-    linha.append(amostra, nomeDoTipo, trilho, valor);
-    return linha;
+    const estado = estadoDaOcupacao(livres, quantidade);
+    if (estado !== 'normal') card.append(elemento('span', `tipo-estado vagas-${estado}`, ESTADO_ESCRITO[estado]));
+    return card;
 }
 
 function linhaDoDestino(estacionamentoId: number, ponto: PontoDeInteresse): HTMLLIElement {
     const linha = document.createElement('li');
     const link = elemento('a', 'destino');
     link.href = `/client/mapa.html?id=${estacionamentoId}&destino=${encodeURIComponent(ponto.id)}`;
-    link.append(icone('near_me'), elemento('span', 'destino-nome', ponto.nome), icone('chevron_right'));
+    const marcador = elemento('span', 'losango');
+    marcador.setAttribute('aria-hidden', 'true');
+    link.append(marcador, elemento('span', 'destino-nome', ponto.nome), icone('chevron_right'));
     linha.append(link);
     return linha;
 }
@@ -141,28 +143,25 @@ if (!Number.isInteger(id) || id <= 0) {
 
             const total = mapa.vagas.length;
             const livres = vagasLivres(mapa.vagas);
-            const lotado = total > 0 && livres === 0;
+            const situacao = estadoDaOcupacao(livres, total);
 
             const ocupadas = total - livres;
             if (totalDeVagasLivres) totalDeVagasLivres.textContent = String(livres);
             if (rotuloDoTotalLivres) {
-                rotuloDoTotalLivres.textContent = lotado
-                    ? `Lotado · ${plural(total, 'vaga', 'vagas')}`
-                    : `${livres === 1 ? 'livre' : 'livres'} de ${total}`;
+                rotuloDoTotalLivres.textContent = `${livres === 1 ? 'livre' : 'livres'} de ${total}`;
             }
-            disponiveis?.classList.toggle('lotado', lotado);
-
-            if (barraLivre) barraLivre.style.flexGrow = String(livres);
-            if (barraOcupada) barraOcupada.style.flexGrow = String(ocupadas);
-            barraDeOcupacao?.setAttribute(
-                'aria-label',
-                `${plural(livres, 'vaga livre', 'vagas livres')} e ${plural(ocupadas, 'ocupada', 'ocupadas')}`,
-            );
-            barraDeOcupacao?.classList.toggle('disabled', total === 0);
+            if (estadoAgora) {
+                estadoAgora.textContent = ESTADO_ESCRITO[situacao];
+                estadoAgora.className = `disponiveis-estado vagas-${situacao}`;
+            }
+            disponiveis?.classList.toggle('lotado', situacao === 'lotado');
+            if (mostradorAgora) {
+                mostradorAgora.innerHTML = total === 0 ? '' : desenharMostrador({ livres, total, tamanho: 220 });
+            }
             if (legendaLivres) legendaLivres.textContent = plural(livres, 'livre', 'livres');
             if (legendaOcupadas) legendaOcupadas.textContent = plural(ocupadas, 'ocupada', 'ocupadas');
 
-            listaDeTipos?.replaceChildren(...vagasPorTipo(mapa.vagas).map(linhaDoTipo));
+            listaDeTipos?.replaceChildren(...vagasPorTipo(mapa.vagas).map(cardDoTipo));
 
             const grafo = comoGrafo(mapa.grafo);
             const planta = desenharMiniatura(grafo, mapa.vagas.map(comoDadosDaVaga));
