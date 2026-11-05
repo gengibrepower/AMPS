@@ -15,19 +15,21 @@
 label {
     display: block;
     margin-bottom: 6px;
-    color: var(--cor-texto-apagado);
-    font-size: var(--texto-sm);
-    font-weight: 500;
+    color: var(--cor-texto);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
 }
 
 input {
     width: 100%;
-    padding: 12px;
-    background-color: var(--cor-superficie);
+    padding: 4px 6px;
+    border: 12px solid transparent;
+    border-image: var(--moldura-entalhe) 12 fill / 12px / 0 stretch;
+    background: none;
     color: var(--cor-texto);
-    border: 1.5px solid var(--cor-borda-campo);
-    border-radius: var(--raio-campo);
-    font-size: var(--texto-md);
+    font-size: 19px;
 }
 
 input::placeholder {
@@ -44,7 +46,7 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px var(--cor-superficie) inset !important;
+    -webkit-box-shadow: 0 0 0 30px var(--cor-papel) inset !important;
     -webkit-text-fill-color: var(--cor-texto) !important;
 }
 

@@ -117,23 +117,35 @@ header {
 }
 
 .painel-form label {
-    margin-top: 6px;
+    margin-top: 8px;
     font-size: var(--texto-xs);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--cor-texto-apagado);
+    color: var(--cor-texto);
 }
 
 .painel-form select {
     width: 100%;
-    padding: 9px 12px;
-    border: 1.5px solid var(--cor-borda-campo);
-    border-radius: var(--raio-campo);
-    background-color: var(--cor-superficie);
+    padding: 2px 4px;
+    border: 12px solid transparent;
+    border-image: var(--moldura-entalhe) 12 fill / 12px / 0 stretch;
+
+    background-color: transparent;
     color: var(--cor-texto);
     font-family: inherit;
     font-size: var(--texto-md);
+}
+
+/* O select desenha a seta no fundo, então a moldura vai sem o miolo (fill) e
+   o papel fica no fundo, preso ao padding-box para não vazar pelo entalhe. */
+.painel-form select {
+    appearance: none;
+    padding-right: 28px;
+    border-image: var(--moldura-entalhe) 12 / 12px / 0 stretch;
+    background: var(--cor-papel) var(--seta-campo) no-repeat right 6px center / 14px 8px;
+    background-clip: padding-box;
+    cursor: pointer;
 }
 
 .painel-form select:focus-visible {

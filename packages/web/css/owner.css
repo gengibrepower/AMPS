@@ -145,10 +145,11 @@ main {
 
 .formulario-titulo {
     grid-column: 1 / -1;
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--cor-texto-apagado);
+    letter-spacing: 0.3em;
+    color: var(--cor-ouro-texto);
 }
 
 .campo {
@@ -170,26 +171,38 @@ main {
 
 .campo label {
     font-size: var(--texto-xs);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--cor-texto-apagado);
+    letter-spacing: 0.3em;
+    color: var(--cor-texto);
 }
 
 .campo input,
 .campo select {
-    border: 1.5px solid var(--cor-borda-campo);
-    border-radius: var(--raio-campo);
-    background-color: var(--cor-superficie);
+    border: 12px solid transparent;
+    border-image: var(--moldura-entalhe) 12 fill / 12px / 0 stretch;
+    background: none;
     color: var(--cor-texto);
     font-family: inherit;
-    font-size: var(--texto-md);
-    padding: 10px 12px;
+    font-size: 19px;
+    padding: 2px 4px;
 }
 
 .campo input:focus,
 .campo select:focus {
     outline: 2px solid var(--cor-tinta);
     outline-offset: 3px;
+}
+
+/* O select desenha a seta no fundo, então a moldura vai sem o miolo (fill) e
+   o papel fica no fundo, preso ao padding-box para não vazar pelo entalhe. */
+.campo select {
+    appearance: none;
+    padding-right: 28px;
+    border-image: var(--moldura-entalhe) 12 / 12px / 0 stretch;
+    background: var(--cor-papel) var(--seta-campo) no-repeat right 6px center / 14px 8px;
+    background-clip: padding-box;
+    cursor: pointer;
 }
 
 #estado {
