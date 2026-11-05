@@ -96,3 +96,15 @@ de ponteiro, foco de teclado e o grafo de acerto do Konva, e por isso já me fez
   Para uma página que exige sessão, ou para qualquer coisa que dependa de
   clique, arrasto ou tecla, use o driver de `src/e2e/navegador.ts` em vez de
   fixture — ele grava o `localStorage` e dirige o navegador de verdade.
+- **Módulo de página não se importa.** Um `.ts` carregado por `<script>` no
+  HTML e também importado por outro módulo roda duas vezes no dev: depois de
+  uma edição o Vite carimba o import com `?t=`, a tag fica sem, e o navegador
+  vê duas URLs. O sintoma é ouvinte em dobro — o menu abre e fecha no mesmo
+  clique. Código compartilhado (como `dom/navegacao.ts`) entra pelo `import` da
+  página; `src/entradas.test.ts` reprova se alguém voltar a fazer os dois.
+- **Vite com `EMFILE`, ou servindo arquivo velho?** Olhe os Chromium órfãos.
+  O limite é de 128 instâncias de inotify por usuário e cada headless gasta
+  umas 5; teste morto por `timeout` ou Ctrl+C deixava o navegador vivo. O
+  driver agora varre, ao abrir, os perfis `amps-e2e-*` cujo processo dono
+  morreu. Se ainda acontecer, conte com
+  `find /proc/*/fd -lname 'anon_inode:inotify' 2>/dev/null | wc -l`.
