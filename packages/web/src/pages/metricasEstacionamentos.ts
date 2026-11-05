@@ -2,6 +2,7 @@ import { ApiError, carregarMetricas } from '../api';
 import type { MetricasWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
 import { enderecoEmLinha } from '../dom/endereco';
+import { desenharMostrador } from '../dom/mostrador';
 import { renderAccountPanel } from '../dom/navegacao';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
@@ -143,6 +144,9 @@ function renderizar(metricas: MetricasWire): void {
     }
     const editor = document.getElementById('abrirEditor') as HTMLAnchorElement | null;
     if (editor) editor.href = `editor.html?estacionamento=${estacionamento.id}`;
+
+    const mostrador = document.getElementById('patioMostrador');
+    if (mostrador) mostrador.innerHTML = desenharMostrador({ livres: vagas.livre, total: vagas.total, tamanho: 120, fundo: 'escuro' });
 
     escrever('kpiTotal', String(vagas.total));
     escrever('kpiLivres', String(vagas.livre));

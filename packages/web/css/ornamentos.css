@@ -318,3 +318,29 @@ body {
         display: none;
     }
 }
+
+/* Área do dono em verde-ferro, a do cliente em preto: a pessoa sabe de que
+   lado do balcão está sem ler o título. */
+.area-dono .titulo-linha {
+    background: var(--textura-trelica) center / 24px 24px, var(--cor-ferro);
+}
+
+.frontao-mostrador {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.frontao-mostrador svg {
+    display: block;
+}
+
+.titulo-linha.painel-cabecalho {
+    align-items: center;
+    gap: 20px;
+}
+
+.painel-cabecalho .painel-nome {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
