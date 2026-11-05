@@ -1,4 +1,5 @@
 @import url(vars.css);
+@import url(ornamentos.css);
 
 :root {
     --altura-cabecalho: 48px;
@@ -84,7 +85,7 @@ header {
     gap: 12px;
     max-height: 55%;
     overflow-y: auto;
-    padding: 16px;
+    padding: 22px;
     border: 1.5px solid var(--cor-tinta);
     background-color: var(--cor-papel);
 }

@@ -1,4 +1,5 @@
 @import url(vars.css);
+@import url(ornamentos.css);
 
 * {
     margin: 0;
@@ -8,6 +9,8 @@
 
 body {
     background-color: var(--cor-fundo);
+    background-image: var(--ornamento-escamas);
+    background-size: 56px 28px;
     color: var(--cor-texto);
     font-family: var(--fonte-texto);
     min-height: 100vh;

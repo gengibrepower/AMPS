@@ -409,7 +409,7 @@ main {
 .kpi {
     background-color: var(--cor-superficie);
     border: 1.5px solid var(--cor-tinta);
-    padding: 14px 16px;
+    padding: 20px 24px;
 }
 
 .kpi-rotulo {
