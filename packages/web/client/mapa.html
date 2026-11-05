@@ -48,9 +48,15 @@
             </form>
 
             <div id="resultado" class="resultado disabled" aria-live="polite">
+                <svg class="resultado-leque" viewBox="0 0 80 30" aria-hidden="true"><path d="M40 30L40 2M40 30L52 4M40 30L28 4M40 30L62 10M40 30L18 10M40 30L70 19M40 30L10 19" stroke="#B08A3E" stroke-width="1.5"/></svg>
                 <span class="resultado-rotulo">Sua vaga</span>
                 <strong id="resultadoNumero" class="resultado-numero"></strong>
                 <span id="resultadoDetalhe" class="resultado-detalhe"></span>
+                <dl class="resultado-trajeto">
+                    <div><dt>Carro</dt><dd id="resultadoCarro"></dd></div>
+                    <div><dt>Destino</dt><dd id="resultadoDestino"></dd></div>
+                    <div><dt>Entrada</dt><dd id="resultadoEntrada"></dd></div>
+                </dl>
                 <button type="button" id="limpar" class="botao-limpar">Escolher de novo</button>
             </div>
 
