@@ -227,8 +227,24 @@ sidebarAccountButton?.addEventListener('click', () => {
     toggleAccountContent();
 });
 
-closeLoginButton?.addEventListener('click', () => {
+function fecharConta(): void {
     accountContent?.classList.add('disabled');
+}
+
+closeLoginButton?.addEventListener('click', fecharConta);
+
+document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && accountContent && !accountContent.classList.contains('disabled')) fecharConta();
+});
+
+// Fecha no véu só se o clique começou nele: arrastar para selecionar o texto
+// de um campo e soltar fora da caixa também dispara click no véu.
+let cliqueComecouNoVeu = false;
+accountContent?.addEventListener('pointerdown', (evento) => {
+    cliqueComecouNoVeu = evento.target === accountContent;
+});
+accountContent?.addEventListener('click', (evento) => {
+    if (cliqueComecouNoVeu && evento.target === accountContent) fecharConta();
 });
 
 logoutButton?.addEventListener('click', () => {
