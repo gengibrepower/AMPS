@@ -56,8 +56,40 @@ textarea {
     background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
 }
 
-.cabecalho-menu {
+.cabecalho-esquerda {
     justify-self: start;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+}
+
+.cabecalho-nav {
+    display: none;
+    gap: 24px;
+}
+
+.cabecalho-link {
+    padding: 10px 0 8px;
+    border-bottom: 2px solid transparent;
+    color: var(--cor-texto);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.cabecalho-link:hover {
+    border-bottom-color: var(--cor-ouro);
+}
+
+.cabecalho-link[aria-current="page"] {
+    border-bottom-color: var(--cor-tinta);
+}
+
+.cabecalho-menu {
     display: inline-flex;
     flex-shrink: 0;
     padding: 8px;
@@ -75,28 +107,39 @@ textarea {
 .marca {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     color: var(--cor-texto);
     text-decoration: none;
 }
 
+.marca::before,
+.marca::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    background-color: var(--cor-ouro);
+    transform: rotate(45deg);
+}
+
 .marca-p {
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    padding-top: 5px;
+    width: 44px;
+    height: 44px;
+    padding-top: 10px;
     background-color: var(--cor-tinta);
     color: var(--cor-ouro-claro);
     font-family: var(--fonte-marca);
-    font-size: 24px;
-    clip-path: polygon(0 8px, 8px 8px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 8px, 100% 8px, 100% 100%, 0 100%);
+    font-size: 27px;
+    line-height: 1;
+    text-align: center;
+    clip-path: polygon(0 9px, 9px 9px, 9px 0, calc(100% - 9px) 0, calc(100% - 9px) 9px, 100% 9px, 100% 100%, 0 100%);
 }
 
 .marca-nome {
+    padding-top: 4px;
     font-family: var(--fonte-marca);
-    font-size: 28px;
-    letter-spacing: 0.18em;
+    font-size: 30px;
+    letter-spacing: 0.2em;
+    margin-right: -0.2em;
     text-transform: uppercase;
     line-height: 1;
 }
@@ -315,10 +358,15 @@ textarea {
     background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
 }
 
-@media (max-width: 479px) {
-    .conta-nome {
+@media (max-width: 767px) {
+    .conta-nome,
+    .marca::before,
+    .marca::after {
         display: none;
     }
+}
+
+@media (max-width: 479px) {
 
     .cabecalho {
         grid-template-columns: auto minmax(0, 1fr) auto;
@@ -330,9 +378,10 @@ textarea {
     }
 
     .marca-p {
-        width: 32px;
-        height: 32px;
-        font-size: 20px;
+        width: 34px;
+        height: 34px;
+        padding-top: 8px;
+        font-size: 21px;
     }
 
     .marca-nome {
@@ -343,6 +392,12 @@ textarea {
     .botao-entrar {
         padding: 2px 12px 0;
         letter-spacing: 0.16em;
+    }
+}
+
+@media (min-width: 960px) {
+    .cabecalho-nav {
+        display: flex;
     }
 }
 

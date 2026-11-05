@@ -1,6 +1,6 @@
 import { getSession, clearSession } from '../auth';
 import { destinosDe } from '../auth/sessao';
-import type { Destino } from '../auth/sessao';
+import type { Area, Destino } from '../auth/sessao';
 
 export const menuButton = document.getElementById('menu-button') as HTMLButtonElement | null;
 export const closeSidebarButton = document.getElementById('close-sidebar-button') as HTMLButtonElement | null;
@@ -27,6 +27,7 @@ const bottomAreaIcon = document.getElementById('navAreaIcone') as HTMLElement | 
 const bottomAreaLabel = document.getElementById('navAreaRotulo') as HTMLElement | null;
 const logoutButton = document.getElementById('logoutBtn') as HTMLButtonElement | null;
 const cabecalhoConta = document.getElementById('cabecalhoConta') as HTMLElement | null;
+const cabecalhoNav = document.getElementById('cabecalhoNav') as HTMLElement | null;
 
 let destinoDaBarra = '/index.html';
 
@@ -60,6 +61,24 @@ function itemDeNavegacao(destino: Destino): HTMLLIElement {
 
     item.append(link);
     return item;
+}
+
+// O cabeçalho tem pouco lugar ao lado da marca: rótulo curto, e o perfil fica
+// de fora porque o chip com o nome já leva até ele.
+const ROTULO_CURTO: Partial<Record<Area, string>> = { buscar: 'Buscar' };
+
+function ehAtual(destino: Destino): boolean {
+    const pagina = paginaAtual();
+    return destino.href === pagina || (destino.area === 'buscar' && pagina === '/client/search.html');
+}
+
+function linkDoCabecalho(destino: Destino): HTMLAnchorElement {
+    const link = document.createElement('a');
+    link.className = 'cabecalho-link';
+    link.href = destino.href;
+    link.textContent = ROTULO_CURTO[destino.area] ?? destino.rotulo;
+    if (ehAtual(destino)) link.setAttribute('aria-current', 'page');
+    return link;
 }
 
 // A barra de baixo tem três lugares fixos; o do meio é a área da conta, e some
@@ -156,6 +175,9 @@ function renderNavegacao(tipo: string | null): void {
         antigo.remove();
     }
     navLista?.prepend(...destinos.map(itemDeNavegacao));
+    cabecalhoNav?.replaceChildren(
+        ...destinos.filter((destino) => destino.area !== 'perfil').map(linkDoCabecalho),
+    );
 
     renderBarraDeBaixo(destinos);
 }
