@@ -371,6 +371,12 @@ main {
         column-gap: 14px;
     }
 
+    #owner-form .form-group {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
     #owner-form button[type="submit"] {
         grid-column: 1 / -1;
     }
