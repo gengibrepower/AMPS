@@ -148,8 +148,9 @@ O vocabulário é fechado. Se não está aqui, não entra.
 ## 6. Componentes
 
 **Cabeçalho.** Faixa de chevron por cima. Três colunas: navegação à esquerda,
-marca centralizada (o "P" em Limelight num bloco preto com os cantos de cima
-em degrau, mais "AMPS" com espaçamento largo, entre dois losangos) e conta à
+marca centralizada (um zigurate preto com o leque em ouro claro nascendo da
+base, mais "AMPS" com espaçamento largo, entre dois losangos; o emblema não
+leva letra, porque um "P" colado ao nome se lia "PAMPS") e conta à
 direita, com as iniciais num losango. Embaixo, a linha tripla. No celular: menu
 à esquerda, marca no centro e conta à direita, sem a navegação aberta.
 
