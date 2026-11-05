@@ -1,6 +1,7 @@
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { readFileSync, readdirSync } from 'node:fs';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -69,9 +70,49 @@ async function acharAlvo(porta: number): Promise<string> {
     throw new Error('o Chromium não abriu a porta de depuração');
 }
 
+const PREFIXO_DO_PERFIL = 'amps-e2e-';
+const ARQUIVO_DO_DONO = 'amps-dono.pid';
+
+// Os filhos do Chromium ainda escrevem no perfil por um instante depois que o
+// processo principal sai; o que não sair agora a próxima varredura recolhe.
+async function apagarPerfil(perfil: string): Promise<void> {
+    await rm(perfil, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }).catch(() => undefined);
+}
+
+function vivo(pid: number): boolean {
+    try {
+        process.kill(pid, 0);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+// Um teste morto por timeout ou Ctrl+C não chega no fechar(), e o Chromium fica
+// órfão. Cada um segura umas 5 instâncias de inotify, de 128 por usuário; uns
+// dez órfãos e o watcher do Vite cai com EMFILE ou deixa de ver arquivo mudado.
+// Só mexe em perfil deste driver cujo processo dono já morreu.
+async function varrerOrfaos(): Promise<void> {
+    for (const nome of readdirSync(tmpdir())) {
+        if (!nome.startsWith(PREFIXO_DO_PERFIL)) continue;
+        const perfil = join(tmpdir(), nome);
+        let dono = Number.NaN;
+        try {
+            dono = Number(readFileSync(join(perfil, ARQUIVO_DO_DONO), 'utf8'));
+        } catch {
+            // Perfil de antes do arquivo de dono existir: órfão por definição.
+        }
+        if (Number.isInteger(dono) && vivo(dono)) continue;
+        spawnSync('pkill', ['-f', '--', `--user-data-dir=${perfil}`]);
+        await apagarPerfil(perfil);
+    }
+}
+
 export async function abrirNavegador(): Promise<Navegador> {
+    await varrerOrfaos();
     const porta = 9300 + Math.floor(Math.random() * 400);
-    const perfil = await mkdtemp(join(tmpdir(), 'amps-e2e-'));
+    const perfil = await mkdtemp(join(tmpdir(), PREFIXO_DO_PERFIL));
+    await writeFile(join(perfil, ARQUIVO_DO_DONO), String(process.pid));
     const processo: ChildProcess = spawn(process.env['CHROMIUM'] ?? 'chromium', [
         '--headless',
         '--disable-gpu',
@@ -178,7 +219,12 @@ export async function abrirNavegador(): Promise<Navegador> {
         },
         async fechar() {
             socket.close();
-            processo.kill();
+            await new Promise<void>((pronto) => {
+                if (processo.exitCode !== null) return pronto();
+                processo.once('exit', () => pronto());
+                processo.kill();
+            });
+            await apagarPerfil(perfil);
         },
     };
 }

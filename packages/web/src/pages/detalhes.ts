@@ -1,3 +1,4 @@
+import '../dom/navegacao';
 import {
     ApiError,
     buscarEstacionamentoPublicado,
