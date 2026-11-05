@@ -258,7 +258,7 @@ textarea {
     color: var(--cor-marca);
 }
 
-.nav-item .material-symbols-outlined {
+.nav-item .material-symbols-sharp {
     flex-shrink: 0;
 }
 

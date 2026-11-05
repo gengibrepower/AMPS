@@ -58,7 +58,7 @@ main {
     cursor: default;
 }
 
-.botao-primario .material-symbols-outlined {
+.botao-primario .material-symbols-sharp {
     font-size: 18px;
 }
 
@@ -91,7 +91,7 @@ main {
     cursor: pointer;
 }
 
-.botao-icone .material-symbols-outlined {
+.botao-icone .material-symbols-sharp {
     font-size: 18px;
 }
 
@@ -377,7 +377,7 @@ main {
     color: var(--cor-texto);
 }
 
-.voltar-lista .material-symbols-outlined {
+.voltar-lista .material-symbols-sharp {
     font-size: 18px;
 }
 

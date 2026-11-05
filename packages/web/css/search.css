@@ -27,7 +27,7 @@ main {
     outline-offset: 3px;
 }
 
-.search-box .material-symbols-outlined {
+.search-box .material-symbols-sharp {
     color: var(--cor-texto-apagado);
 }
 

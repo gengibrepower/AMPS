@@ -50,7 +50,7 @@ function itemDeNavegacao(destino: Destino): HTMLLIElement {
     item.className = 'nav-item nav-item-area';
 
     const icone = document.createElement('span');
-    icone.className = 'material-symbols-outlined';
+    icone.className = 'material-symbols-sharp';
     icone.textContent = destino.icone;
 
     const link = document.createElement('a');
@@ -94,7 +94,7 @@ function sair(): void {
 
 function iconeDeMaterial(nome: string): HTMLSpanElement {
     const span = document.createElement('span');
-    span.className = 'material-symbols-outlined';
+    span.className = 'material-symbols-sharp';
     span.setAttribute('aria-hidden', 'true');
     span.textContent = nome;
     return span;

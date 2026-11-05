@@ -2,7 +2,7 @@ import type { ItemDoHistorico } from './index';
 
 function icone(nome: string, classe: string): HTMLSpanElement {
     const span = document.createElement('span');
-    span.className = `material-symbols-outlined ${classe}`;
+    span.className = `material-symbols-sharp ${classe}`;
     span.setAttribute('aria-hidden', 'true');
     span.textContent = nome;
     return span;

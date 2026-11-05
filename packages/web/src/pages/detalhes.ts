@@ -68,7 +68,7 @@ function elemento<K extends keyof HTMLElementTagNameMap>(
 }
 
 function icone(nome: string): HTMLSpanElement {
-    const span = elemento('span', 'material-symbols-outlined', nome);
+    const span = elemento('span', 'material-symbols-sharp', nome);
     span.setAttribute('aria-hidden', 'true');
     return span;
 }

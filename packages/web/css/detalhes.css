@@ -87,7 +87,7 @@ main.pagina-detalhes {
     text-decoration: none;
 }
 
-.voltar .material-symbols-outlined {
+.voltar .material-symbols-sharp {
     font-size: 18px;
 }
 
@@ -189,7 +189,7 @@ main.pagina-detalhes {
     text-transform: uppercase;
 }
 
-.titulo-com-icone .material-symbols-outlined {
+.titulo-com-icone .material-symbols-sharp {
     font-size: 20px;
     color: var(--cor-texto-apagado);
 }
@@ -354,7 +354,7 @@ main.pagina-detalhes {
     font-size: var(--texto-md);
 }
 
-.destino .material-symbols-outlined:last-child {
+.destino .material-symbols-sharp:last-child {
     color: var(--cor-texto-apagado);
 }
 
@@ -386,7 +386,7 @@ main.pagina-detalhes {
     color: var(--cor-ouro-texto);
 }
 
-.link-externo .material-symbols-outlined {
+.link-externo .material-symbols-sharp {
     font-size: 16px;
 }
 
