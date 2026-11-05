@@ -6,6 +6,7 @@ import {
     ENTRADA,
     FUNDO_POR_TIPO,
     NUMERO_DA_VAGA,
+    NUMERO_DA_VAGA_OCUPADA,
     ENTRADA_FUNDO,
     POI,
     POI_FUNDO,
@@ -75,6 +76,10 @@ export function fundoDaVaga(dados: DadosDaVaga): string {
     return FUNDO_POR_TIPO[dados.tipo] ?? VAGA_FUNDO;
 }
 
+export function numeroDaVaga(dados: DadosDaVaga): string {
+    return fundoDaVaga(dados) === OCUPADA_FUNDO ? NUMERO_DA_VAGA_OCUPADA : NUMERO_DA_VAGA;
+}
+
 function forma(no: No, dados: DadosDaVaga | undefined): Konva.Shape {
     const estilo = ESTILO[no.role];
     const comum = {
@@ -138,7 +143,7 @@ export function desenharNo(
             text: dados.numero,
             fontSize: metrosParaPixels(ALTURA_DO_NUMERO),
             fontFamily: 'ui-monospace, monospace',
-            fill: NUMERO_DA_VAGA,
+            fill: numeroDaVaga(dados),
             listening: false,
             rotation: -(angulo * 180) / Math.PI,
         });

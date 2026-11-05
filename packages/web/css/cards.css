@@ -49,7 +49,7 @@
    respiro em volta impede o desenho de encostar na borda. */
 .result-card-planta.com-planta {
     padding: 10px 14px;
-    background-color: #FBFDFC;
+    background-color: #FBF8EF;
     border-bottom: 1px solid var(--cor-borda-sutil);
 }
 

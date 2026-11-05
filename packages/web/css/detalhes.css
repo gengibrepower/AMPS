@@ -37,7 +37,7 @@ main.pagina-detalhes {
 .capa-com-planta .capa-imagem {
     height: 220px;
     padding: 56px 20px 16px;
-    background-color: #FBFDFC;
+    background-color: #FBF8EF;
 }
 
 .capa-com-planta .capa-texto {
@@ -281,11 +281,11 @@ main.pagina-detalhes {
     border: 1px solid var(--cor-borda);
 }
 
-.amostra-comum { background-color: #FFFFFF; }
-.amostra-pcd { background-color: #C2E5FF; }
-.amostra-idoso { background-color: #FBE577; }
-.amostra-moto { background-color: #C9E8CA; }
-.amostra-eletrico { background-color: #B8EAE0; }
+.amostra-comum { background-color: #FBF8EF; }
+.amostra-pcd { background-color: #CFDCE8; }
+.amostra-idoso { background-color: #EFDFAE; }
+.amostra-moto { background-color: #D6DEC8; }
+.amostra-eletrico { background-color: #CFE3DC; }
 
 .tipo-trilho {
     height: 6px;

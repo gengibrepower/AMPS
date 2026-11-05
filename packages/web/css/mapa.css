@@ -68,7 +68,7 @@ header {
 .palco {
     width: 100%;
     height: 100%;
-    background-color: #FBFDFC;
+    background-color: #FBF8EF;
 }
 
 .painel {
@@ -238,17 +238,17 @@ header {
 .amostra {
     width: 12px;
     height: 18px;
-    border: 1.5px solid #1A211E;
+    border: 1.5px solid #1A1A17;
     border-radius: 2px;
 }
 
-.amostra-livre { background-color: #FFFFFF; }
-.amostra-ocupada { background-color: #FDBDBE; }
-.amostra-pcd { background-color: #C2E5FF; }
-.amostra-idoso { background-color: #FBE577; }
-.amostra-moto { background-color: #C9E8CA; }
-.amostra-eletrico { background-color: #B8EAE0; }
-.amostra-sua { background-color: #09C382; border-color: #1D3B31; border-width: 2.5px; }
+.amostra-livre { background-color: #FBF8EF; }
+.amostra-ocupada { background-color: #1A1A17; }
+.amostra-pcd { background-color: #CFDCE8; }
+.amostra-idoso { background-color: #EFDFAE; }
+.amostra-moto { background-color: #D6DEC8; }
+.amostra-eletrico { background-color: #CFE3DC; }
+.amostra-sua { background-color: #B08A3E; border-color: #1A1A17; border-width: 2.5px; }
 
 @media (max-width: 767px) {
     .painel {
