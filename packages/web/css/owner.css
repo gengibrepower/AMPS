@@ -20,6 +20,11 @@ main {
     font-weight: 600;
 }
 
+.titulo-linha .titulo-tripla {
+    flex: 1;
+    font-size: 13px;
+}
+
 .botao-primario {
     display: inline-flex;
     align-items: center;
@@ -77,10 +82,9 @@ main {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--cor-borda-sutil);
+    border: 1.5px solid var(--cor-tinta);
     width: var(--altura-controle);
     height: var(--altura-controle);
-    border-radius: 50%;
     background: transparent;
     color: var(--cor-texto-apagado);
     padding: 0;
@@ -92,18 +96,18 @@ main {
 }
 
 .botao-icone:hover {
-    border-color: var(--cor-marca);
-    color: var(--cor-texto);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .botao-perigo:hover {
     border-color: var(--cor-perigo);
-    color: var(--cor-perigo);
+    background-color: var(--cor-perigo);
+    color: var(--cor-papel);
 }
 
 .botao-perigo-cheio {
-    border: 1px solid var(--cor-perigo);
-    border-radius: var(--raio-pilula);
+    border: 1.5px solid var(--cor-perigo);
     background: transparent;
     color: var(--cor-perigo);
     min-height: var(--altura-controle);
@@ -126,16 +130,17 @@ main {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px 16px;
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 20px;
     margin-bottom: 20px;
 }
 
 .formulario > h3 {
     grid-row: span 2;
-    font-size: var(--texto-md);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
 .formulario-titulo {
@@ -214,13 +219,12 @@ main {
     justify-content: space-between;
     gap: 16px;
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 16px 18px;
 }
 
 .item:hover {
-    border-color: var(--cor-marca);
+    border-color: var(--cor-ouro);
 }
 
 .item-info {
@@ -241,7 +245,7 @@ main {
 }
 
 .item-info:focus-visible::after {
-    outline: 2px solid var(--cor-marca);
+    outline: 2px solid var(--cor-tinta);
     outline-offset: 2px;
 }
 
@@ -279,9 +283,8 @@ main {
     align-items: center;
     min-height: var(--altura-controle);
     flex-shrink: 0;
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-pilula);
-    padding: 0 14px;
+    border: 1.5px solid var(--cor-tinta);
+    padding: 2px 14px 0;
     color: var(--cor-texto);
     font-size: var(--texto-sm);
     text-decoration: none;
@@ -289,7 +292,8 @@ main {
 }
 
 .abrir:hover {
-    border-color: var(--cor-marca);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .etiqueta {
@@ -303,8 +307,9 @@ main {
 }
 
 .etiqueta-publicado {
-    border-color: var(--cor-marca);
-    color: var(--cor-marca);
+    border-color: var(--cor-tinta);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .vazio {
@@ -320,8 +325,7 @@ main {
     align-items: flex-start;
     gap: 12px;
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 24px;
 }
 
@@ -391,8 +395,7 @@ main {
 
 .kpi {
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 14px 16px;
 }
 
@@ -407,9 +410,11 @@ main {
 }
 
 .kpi-valor {
-    margin-top: 6px;
-    font-size: var(--texto-xl);
-    font-weight: 600;
+    margin-top: 8px;
+    font-family: var(--fonte-numero);
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1;
     font-variant-numeric: tabular-nums;
 }
 
@@ -442,8 +447,7 @@ main {
 
 .painel {
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 18px 20px;
     margin-bottom: 14px;
 }
