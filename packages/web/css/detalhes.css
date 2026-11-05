@@ -18,11 +18,33 @@ main.pagina-detalhes {
     background-color: var(--cor-superficie);
 }
 
-.capa-imagem {
+.capa-imagem,
+.capa-imagem img,
+.capa-imagem svg {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Com a planta, o nome sai de cima dela: o degradê que protege o texto numa
+   foto escureceria as cores das vagas, que são justamente o conteúdo. */
+.capa-com-planta {
+    height: auto;
+    background-color: transparent;
+}
+
+.capa-com-planta .capa-imagem {
+    height: 220px;
+    padding: 56px 20px 16px;
+    background-color: #FBFDFC;
+}
+
+.capa-com-planta .capa-texto {
+    position: static;
+    background: none;
+    padding-top: 20px;
+    padding-bottom: 0;
 }
 
 /* O degradê garante leitura do nome sobre qualquer foto que o pátio venha a ter. */
@@ -191,6 +213,15 @@ main.pagina-detalhes {
 
     .capa {
         height: 340px;
+    }
+
+    .capa-com-planta {
+        height: auto;
+    }
+
+    .capa-com-planta .capa-imagem {
+        height: 300px;
+        padding: 60px max(48px, calc((100% - 1040px) / 2)) 20px;
     }
 
     .capa-texto {

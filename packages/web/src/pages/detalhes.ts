@@ -6,6 +6,8 @@ import {
 import type { EnderecoWire } from '../api';
 import { pontosDeInteresse, vagasLivres, vagasPorTipo } from '../client-map/resumo';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
+import { comoDadosDaVaga } from '../client-map/vagas';
+import { desenharMiniatura } from '../graph/miniatura';
 import { comoGrafo } from '../graph/tipos';
 import { salvarHistorico } from '../historico';
 import type { TipoDeVaga } from '../graph/tipos';
@@ -36,6 +38,7 @@ const ocupacao = document.querySelector<HTMLElement>('#ocupacao');
 const listaDeTipos = document.querySelector<HTMLUListElement>('#vagasPorTipo');
 const secaoPois = document.querySelector<HTMLElement>('#secaoPois');
 const listaDePontos = document.querySelector<HTMLUListElement>('#pontos');
+const capaPlanta = document.querySelector<HTMLElement>('#capaPlanta');
 
 function linhasDoEndereco(dados: EnderecoWire): string[] {
     const rua = [dados.logradouro, dados.numero].filter(Boolean).join(', ');
@@ -103,7 +106,14 @@ if (!Number.isInteger(id) || id <= 0) {
                 ),
             );
 
-            const pontos = pontosDeInteresse(comoGrafo(mapa.grafo));
+            const grafo = comoGrafo(mapa.grafo);
+            const planta = desenharMiniatura(grafo, mapa.vagas.map(comoDadosDaVaga));
+            if (capaPlanta && planta !== null) {
+                capaPlanta.innerHTML = planta;
+                capaPlanta.closest('.capa')?.classList.add('capa-com-planta');
+            }
+
+            const pontos = pontosDeInteresse(grafo);
             listaDePontos?.replaceChildren(...pontos.map(itemDaLista));
             secaoPois?.classList.toggle('disabled', pontos.length === 0);
 
