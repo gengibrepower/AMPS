@@ -14,14 +14,19 @@ main {
     align-items: center;
     gap: 10px;
     width: 100%;
-    min-height: var(--altura-acao);
-    border-radius: var(--raio-pilula);
-    border: 1px solid var(--cor-borda-campo);
-    background-color: var(--cor-superficie);
-    padding: 0 18px;
+    min-height: 56px;
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
+    background: none;
+    padding: 0 8px;
 }
 
-.search-box .material-symbols-outlined {
+.search-box:focus-within {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
+}
+
+.search-box .material-symbols-sharp {
     color: var(--cor-texto-apagado);
 }
 
@@ -31,7 +36,7 @@ main {
     outline: none;
     background-color: transparent;
     color: var(--cor-texto);
-    font-size: var(--texto-md);
+    font-size: 19px;
 }
 
 .search-box input::placeholder {
@@ -40,8 +45,6 @@ main {
 
 main > h2 {
     align-self: flex-start;
-    font-size: var(--texto-lg);
-    font-weight: 600;
 }
 
 .message {

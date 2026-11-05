@@ -1,9 +1,5 @@
 @import url(vars.css);
-
-@font-face {
-    font-family: "Baunk";
-    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
-}
+@import url(ornamentos.css);
 
 * {
     margin: 0;
@@ -11,14 +7,10 @@
     box-sizing: border-box;
 }
 
-/* Teste: a planta de um pátio pintada no chão, quase na cor do fundo. É textura,
-   não desenho: o traço fica a 1,08:1 do fundo para nunca competir com texto.
-   O tile é grande e variado para a repetição não aparecer. */
 body {
     background-color: var(--cor-fundo);
-    background-image: url(../assets/images/fundo-patio.svg);
-    background-size: 1120px 840px;
-    background-attachment: fixed;
+    background-image: var(--ornamento-escamas);
+    background-size: 56px 28px;
     color: var(--cor-texto);
     font-family: var(--fonte-texto);
     min-height: 100vh;
@@ -32,21 +24,72 @@ textarea {
 }
 
 :focus-visible {
-    outline: 2px solid var(--cor-marca);
-    outline-offset: 2px;
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
+/* Faixa de chevron em cima (12px) e linha tripla embaixo (9px), as duas
+   desenhadas no fundo para não depender de marcação nas sete páginas. */
 .cabecalho {
     position: sticky;
     top: 0;
     z-index: 10;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 8px;
-    height: var(--altura-cabecalho);
-    padding: 0 12px;
-    background-color: var(--cor-fundo);
-    border-bottom: 1px solid var(--cor-borda-sutil);
+    height: calc(var(--altura-cabecalho) + 21px);
+    padding: 12px 12px 9px;
+    background:
+        linear-gradient(135deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 12px repeat-x,
+        linear-gradient(225deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 12px repeat-x,
+        linear-gradient(var(--cor-tinta), var(--cor-tinta)) 0 0 / 100% 12px no-repeat,
+        var(--cor-fundo);
+}
+
+.cabecalho::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 9px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
+}
+
+.cabecalho-esquerda {
+    justify-self: start;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+}
+
+.cabecalho-nav {
+    display: none;
+    gap: 24px;
+}
+
+.cabecalho-link {
+    padding: 10px 0 8px;
+    border-bottom: 2px solid transparent;
+    color: var(--cor-texto);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.cabecalho-link:hover {
+    border-bottom-color: var(--cor-ouro);
+}
+
+.cabecalho-link[aria-current="page"] {
+    border-bottom-color: var(--cor-tinta);
 }
 
 .cabecalho-menu {
@@ -67,27 +110,41 @@ textarea {
 .marca {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 14px;
     color: var(--cor-texto);
     text-decoration: none;
 }
 
-.marca img {
-    width: 28px;
-    height: 28px;
+.marca::before,
+.marca::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    background-color: var(--cor-ouro);
+    transform: rotate(45deg);
+}
+
+.marca-emblema {
+    display: block;
+    width: 44px;
+    height: 44px;
 }
 
 .marca-nome {
+    padding-top: 4px;
     font-family: var(--fonte-marca);
-    font-size: var(--texto-xl);
+    font-size: 30px;
+    letter-spacing: 0.2em;
+    margin-right: -0.2em;
+    text-transform: uppercase;
     line-height: 1;
 }
 
 .cabecalho-conta {
+    justify-self: end;
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-left: auto;
     min-width: 0;
 }
 
@@ -95,20 +152,22 @@ textarea {
     display: inline-flex;
     align-items: center;
     min-height: var(--altura-controle);
-    padding: 0 16px;
-    border: 1px solid var(--cor-marca-borda);
-    border-radius: var(--raio-pilula);
-    background-color: var(--cor-marca-fundo);
+    padding: 2px 16px 0;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-superficie);
     color: var(--cor-texto);
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
 }
 
 .botao-entrar:hover {
-    border-color: var(--cor-marca);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .conta-chip {
@@ -139,13 +198,13 @@ textarea {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: var(--cor-marca-fundo);
-    border: 1px solid var(--cor-marca-borda);
-    color: var(--cor-marca);
-    font-size: var(--texto-xs);
+    width: 40px;
+    height: 40px;
+    padding-top: 2px;
+    clip-path: var(--recorte-losango);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.04em;
 }
@@ -179,10 +238,9 @@ textarea {
     position: relative;
     width: 100%;
     max-height: 80vh;
-    background-color: var(--cor-fundo-sutil);
-    border-top: 1px solid var(--cor-borda-sutil);
+    background-color: var(--cor-papel);
+    border-top: 1.5px solid var(--cor-tinta);
     padding: 24px 16px;
-    border-radius: var(--raio-card) var(--raio-card) 0 0;
 }
 
 #close-sidebar-button {
@@ -234,11 +292,11 @@ textarea {
 }
 
 .nav-item a[aria-current="page"] {
-    background-color: var(--cor-marca-fundo);
-    color: var(--cor-marca);
+    box-shadow: inset 3px 0 0 var(--cor-tinta);
+    font-weight: 600;
 }
 
-.nav-item .material-symbols-outlined {
+.nav-item .material-symbols-sharp {
     flex-shrink: 0;
 }
 
@@ -264,15 +322,82 @@ textarea {
     text-overflow: ellipsis;
 }
 
-@media (max-width: 479px) {
-    .conta-nome {
+.losango {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 9px;
+    height: 9px;
+    background-color: var(--cor-ouro);
+    transform: rotate(45deg);
+}
+
+.titulo-tripla {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.titulo-tripla::after {
+    content: "";
+    flex: 1;
+    min-width: 24px;
+    height: 9px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
+}
+
+@media (max-width: 767px) {
+    .conta-nome,
+    .marca::before,
+    .marca::after {
         display: none;
+    }
+}
+
+@media (max-width: 479px) {
+
+    .cabecalho {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .marca {
+        justify-self: start;
+        gap: 8px;
+    }
+
+    .marca-emblema {
+        width: 34px;
+        height: 34px;
+    }
+
+    .marca-nome {
+        font-size: 22px;
+        letter-spacing: 0.12em;
+    }
+
+    .botao-entrar {
+        padding: 2px 12px 0;
+        letter-spacing: 0.16em;
+    }
+}
+
+@media (min-width: 960px) {
+    .cabecalho-nav {
+        display: flex;
     }
 }
 
 @media (min-width: 768px) {
     .cabecalho {
-        padding: 0 24px;
+        padding-left: 24px;
+        padding-right: 24px;
     }
 
     .sidebar-nav {
@@ -284,7 +409,6 @@ textarea {
         width: 280px;
         max-height: 100%;
         border-top: none;
-        border-right: 1px solid var(--cor-borda-sutil);
-        border-radius: 0;
+        border-right: 1.5px solid var(--cor-tinta);
     }
 }

@@ -28,7 +28,7 @@ header {
     height: var(--altura-cabecalho);
     flex-shrink: 0;
     padding: 0 12px;
-    border-bottom: 1px solid var(--cor-borda-sutil);
+    border-bottom: 1.5px solid var(--cor-tinta);
 }
 
 .voltar {
@@ -69,8 +69,9 @@ header {
 }
 
 .etiqueta-publicado {
-    border-color: var(--cor-marca);
-    color: var(--cor-marca);
+    border-color: var(--cor-tinta);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 main {
@@ -145,7 +146,7 @@ main {
 .palco {
     width: 100%;
     height: 100%;
-    background-color: #FBFDFC;
+    background-color: #FBF8EF;
 }
 
 .bloqueio {
@@ -367,8 +368,7 @@ main {
 }
 
 .botao-publicar {
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-pilula);
+    border: 1px solid var(--cor-tinta);
     padding: 6px 16px;
     background: none;
     color: var(--cor-texto);

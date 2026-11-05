@@ -36,6 +36,9 @@ const semCarro = document.querySelector<HTMLElement>('#semCarro');
 const resultado = document.querySelector<HTMLElement>('#resultado');
 const resultadoNumero = document.querySelector<HTMLElement>('#resultadoNumero');
 const resultadoDetalhe = document.querySelector<HTMLElement>('#resultadoDetalhe');
+const resultadoCarro = document.querySelector<HTMLElement>('#resultadoCarro');
+const resultadoDestino = document.querySelector<HTMLElement>('#resultadoDestino');
+const resultadoEntrada = document.querySelector<HTMLElement>('#resultadoEntrada');
 const botaoLimpar = document.querySelector<HTMLButtonElement>('#limpar');
 const avisoVaga = document.querySelector<HTMLElement>('#avisoVaga');
 const painel = document.querySelector<HTMLElement>('.painel');
@@ -97,9 +100,20 @@ async function prepararCarros(): Promise<void> {
     );
 }
 
-function mostrarResultado(numero: string, detalhe: string): void {
+interface Resultado {
+    readonly numero: string;
+    readonly detalhe: string;
+    readonly carro: string;
+    readonly destino: string;
+    readonly entrada: string;
+}
+
+function mostrarResultado({ numero, detalhe, carro, destino, entrada }: Resultado): void {
     if (resultadoNumero) resultadoNumero.textContent = numero;
     if (resultadoDetalhe) resultadoDetalhe.textContent = detalhe;
+    if (resultadoCarro) resultadoCarro.textContent = carro;
+    if (resultadoDestino) resultadoDestino.textContent = destino;
+    if (resultadoEntrada) resultadoEntrada.textContent = entrada;
     resultado?.classList.remove('disabled');
     formVaga?.classList.add('disabled');
     painel?.classList.add('com-resultado');
@@ -150,10 +164,16 @@ function ligarPainel(cena: Cena, grafo: Grafo): void {
 
             cena.recomendar(resposta.vaga.no_id, resposta.rota?.nos ?? []);
             const entrada = rotuloDoNo(grafo, seletorDeEntrada.value);
-            const distancia = resposta.rota === null
-                ? ''
-                : ` · cerca de ${Math.round(resposta.rota.peso_total)} m`;
-            mostrarResultado(resposta.vaga.numero, `${entrada} até a vaga${distancia}`);
+            const carro = seletorDeCarro.selectedOptions[0]?.textContent ?? '';
+            mostrarResultado({
+                numero: resposta.vaga.numero,
+                detalhe: resposta.rota === null
+                    ? `A partir de ${entrada}`
+                    : `Cerca de ${Math.round(resposta.rota.peso_total)} m a partir de ${entrada}`,
+                carro: carro.split(' · ')[0] ?? carro,
+                destino: rotuloDoNo(grafo, seletorDeDestino.value),
+                entrada,
+            });
             cena.enquadrarRecomendacao(cobertura());
         } catch (erro) {
             mostrarMensagem(

@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/emblema.svg">
     <title>Estacionamento - AMPS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Limelight&family=Poiret+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/search.css">
     <link rel="stylesheet" href="../css/detalhes.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,arrow_back,chevron_right,close,directions_car,grid_view,location_on,logout,map,menu,near_me,open_in_new,person,search"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,300,0,0&icon_names=account_circle,arrow_back,chevron_right,close,directions_car,grid_view,location_on,logout,map,menu,open_in_new,person,search"/>
 </head>
 <body>
     <header class="cabecalho">
-        <button type="button" id="menu-button" class="cabecalho-menu" aria-label="Abrir menu">
-            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
-        </button>
+        <div class="cabecalho-esquerda">
+            <button type="button" id="menu-button" class="cabecalho-menu" aria-label="Abrir menu">
+                <span class="material-symbols-sharp" aria-hidden="true">menu</span>
+            </button>
+            <nav class="cabecalho-nav" id="cabecalhoNav" aria-label="Principal"></nav>
+        </div>
         <a class="marca" href="/index.html">
-            <img src="/assets/images/logo_holder.png" alt="">
+            <svg class="marca-emblema" viewBox="0 0 44 44" aria-hidden="true"><path d="M0 44V18H6V12H12V6H18V0H26V6H32V12H38V18H44V44Z" fill="#1A1A17"/><path d="M22 39L39.9 32.5M22 39L35.4 25.6M22 39L28.5 21.1M22 39L22.0 20.0M22 39L15.5 21.1M22 39L8.6 25.6M22 39L4.1 32.5" stroke="#E7C977" stroke-width="1.5" stroke-linecap="square"/><path d="M8 39H36" stroke="#E7C977" stroke-width="1.5"/></svg>
             <span class="marca-nome">AMPS</span>
         </a>
         <div class="cabecalho-conta" id="cabecalhoConta"></div>
@@ -26,12 +30,12 @@
     <nav class="sidebar-nav disabled" aria-label="Menu">
         <div class="sidebar">
             <button type="button" id="close-sidebar-button" aria-label="Fechar menu">
-                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                <span class="material-symbols-sharp" aria-hidden="true">close</span>
             </button>
             <ul class="nav-list" id="navLista">
                 <li class="nav-item nav-item-account">
                     <button type="button" id="sidebarAccountBtn" aria-label="Conta">
-                        <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+                        <span class="material-symbols-sharp" aria-hidden="true">account_circle</span>
                         <span id="sidebarAccountLabel">Entrar</span>
                     </button>
                 </li>
@@ -47,7 +51,7 @@
                 <div id="capaPlanta" class="capa-imagem"><img src="../assets/images/capa-padrao.svg" alt=""></div>
                 <div class="capa-texto">
                     <a href="search.html" class="voltar">
-                        <span class="material-symbols-outlined">arrow_back</span>
+                        <span class="material-symbols-sharp">arrow_back</span>
                         Voltar à busca
                     </a>
                     <h2 id="nome" class="capa-nome"></h2>
@@ -58,47 +62,47 @@
             <div class="conteudo">
                 <aside class="lateral">
                     <a id="verMapa" href="" class="botao-principal">
-                        <span class="material-symbols-outlined" aria-hidden="true">map</span>
+                        <span class="material-symbols-sharp" aria-hidden="true">map</span>
                         Ver mapa
                     </a>
 
                     <section class="bloco-endereco" aria-labelledby="tituloEndereco">
                         <h3 id="tituloEndereco" class="titulo-com-icone">
-                            <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+                            <span class="material-symbols-sharp" aria-hidden="true">location_on</span>
                             Endereço
                         </h3>
                         <ul id="endereco" class="endereco"></ul>
                         <a id="abrirNoMaps" href="" class="link-externo disabled" target="_blank" rel="noopener">
                             Abrir no Google Maps
-                            <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+                            <span class="material-symbols-sharp" aria-hidden="true">open_in_new</span>
                         </a>
                     </section>
                 </aside>
 
                 <div class="principal">
                     <section class="cartao" aria-labelledby="tituloAgora">
-                        <h3 id="tituloAgora" class="cartao-titulo">Vagas agora</h3>
-                        <p id="disponiveis" class="disponiveis">
-                            <span id="totalDeVagasLivres" class="disponiveis-numero"></span>
-                            <span id="rotuloDoTotalLivres" class="disponiveis-rotulo"></span>
-                        </p>
-                        <div id="barraDeOcupacao" class="barra" role="img">
-                            <span id="barraLivre" class="barra-livre"></span>
-                            <span id="barraOcupada" class="barra-ocupada"></span>
+                        <h3 id="tituloAgora" class="cartao-titulo titulo-tripla">Vagas agora</h3>
+                        <div id="disponiveis" class="disponiveis">
+                            <div id="mostradorAgora" class="disponiveis-mostrador"></div>
+                            <div class="disponiveis-texto">
+                                <span id="totalDeVagasLivres" class="disponiveis-numero"></span>
+                                <span id="rotuloDoTotalLivres" class="disponiveis-rotulo"></span>
+                                <span id="estadoAgora" class="disponiveis-estado"></span>
+                            </div>
                         </div>
-                        <ul class="barra-legenda">
-                            <li><i class="ponto ponto-livre"></i><span id="legendaLivres"></span></li>
-                            <li><i class="ponto ponto-ocupada"></i><span id="legendaOcupadas"></span></li>
+                        <ul class="disponiveis-legenda">
+                            <li><span class="losango" aria-hidden="true"></span><span id="legendaLivres"></span></li>
+                            <li><span class="losango losango-ocupada" aria-hidden="true"></span><span id="legendaOcupadas"></span></li>
                         </ul>
                     </section>
 
                     <section class="cartao" aria-labelledby="tituloTipos">
-                        <h3 id="tituloTipos" class="cartao-titulo">Tipos de vaga</h3>
+                        <h3 id="tituloTipos" class="cartao-titulo titulo-tripla">Tipos de vaga</h3>
                         <ul id="vagasPorTipo" class="tipos"></ul>
                     </section>
 
                     <section id="secaoPois" class="cartao disabled" aria-labelledby="tituloDestinos">
-                        <h3 id="tituloDestinos" class="cartao-titulo">Para onde você vai?</h3>
+                        <h3 id="tituloDestinos" class="cartao-titulo titulo-tripla">Para onde você vai?</h3>
                         <p class="cartao-dica">Escolha um destino e o mapa já abre procurando a vaga mais perto dele.</p>
                         <ul id="pontos" class="destinos"></ul>
                     </section>
@@ -106,6 +110,13 @@
             </div>
         </article>
     </main>
+
+    <footer class="rodape">
+        <div class="rodape-conteudo">
+            <span class="rodape-marca">AMPS</span>
+            <p class="rodape-lema">Saiba sua vaga antes de entrar</p>
+        </div>
+    </footer>
 
     <script type="module" src="../src/pages/detalhes.ts"></script>
 </body>

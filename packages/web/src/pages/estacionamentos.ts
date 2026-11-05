@@ -60,7 +60,7 @@ function botaoDeIcone(icone: string, rotulo: string, classe: string): HTMLButton
     botao.setAttribute('aria-label', rotulo);
 
     const simbolo = document.createElement('span');
-    simbolo.className = 'material-symbols-outlined';
+    simbolo.className = 'material-symbols-sharp';
     simbolo.textContent = icone;
     botao.append(simbolo);
     return botao;

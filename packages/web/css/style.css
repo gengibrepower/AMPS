@@ -16,39 +16,24 @@ main {
     padding: 24px 16px;
 }
 
-.boas-vindas {
-    width: 100%;
-    margin: 24px 0 8px;
-}
-
-.boas-vindas-titulo {
-    font-size: var(--texto-2xl);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-}
-
-.boas-vindas-texto {
-    max-width: 52ch;
-    margin-top: 10px;
-    color: var(--cor-texto-apagado);
-    font-size: var(--texto-md);
-    line-height: 1.5;
-}
-
 .search-box {
     display: flex;
     align-items: center;
     gap: 10px;
     width: 100%;
-    min-height: var(--altura-busca);
-    border-radius: var(--raio-pilula);
-    border: 1px solid var(--cor-borda-campo);
-    background-color: var(--cor-superficie);
-    padding: 0 20px;
+    min-height: 64px;
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
+    background: none;
+    padding: 0 10px;
 }
 
-.search-box .material-symbols-outlined {
+.search-box:focus-within {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
+}
+
+.search-box .material-symbols-sharp {
     color: var(--cor-texto-apagado);
 }
 
@@ -58,11 +43,217 @@ main {
     outline: none;
     background-color: transparent;
     color: var(--cor-texto);
-    font-size: var(--texto-md);
+    font-size: 19px;
 }
 
 .search-box input::placeholder {
     color: var(--cor-texto-apagado);
+}
+
+/* Raios de sol atrás do título: o leque de areia e creme e, por cima, o
+   meio-círculo com aro duplo ouro. Só a home usa. */
+.vitrine {
+    position: relative;
+    overflow: hidden;
+    padding: 56px 16px 64px;
+    text-align: center;
+}
+
+.vitrine::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -500px;
+    width: 1100px;
+    height: 1100px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, var(--cor-areia) 0deg 3deg, var(--cor-creme) 3deg 6deg);
+}
+
+/* O arco de aro duplo nasce logo acima do texto, não do pé da seção: a altura
+   do título muda com a largura, e ancorado embaixo o aro cortava a divisa. */
+.vitrine-base {
+    position: relative;
+}
+
+.vitrine-base::before {
+    content: "";
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    z-index: -1;
+    width: 1000px;
+    height: 440px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background-color: var(--cor-creme);
+    box-shadow: 0 0 0 1.5px var(--cor-ouro), 0 0 0 12px var(--cor-creme), 0 0 0 13.5px var(--cor-ouro);
+}
+
+.vitrine-conteudo {
+    position: relative;
+    z-index: 1;
+    max-width: 940px;
+    margin: 0 auto;
+}
+
+.vitrine-sobretitulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--cor-ouro-texto);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.vitrine-titulo {
+    margin-top: 24px;
+    font-family: var(--fonte-marca);
+    font-size: clamp(40px, 7.2vw, 96px);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.vitrine-divisa {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 24px auto 48px;
+}
+
+.vitrine-texto {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.vitrine-busca {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 660px;
+    margin: 32px auto 0;
+}
+
+.vitrine-busca .search-box {
+    flex: 4 1 300px;
+    height: 64px;
+    cursor: text;
+}
+
+.vitrine-buscar {
+    flex: 1 1 140px;
+    height: 64px;
+    padding: 4px 32px 0;
+    border: none;
+    clip-path: var(--recorte-entalhe);
+    background-color: var(--cor-marca);
+    color: var(--cor-sobre-marca);
+    font-family: inherit;
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.vitrine-buscar:hover {
+    background-color: var(--cor-marca-hover);
+}
+
+.vitrine-buscar:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
+}
+
+/* Faixa preta: o total de vagas livres de agora e o portal. A linha tripla
+   abre a faixa e o chevron a fecha. */
+.faixa {
+    background-color: var(--cor-tinta);
+    color: var(--cor-creme);
+}
+
+.faixa::before,
+.faixa::after {
+    content: "";
+    display: block;
+}
+
+.faixa::before {
+    height: 9px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
+}
+
+.faixa::after {
+    height: 16px;
+    background:
+        linear-gradient(135deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 16px repeat-x,
+        linear-gradient(225deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 16px repeat-x,
+        var(--cor-tinta);
+}
+
+.faixa.disabled {
+    display: none;
+}
+
+.faixa-conteudo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 24px 64px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 16px 0;
+}
+
+.faixa-agora {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.faixa-agora svg {
+    display: block;
+}
+
+.faixa-numero {
+    color: var(--cor-ouro-claro);
+    font-family: var(--fonte-numero);
+    font-size: 72px;
+    line-height: 0.85;
+}
+
+.faixa-rotulo {
+    max-width: 24ch;
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    line-height: 1.6;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.faixa-portal {
+    width: min(340px, 100%);
+}
+
+.faixa-portal svg {
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .bottom-nav {
@@ -70,28 +261,34 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background-color: var(--cor-superficie);
-    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+    background-color: var(--cor-papel);
+    border-top: 1.5px solid var(--cor-tinta);
+    box-shadow: 0 -4px 0 -2.5px var(--cor-ouro);
+    padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
 }
 
 .nav-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
     border: none;
     background: transparent;
-    color: var(--cor-marca);
-    opacity: 0.6;
+    color: var(--cor-texto-apagado);
+    font-family: inherit;
     cursor: pointer;
 }
 
 .nav-label {
-    font-size: var(--texto-xs);
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    margin-right: -0.24em;
+    text-transform: uppercase;
 }
 
 .nav-item-account {
@@ -125,9 +322,8 @@ main {
     margin: auto;
     width: min(512px, 100%);
     padding: clamp(2rem, 6vh, 3rem) clamp(1.5rem, 6vw, 4rem);
-    background-color: var(--cor-fundo-sutil);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    background-color: var(--cor-superficie);
+    border: 1.5px solid var(--cor-tinta);
 }
 
 .login h1 {
@@ -148,7 +344,7 @@ main {
     margin: 0;
     padding: 0;
     border: none;
-    border-radius: var(--raio-pilula);
+    clip-path: none;
     background: transparent;
     color: var(--cor-texto-apagado);
     cursor: pointer;
@@ -175,37 +371,58 @@ main {
         column-gap: 14px;
     }
 
+    #owner-form .form-group {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
     #owner-form button[type="submit"] {
         grid-column: 1 / -1;
     }
 }
 
 .login label {
-    margin-top: 10px;
+    margin-top: 12px;
     color: var(--cor-texto);
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
 }
 
 .login input {
-    padding: 12px 14px;
-    background-color: var(--cor-fundo);
+    padding: 4px 6px;
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
+    background: none;
     color: var(--cor-texto);
-    border: 1px solid var(--cor-borda-campo);
-    border-radius: var(--raio-campo);
-    font-size: var(--texto-md);
-    outline: none;
+    font-size: 19px;
+}
+
+.login input:focus-visible {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
 .login button {
     margin-top: 20px;
-    padding: 14px;
+    min-height: 52px;
+    padding: 4px 14px 0;
     border: none;
-    border-radius: var(--raio-pilula);
+    clip-path: var(--recorte-entalhe);
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
     font-weight: 600;
-    font-size: var(--texto-md);
+    font-size: var(--texto-sm);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     cursor: pointer;
+}
+
+.login button:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
 }
 
 .login p {
@@ -231,12 +448,16 @@ main {
     min-height: var(--altura-acao);
     padding: 0 14px;
     width: 100%;
+    padding-top: 4px;
     border: none;
-    border-radius: var(--raio-pilula);
+    clip-path: var(--recorte-entalhe);
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
-    font-size: var(--texto-md);
+    font-size: var(--texto-sm);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    line-height: 48px;
+    text-transform: uppercase;
     text-align: center;
     text-decoration: none;
 }
@@ -249,22 +470,12 @@ main {
     margin-top: 8px;
 }
 
-.patios-titulo {
-    font-size: var(--texto-md);
-    font-weight: 600;
-}
-
 .historico {
     display: flex;
     flex-direction: column;
     gap: 12px;
     width: 100%;
     margin-top: 8px;
-}
-
-.historico-titulo {
-    font-size: var(--texto-md);
-    font-weight: 600;
 }
 
 .historico-lista {
@@ -280,7 +491,7 @@ main {
     gap: 12px;
     min-height: 96px;
     padding: 20px;
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     background-color: var(--cor-superficie);
     color: inherit;
     text-decoration: none;
@@ -330,9 +541,29 @@ main {
         padding-bottom: 0;
     }
 
+    .vitrine {
+        padding: 72px 48px 80px;
+    }
+
+    .vitrine::before {
+        bottom: -620px;
+        width: 1500px;
+        height: 1240px;
+    }
+
+    .vitrine-base::before {
+        top: -26px;
+        width: 1800px;
+        height: 600px;
+    }
+
+    .faixa-agora {
+        padding-bottom: 48px;
+    }
+
     main {
         width: 100%;
-        max-width: 860px;
+        max-width: 1100px;
         margin: 0 auto;
         padding: 24px 48px 64px;
         gap: 24px;
@@ -344,5 +575,183 @@ main {
 
     .nav-item-account {
         display: block;
+    }
+}
+
+/* Como funciona: a faixa verde-ferro entre o preto da faixa e o creme dos
+   cards. Cada passo é um cartão de papel, com o texto em tinta, e um medalhão
+   preto em arco escalonado montado no topo. */
+.como {
+    padding: 56px 16px 64px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28' viewBox='0 0 56 28'%3E%3Cg fill='none' stroke='%23E7C977' stroke-opacity='.09' stroke-width='1.2'%3E%3Cpath d='M0 28A28 28 0 0 1 56 28M8 28A20 20 0 0 1 48 28M16 28A12 12 0 0 1 40 28'/%3E%3Cpath d='M-28 14A28 28 0 0 1 28 14M28 14A28 28 0 0 1 84 14M-20 14A20 20 0 0 1 20 14M36 14A20 20 0 0 1 76 14M-12 14A12 12 0 0 1 12 14M44 14A12 12 0 0 1 68 14'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 56px 28px, var(--cor-ferro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    box-shadow: inset 0 -6px 0 var(--cor-ferro), inset 0 -7.5px 0 var(--cor-ouro);
+    color: var(--cor-creme);
+    text-align: center;
+}
+
+.como-conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.como-sobre {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--cor-ouro-claro);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.como-titulo {
+    margin-top: 10px;
+    font-family: var(--fonte-marca);
+    font-size: clamp(30px, 5vw, 44px);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.como-titulo::after {
+    content: "";
+    display: block;
+    width: 96px;
+    height: 7px;
+    margin: 16px auto 0;
+    border-block: 1.5px solid var(--cor-ouro);
+}
+
+.como-passos {
+    display: grid;
+    gap: 100px;
+    width: 100%;
+    max-width: 440px;
+    margin-top: 88px;
+    list-style: none;
+}
+
+.como-passo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0 28px 32px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-papel);
+    color: var(--cor-texto);
+}
+
+.como-passo::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 22px solid transparent;
+    border-image: var(--ornamento-canto) 22 / 22px / 0 stretch;
+    pointer-events: none;
+}
+
+.como-medalhao {
+    position: relative;
+    z-index: 1;
+    width: 136px;
+    height: 136px;
+    margin-top: -68px;
+}
+
+.como-numero {
+    margin-top: 6px;
+    color: var(--cor-ouro-texto);
+    font-family: var(--fonte-marca);
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: 0.12em;
+}
+
+.como-nome {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+
+.como-nome::after {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 10px;
+    margin: 12px auto 4px;
+    background: var(--ornamento-losangos) no-repeat center / contain;
+}
+
+.como-texto {
+    max-width: 28ch;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.como-chamada {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 52px;
+    margin-top: 48px;
+    padding: 4px 32px 0;
+    clip-path: var(--recorte-entalhe);
+    background-color: var(--cor-ouro);
+    color: var(--cor-tinta);
+    font-size: var(--texto-sm);
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.como-chamada::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 14px solid transparent;
+    border-image: var(--ornamento-filete-tinta) 14 / 14px / 0 stretch;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.como-chamada:hover {
+    background-color: var(--cor-ouro-claro);
+}
+
+.como-chamada:focus-visible {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: -6px;
+}
+
+/* Em linha, um chevron em ouro entre um cartão e o próximo aponta o
+   caminho. Empilhado não cabe: o medalhão do cartão de baixo ocupa o vão.
+   Três colunas só a partir de 960: no tablet o cartão ficava estreito demais
+   e "Diga o destino" quebrava. */
+@media (min-width: 960px) {
+    .como-passos {
+        max-width: none;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+    }
+
+    .como-passo:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: -29px;
+        width: 14px;
+        height: 14px;
+        border-right: 3px solid var(--cor-ouro-claro);
+        border-bottom: 3px solid var(--cor-ouro-claro);
+        transform: translateY(-50%) rotate(-45deg);
     }
 }

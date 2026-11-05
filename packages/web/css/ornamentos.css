@@ -1,0 +1,346 @@
+/* Ornamento deco por cima da base: molduras com canto em degrau e losango,
+   filete interno nos botões, leque nos títulos e divisas com losangos. Tudo
+   em pseudo-elemento ou fundo, para não mexer na medida de nada. */
+:root {
+    --ornamento-canto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath d='M15.5 0.5L48.5 0.5L48.5 5.5L53.5 5.5L53.5 10.5L58.5 10.5L58.5 15.5L63.5 15.5L63.5 48.5L58.5 48.5L58.5 53.5L53.5 53.5L53.5 58.5L48.5 58.5L48.5 63.5L15.5 63.5L15.5 58.5L10.5 58.5L10.5 53.5L5.5 53.5L5.5 48.5L0.5 48.5L0.5 15.5L5.5 15.5L5.5 10.5L10.5 10.5L10.5 5.5L15.5 5.5Z' fill='none' stroke='%23B08A3E' stroke-width='1.25'/%3E%3Cpath d='M19 4L45 4L45 9L50 9L50 14L55 14L55 19L60 19L60 45L55 45L55 50L50 50L50 55L45 55L45 60L19 60L19 55L14 55L14 50L9 50L9 45L4 45L4 19L9 19L9 14L14 14L14 9L19 9Z' fill='none' stroke='%23B08A3E' stroke-width='.75'/%3E%3Cpath d='M5 1L9 5L5 9L1 5ZM59 1L63 5L59 9L55 5ZM59 55L63 59L59 63L55 59ZM5 55L9 59L5 63L1 59Z' fill='%23B08A3E'/%3E%3C/svg%3E");
+    --ornamento-filete-ouro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M12.5 .5H27.5V12.5H39.5V27.5H27.5V39.5H12.5V27.5H.5V12.5H12.5Z' fill='none' stroke='%23E7C977'/%3E%3C/svg%3E");
+    --ornamento-filete-tinta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M12.5 .5H27.5V12.5H39.5V27.5H27.5V39.5H12.5V27.5H.5V12.5H12.5Z' fill='none' stroke='%231A1A17'/%3E%3C/svg%3E");
+    --ornamento-losangos: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='10' viewBox='0 0 44 10'%3E%3Cpath d='M22 0L27 5L22 10L17 5ZM10 2L13 5L10 8L7 5ZM34 2L37 5L34 8L31 5Z' fill='%23B08A3E'/%3E%3C/svg%3E");
+    --ornamento-leque: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='16' viewBox='0 0 30 16'%3E%3Cpath d='M15 15V1M15 15L21 2.5M15 15L9 2.5M15 15L26 6M15 15L4 6M15 15L29 11M15 15L1 11M1 15.25H29' stroke='%23B08A3E' stroke-width='1.5'/%3E%3C/svg%3E");
+    --ornamento-leque-claro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='16' viewBox='0 0 30 16'%3E%3Cpath d='M15 15V1M15 15L21 2.5M15 15L9 2.5M15 15L26 6M15 15L4 6M15 15L29 11M15 15L1 11M1 15.25H29' stroke='%23E7C977' stroke-width='1.5'/%3E%3C/svg%3E");
+    --textura-zigue: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='12' viewBox='0 0 32 12'%3E%3Cpath d='M0 11H4V8H8V5H12V2H20V5H24V8H28V11H32' fill='none' stroke='%23E7C977' stroke-opacity='.16'/%3E%3C/svg%3E");
+    --textura-trelica: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 12L12 0L24 12L12 24Z' fill='none' stroke='%23E7C977' stroke-opacity='.13'/%3E%3Cpath d='M12 10.5L13.5 12L12 13.5L10.5 12Z' fill='%23E7C977' fill-opacity='.22'/%3E%3C/svg%3E");
+    --ornamento-skyline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='120' viewBox='0 0 360 120'%3E%3Cpath d='M0 120V60H8V50H16V40H34V50H42V60H50V120ZM56 120V34H64V24H72V14H80V4H86V14H94V24H102V34H110V120ZM116 120V72H126V64H160V72H170V120ZM176 120V50H186V42H230V50H240V120ZM246 120V40H256V30H264V22H282V30H290V40H300V120ZM306 120V66H316V58H350V66H360V120Z' fill='%231A1A17'/%3E%3Cpath d='M16 54h3v5h-3zM32 54h3v5h-3zM16 65h3v5h-3zM32 65h3v5h-3zM8 76h3v5h-3zM16 76h3v5h-3zM40 76h3v5h-3zM8 87h3v5h-3zM16 98h3v5h-3zM32 98h3v5h-3zM40 98h3v5h-3zM8 109h3v5h-3zM16 109h3v5h-3zM32 109h3v5h-3zM88 28h3v5h-3zM96 28h3v5h-3zM64 39h3v5h-3zM88 39h3v5h-3zM72 50h3v5h-3zM96 50h3v5h-3zM96 61h3v5h-3zM72 72h3v5h-3zM96 72h3v5h-3zM72 83h3v5h-3zM72 94h3v5h-3zM124 78h3v5h-3zM124 89h3v5h-3zM148 89h3v5h-3zM124 100h3v5h-3zM132 100h3v5h-3zM140 100h3v5h-3zM156 100h3v5h-3zM124 111h3v5h-3zM148 111h3v5h-3zM216 56h3v5h-3zM200 67h3v5h-3zM208 67h3v5h-3zM216 67h3v5h-3zM224 67h3v5h-3zM192 78h3v5h-3zM200 78h3v5h-3zM216 89h3v5h-3zM216 100h3v5h-3zM232 100h3v5h-3zM184 111h3v5h-3zM192 111h3v5h-3zM200 111h3v5h-3zM216 111h3v5h-3zM224 111h3v5h-3zM232 111h3v5h-3zM254 36h3v5h-3zM270 36h3v5h-3zM254 47h3v5h-3zM262 47h3v5h-3zM286 47h3v5h-3zM286 58h3v5h-3zM254 69h3v5h-3zM270 69h3v5h-3zM286 69h3v5h-3zM254 80h3v5h-3zM278 80h3v5h-3zM254 91h3v5h-3zM254 102h3v5h-3zM270 102h3v5h-3zM330 72h3v5h-3zM346 83h3v5h-3zM330 94h3v5h-3zM338 94h3v5h-3zM346 94h3v5h-3zM314 105h3v5h-3z' fill='%23E7C977' fill-opacity='.85'/%3E%3C/svg%3E");
+    --ornamento-escamas: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28' viewBox='0 0 56 28'%3E%3Cg fill='none' stroke='%23ECE4CF' stroke-width='1.2'%3E%3Cpath d='M0 28A28 28 0 0 1 56 28M8 28A20 20 0 0 1 48 28M16 28A12 12 0 0 1 40 28'/%3E%3Cpath d='M-28 14A28 28 0 0 1 28 14M28 14A28 28 0 0 1 84 14M-20 14A20 20 0 0 1 20 14M36 14A20 20 0 0 1 76 14M-12 14A12 12 0 0 1 12 14M44 14A12 12 0 0 1 68 14'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* A moldura interna fica a 5px da borda de tinta. As regras de cada
+   componente vêm depois e ganham na posição, por isso :where. */
+:where(.cartao, .bloco-endereco, .lateral, .formulario, .kpi, .painel, .login-box, .item, .historico-link) {
+    position: relative;
+}
+
+.cartao::before,
+.bloco-endereco::before,
+.formulario::before,
+.kpi::before,
+.painel::before,
+.login-box::before,
+.item::before,
+.historico-link::before,
+.lateral::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 22px solid transparent;
+    border-image: var(--ornamento-canto) 22 / 22px / 0 stretch;
+    pointer-events: none;
+}
+
+/* Botão de tinta: filete ouro claro seguindo o entalhe por dentro. O clip-path
+   do botão corta tudo fora do recorte, então o filete fica a 4px dele. */
+:where(.botao-principal, button.btn-primary, .botao-encontrar, .botao-limpar, .botao-primario, .vitrine-buscar, .login button:not(#closeLogin), .login .account-action) {
+    position: relative;
+}
+
+.botao-principal::before,
+button.btn-primary::before,
+.botao-encontrar::before,
+.botao-limpar::before,
+.botao-primario::before,
+.vitrine-buscar::before,
+.login button:not(#closeLogin)::before,
+.login .account-action::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 14px solid transparent;
+    border-image: var(--ornamento-filete-ouro) 14 / 14px / 0 stretch;
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.botao-limpar::before {
+    border-image-source: var(--ornamento-filete-tinta);
+    opacity: 0.6;
+}
+
+.titulo-tripla::before {
+    content: "";
+    flex-shrink: 0;
+    width: 30px;
+    height: 16px;
+    margin-bottom: 3px;
+    background: var(--ornamento-leque) no-repeat center / contain;
+}
+
+/* No desktop a moldura passa do bloco de endereço para a lateral inteira. */
+.lateral::before {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .lateral::before {
+        display: block;
+    }
+
+    .bloco-endereco::before {
+        display: none;
+    }
+}
+
+.result-card-planta::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    width: 30px;
+    height: 16px;
+    transform: translateX(-50%);
+    background: var(--ornamento-leque-claro) no-repeat center / contain;
+}
+
+.result-card.lotado .result-card-planta::before {
+    display: none;
+}
+
+/* Raios de sol saindo do pé da faixa, quase na cor do preto: dá textura sem
+   tirar o contraste do número e do portal. */
+.faixa {
+    background-image: repeating-conic-gradient(from -90deg at 50% 100%, var(--cor-tinta) 0deg 3deg, #23231F 3deg 6deg);
+}
+
+/* Peça baixa ou estreita leva o mesmo canto reduzido: a 22px ele encostava
+   no rótulo do KPI e na linha da lista. */
+.kpi::before,
+.item::before,
+.painel::before,
+.historico-link::before {
+    border-width: 14px;
+}
+
+/* Texturas do preto: cada superfície escura tem o seu padrão, para o preto
+   nunca ficar chapado e para cada papel se distinguir. */
+.result-card-planta {
+    background-image: var(--textura-zigue);
+    background-size: 32px 12px;
+}
+
+.capa-com-planta .capa-imagem {
+    background-image: repeating-conic-gradient(from 0deg at 50% 55%, var(--cor-tinta) 0deg 3deg, #24241F 3deg 6deg);
+}
+
+.resultado {
+    background-image: repeating-linear-gradient(90deg, transparent 0 9px, rgba(231, 201, 119, 0.08) 9px 10px);
+}
+
+:where(.botao-principal, button.btn-primary, .botao-encontrar, .botao-primario, .vitrine-buscar, .login button:not(#closeLogin), .login .account-action) {
+    background-image: repeating-linear-gradient(0deg, rgba(231, 201, 119, 0.07) 0 1px, transparent 1px 4px);
+}
+
+/* Frontão: a linha de título das páginas internas vira uma marquise preta com
+   topo em degrau, treliça de losangos e o título em Limelight. */
+.titulo-linha {
+    position: relative;
+    flex-wrap: wrap;
+    min-height: 136px;
+    margin-bottom: 28px;
+    padding: 48px 32px 26px;
+    clip-path: var(--recorte-degrau);
+    background: var(--textura-trelica) center / 24px 24px, var(--cor-tinta);
+    color: var(--cor-creme);
+}
+
+.titulo-linha::before {
+    content: "";
+    position: absolute;
+    inset: 30px 8px 8px;
+    border: 22px solid transparent;
+    border-image: var(--ornamento-canto) 22 / 22px / 0 stretch;
+    pointer-events: none;
+}
+
+.titulo-linha::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 30px;
+    height: 16px;
+    transform: translateX(-50%);
+    background: var(--ornamento-leque-claro) no-repeat center / contain;
+}
+
+.titulo-linha h2,
+.titulo-linha .titulo-tripla {
+    position: relative;
+    color: var(--cor-ouro-claro);
+    font-family: var(--fonte-marca);
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    line-height: 1.1;
+}
+
+.titulo-linha .titulo-tripla::before {
+    background-image: var(--ornamento-leque-claro);
+}
+
+.titulo-linha .item-endereco {
+    position: relative;
+    margin-top: 6px;
+    color: var(--cor-creme);
+    opacity: 0.8;
+}
+
+.titulo-linha .botao-primario,
+.titulo-linha .item-acoes {
+    position: relative;
+}
+
+.titulo-linha .botao-primario {
+    background-color: var(--cor-ouro);
+    color: var(--cor-tinta);
+}
+
+.titulo-linha .botao-primario::before {
+    border-image-source: var(--ornamento-filete-tinta);
+    opacity: 0.6;
+}
+
+.titulo-linha .botao-icone,
+.titulo-linha .abrir {
+    border-color: var(--cor-ouro);
+    color: var(--cor-creme);
+}
+
+.titulo-linha .botao-icone:hover,
+.titulo-linha .abrir:hover {
+    background-color: var(--cor-ouro);
+    color: var(--cor-tinta);
+}
+
+.titulo-linha .etiqueta {
+    border-color: var(--cor-ouro);
+    background-color: transparent;
+    color: var(--cor-ouro-claro);
+}
+
+/* Rodapé: o horizonte de garagens assenta toda página, por curta que seja. */
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.rodape {
+    margin-top: auto;
+    padding-top: 72px;
+    color: var(--cor-creme);
+    text-align: center;
+}
+
+.rodape::before {
+    content: "";
+    display: block;
+    height: 120px;
+    background: var(--ornamento-skyline) center bottom / 360px 120px repeat-x;
+}
+
+.rodape-conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 28px 16px 40px;
+    background:
+        linear-gradient(135deg, var(--cor-ouro) 25%, transparent 25%) -8px 100% / 16px 12px repeat-x,
+        linear-gradient(225deg, var(--cor-ouro) 25%, transparent 25%) -8px 100% / 16px 12px repeat-x,
+        var(--textura-zigue) center / 32px 12px,
+        var(--cor-tinta);
+    border-top: 1.5px solid var(--cor-ouro);
+}
+
+.rodape-marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--cor-ouro-claro);
+    font-family: var(--fonte-marca);
+    font-size: 26px;
+    letter-spacing: 0.24em;
+    margin-right: -0.24em;
+}
+
+.rodape-marca::before,
+.rodape-marca::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background-color: var(--cor-ouro);
+    transform: rotate(45deg);
+}
+
+.rodape-lema {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+/* A home reserva o pé da tela para a barra fixa do celular; com rodapé, quem
+   reserva é ele, senão sobra uma tira creme embaixo do preto. */
+@media (max-width: 767px) {
+    body:has(> .bottom-nav) {
+        padding-bottom: 0;
+    }
+
+    body:has(> .bottom-nav) .rodape-conteudo {
+        padding-bottom: 124px;
+    }
+
+    .titulo-linha {
+        padding: 46px 26px 24px;
+    }
+
+    .titulo-linha h2,
+    .titulo-linha .titulo-tripla {
+        font-size: 22px;
+        letter-spacing: 0.06em;
+    }
+
+    main .titulo-linha .titulo-tripla {
+        flex-basis: 100%;
+    }
+
+    .titulo-linha .titulo-tripla::before,
+    .titulo-linha .titulo-tripla::after {
+        display: none;
+    }
+}
+
+/* Área do dono em verde-ferro, a do cliente em preto: a pessoa sabe de que
+   lado do balcão está sem ler o título. */
+.area-dono .titulo-linha {
+    background: var(--textura-trelica) center / 24px 24px, var(--cor-ferro);
+}
+
+.frontao-mostrador {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.frontao-mostrador svg {
+    display: block;
+}
+
+.titulo-linha.painel-cabecalho {
+    align-items: center;
+    gap: 20px;
+}
+
+.painel-cabecalho .painel-nome {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}

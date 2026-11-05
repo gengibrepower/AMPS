@@ -1,37 +1,49 @@
 /*
- * Neutros: escala sage (escura) do Radix Colors 3.0, o cinza feito para
- * acompanhar verde. O número no fim de cada linha é o passo da escala, e o
- * passo diz o papel: 1-2 fundo, 3-5 componente, 6-8 borda, 11-12 texto.
- * https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale
+ * Garagem de 1930: Art Deco claro. Papel, contraste e o de-para dos nomes
+ * antigos estão em docs/08-identidade-visual.md. O ouro puro dá 2,8:1 no
+ * creme: é linha e ornamento, nunca texto sobre o claro.
  */
 :root {
-    --cor-fundo: #101211;            /* 1 */
-    --cor-fundo-sutil: #171918;      /* 2 */
-    --cor-superficie: #202221;       /* 3 */
-    --cor-superficie-hover: #272A29; /* 4 */
-    --cor-superficie-ativa: #2E3130; /* 5 */
-    --cor-borda-sutil: #373B39;      /* 6 */
-    --cor-borda: #444947;            /* 7 */
-    --cor-borda-campo: #63706B;      /* 9: 3,6:1 no fundo, o mínimo de borda de controle (WCAG 1.4.11) */
-    --cor-texto-apagado: #ADB5B2;    /* 11 */
-    --cor-texto: #ECEEED;            /* 12 */
+    --cor-creme: #F4EEDF;
+    --cor-papel: #FBF8EF;
+    --cor-tinta: #1A1A17;
+    --cor-tinta-apagada: #5E5A50;
+    --cor-ouro: #B08A3E;
+    --cor-ouro-texto: #7A5C1E;
+    --cor-ouro-claro: #E7C977;
+    --cor-ambar: #E3A23B;
+    --cor-ferro: #2F4F3A;
+    --cor-lotado: #8C2F2B;
+    --cor-areia: #E9DEC4;
 
-    --cor-marca: #09C382;
-    --cor-marca-hover: #1FD8A4;      /* jade 11 */
-    --cor-marca-fundo: #0F2E22;      /* jade 3 */
-    --cor-marca-borda: #1B5745;      /* jade 6 */
-    --cor-sobre-marca: #04140E;
+    --cor-fundo: var(--cor-creme);
+    --cor-fundo-sutil: #EFE7D4;
+    --cor-superficie: var(--cor-papel);
+    --cor-superficie-hover: #F6F0E2;
+    --cor-superficie-ativa: #EDE4CF;
+    --cor-borda-sutil: #D9CDB0;
+    --cor-borda: var(--cor-ouro);
+    --cor-borda-campo: var(--cor-tinta);
+    --cor-texto-apagado: var(--cor-tinta-apagada);
+    --cor-texto: var(--cor-tinta);
 
-    --cor-perigo: #FF9592;           /* red 11 */
-    --cor-perigo-solido: #E5484D;    /* red 9 */
-    --cor-perigo-fundo: #3B1219;     /* red 3 */
-    --cor-aviso: #FFCA16;            /* amber 11 */
-    --cor-info: #70B8FF;             /* blue 11 */
+    --cor-marca: var(--cor-tinta);
+    --cor-marca-hover: #2E2D28;
+    --cor-marca-fundo: #EFE7D4;
+    --cor-marca-borda: var(--cor-ouro);
+    --cor-sobre-marca: var(--cor-ouro-claro);
 
-    --cor-veu: rgba(0, 0, 0, 0.6);
+    --cor-perigo: var(--cor-lotado);
+    --cor-perigo-solido: var(--cor-lotado);
+    --cor-perigo-fundo: #F2DEDA;
+    --cor-aviso: #8A5A00;
+    --cor-info: var(--cor-ferro);
 
-    --fonte-texto: "Montserrat", system-ui, sans-serif;
-    --fonte-marca: "Baunk", var(--fonte-texto);
+    --cor-veu: rgba(26, 26, 23, 0.55);
+
+    --fonte-texto: "Josefin Sans", system-ui, sans-serif;
+    --fonte-marca: "Limelight", Georgia, serif;
+    --fonte-numero: "Poiret One", var(--fonte-texto);
     --fonte-mono: ui-monospace, Menlo, Consolas, monospace;
 
     --texto-xs: 0.75rem;
@@ -41,10 +53,21 @@
     --texto-xl: 1.5rem;
     --texto-2xl: 2rem;
 
-    --raio-campo: 8px;
-    --raio-card: 14px;
-    --raio-pilula: 999px;
-    --raio-etiqueta: 6px;
+    --raio-campo: 0;
+    --raio-card: 0;
+    --raio-pilula: 0;
+    --raio-etiqueta: 0;
+
+    /* O clip-path corta borda e outline: elemento entalhado não tem borda, e o
+       foco dele é desenhado por dentro (outline-offset negativo). */
+    --recorte-entalhe: polygon(0 12px, 12px 12px, 12px 0, calc(100% - 12px) 0, calc(100% - 12px) 12px, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 12px calc(100% - 12px), 0 calc(100% - 12px));
+    /* Moldura entalhada dos campos, em nove fatias: o canto mantém o entalhe
+       de 12px em qualquer tamanho, e serve até em <input>, que não tem ::before
+       nem aceita o clip-path sem perder a borda. */
+    --moldura-entalhe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M0.75 12.75H12.75V0.75H27.25V12.75H39.25V27.25H27.25V39.25H12.75V27.25H0.75Z' fill='%23FBF8EF' stroke='%231A1A17' stroke-width='1.5'/%3E%3C/svg%3E");
+    --seta-campo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%231A1A17' stroke-width='1.5'/%3E%3C/svg%3E");
+    --recorte-losango: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    --recorte-degrau: polygon(0 24px, 8px 24px, 8px 16px, 16px 16px, 16px 8px, 24px 8px, 24px 0, calc(100% - 24px) 0, calc(100% - 24px) 8px, calc(100% - 16px) 8px, calc(100% - 16px) 16px, calc(100% - 8px) 16px, calc(100% - 8px) 24px, 100% 24px, 100% 100%, 0 100%);
 
     /* Três alturas de controle (escala do IBM Carbon): ação principal, padrão
        e compacta. A busca da home vai a 56, a barra do Material 3. */

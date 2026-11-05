@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/emblema.svg">
     <title>AMPS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Limelight&family=Poiret+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,chevron_right,close,directions_car,grid_view,home,logout,menu,person,search"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,300,0,0&icon_names=account_circle,chevron_right,close,directions_car,grid_view,home,logout,menu,person,search"/>
 </head>
 <body>
     <header class="cabecalho">
-        <button type="button" id="menu-button" class="cabecalho-menu" aria-label="Abrir menu">
-            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
-        </button>
+        <div class="cabecalho-esquerda">
+            <button type="button" id="menu-button" class="cabecalho-menu" aria-label="Abrir menu">
+                <span class="material-symbols-sharp" aria-hidden="true">menu</span>
+            </button>
+            <nav class="cabecalho-nav" id="cabecalhoNav" aria-label="Principal"></nav>
+        </div>
         <a class="marca" href="/index.html">
-            <img src="/assets/images/logo_holder.png" alt="">
+            <svg class="marca-emblema" viewBox="0 0 44 44" aria-hidden="true"><path d="M0 44V18H6V12H12V6H18V0H26V6H32V12H38V18H44V44Z" fill="#1A1A17"/><path d="M22 39L39.9 32.5M22 39L35.4 25.6M22 39L28.5 21.1M22 39L22.0 20.0M22 39L15.5 21.1M22 39L8.6 25.6M22 39L4.1 32.5" stroke="#E7C977" stroke-width="1.5" stroke-linecap="square"/><path d="M8 39H36" stroke="#E7C977" stroke-width="1.5"/></svg>
             <span class="marca-nome">AMPS</span>
         </a>
         <div class="cabecalho-conta" id="cabecalhoConta"></div>
@@ -26,12 +30,12 @@
     <nav class="sidebar-nav disabled" aria-label="Menu">
         <div class="sidebar">
             <button type="button" id="close-sidebar-button" aria-label="Fechar menu">
-                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                <span class="material-symbols-sharp" aria-hidden="true">close</span>
             </button>
             <ul class="nav-list" id="navLista">
                 <li class="nav-item nav-item-account">
                     <button type="button" id="sidebarAccountBtn" aria-label="Conta">
-                        <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+                        <span class="material-symbols-sharp" aria-hidden="true">account_circle</span>
                         <span id="sidebarAccountLabel">Entrar</span>
                     </button>
                 </li>
@@ -39,34 +43,88 @@
         </div>
     </nav>
  
+    <section class="vitrine">
+        <div class="vitrine-conteudo">
+            <p class="vitrine-sobretitulo"><span class="losango" aria-hidden="true"></span>Garagem inteligente<span class="losango" aria-hidden="true"></span></p>
+            <h1 class="vitrine-titulo">Saiba sua vaga antes de entrar</h1>
+            <svg class="vitrine-divisa" viewBox="0 0 300 24" width="300" aria-hidden="true"><path d="M0 12H110M190 12H300M0 6H100M200 6H300M0 18H100M200 18H300" stroke="#B08A3E" stroke-width="1.5"/><path d="M120 18L130 6L140 18L150 6L160 18L170 6L180 18" fill="none" stroke="#1A1A17" stroke-width="2"/></svg>
+            <div class="vitrine-base">
+                <p class="vitrine-texto">
+                    Busque o estacionamento, diga para onde você vai e o AMPS mostra a
+                    vaga livre mais perto e o caminho até ela.
+                </p>
+                <form action="client/search.html" method="GET" class="vitrine-busca">
+                    <label class="search-box">
+                        <span class="material-symbols-sharp" aria-hidden="true">search</span>
+                        <input type="search" name="q" placeholder="Nome, rua ou bairro" autocomplete="off" aria-label="Pesquisar estacionamento">
+                    </label>
+                    <button type="submit" class="vitrine-buscar">Buscar</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="faixa" class="faixa disabled" aria-labelledby="faixaRotulo">
+        <div class="faixa-conteudo">
+            <div class="faixa-agora">
+                <div id="faixaMostrador"></div>
+                <p class="faixa-numero" id="faixaNumero"></p>
+                <p class="faixa-rotulo" id="faixaRotulo"></p>
+            </div>
+            <div class="faixa-portal" id="faixaPortal"></div>
+        </div>
+    </section>
+
+    <section class="como" aria-labelledby="comoTitulo">
+        <div class="como-conteudo">
+            <p class="como-sobre"><span class="losango" aria-hidden="true"></span>Em três passos<span class="losango" aria-hidden="true"></span></p>
+            <h2 id="comoTitulo" class="como-titulo">Como funciona</h2>
+            <ol class="como-passos">
+                <li class="como-passo">
+                    <svg class="como-medalhao" viewBox="0 0 120 120" aria-hidden="true"><path d="M6 118V40H16V30H26V20H40V10H80V20H94V30H104V40H114V118Z" fill="#1A1A17" stroke="#B08A3E" stroke-width="2"/><path d="M13 111V46H23V36H33V26H46V17H74V26H87V36H97V46H107V111Z" fill="none" stroke="#B08A3E" stroke-width="1"/><circle cx="55" cy="62" r="17" fill="none" stroke="#E7C977" stroke-width="3"/><path d="M67 74L84 91" stroke="#E7C977" stroke-width="5" stroke-linecap="square"/><path d="M55 54L61 62L55 70L49 62Z" fill="#F4EEDF"/></svg>
+                    <span class="como-numero" aria-hidden="true">I</span>
+                    <h3 class="como-nome">Busque</h3>
+                    <p class="como-texto">Pelo nome, rua ou bairro. Cada pátio mostra quantas vagas estão livres agora.</p>
+                </li>
+                <li class="como-passo">
+                    <svg class="como-medalhao" viewBox="0 0 120 120" aria-hidden="true"><path d="M6 118V40H16V30H26V20H40V10H80V20H94V30H104V40H114V118Z" fill="#1A1A17" stroke="#B08A3E" stroke-width="2"/><path d="M13 111V46H23V36H33V26H46V17H74V26H87V36H97V46H107V111Z" fill="none" stroke="#B08A3E" stroke-width="1"/><path d="M42 100V56H78V100" fill="none" stroke="#F4EEDF" stroke-width="3"/><path d="M60 56V100" stroke="#F4EEDF" stroke-width="2"/><path d="M60 34L67 43H53Z" fill="#E7C977"/><path d="M34 100H86" stroke="#B08A3E" stroke-width="2"/></svg>
+                    <span class="como-numero" aria-hidden="true">II</span>
+                    <h3 class="como-nome">Diga o destino</h3>
+                    <p class="como-texto">Elevador, loja ou saída: o AMPS escolhe a vaga livre mais perto de onde você vai.</p>
+                </li>
+                <li class="como-passo">
+                    <svg class="como-medalhao" viewBox="0 0 120 120" aria-hidden="true"><path d="M6 118V40H16V30H26V20H40V10H80V20H94V30H104V40H114V118Z" fill="#1A1A17" stroke="#B08A3E" stroke-width="2"/><path d="M13 111V46H23V36H33V26H46V17H74V26H87V36H97V46H107V111Z" fill="none" stroke="#B08A3E" stroke-width="1"/><path d="M62 50H74V64H62ZM86 50H98V64H86Z" fill="none" stroke="#F4EEDF" stroke-width="2"/><path d="M74 50H86V64H74Z" fill="#B08A3E" stroke="#F4EEDF" stroke-width="2"/><path d="M36 90V78H80V69" fill="none" stroke="#E7C977" stroke-width="3.5" stroke-linecap="square"/><path d="M28 104L36 90L44 104Z" fill="#F4EEDF"/></svg>
+                    <span class="como-numero" aria-hidden="true">III</span>
+                    <h3 class="como-nome">Siga o trajeto</h3>
+                    <p class="como-texto">O mapa traça o caminho da entrada até a vaga, com a distância a pé.</p>
+                </li>
+            </ol>
+            <a class="como-chamada" href="client/search.html">Ver todos os estacionamentos</a>
+        </div>
+    </section>
+
     <main>
-        <section class="boas-vindas">
-            <h1 class="boas-vindas-titulo">Saiba sua vaga antes de entrar</h1>
-            <p class="boas-vindas-texto">
-                Busque o estacionamento, diga para onde você vai e o AMPS mostra a
-                vaga livre mais perto e o caminho até ela.
-            </p>
-        </section>
-
-        <form action="client/search.html" method="GET" class="search-box">
-            <span class="material-symbols-outlined">search</span>
-            <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
-        </form>
-
         <section id="historico" class="historico disabled">
-            <h2 class="historico-titulo">Abertos recentemente</h2>
+            <h2 class="historico-titulo titulo-tripla">Abertos recentemente</h2>
             <ul id="listaDoHistorico" class="historico-lista"></ul>
         </section>
 
         <section id="patios" class="patios disabled" aria-labelledby="patiosTitulo">
-            <h2 id="patiosTitulo" class="patios-titulo">Estacionamentos no AMPS</h2>
+            <h2 id="patiosTitulo" class="patios-titulo titulo-tripla">Estacionamentos no AMPS</h2>
             <ul id="listaDePatios" class="result-list"></ul>
         </section>
     </main>
+
+    <footer class="rodape">
+        <div class="rodape-conteudo">
+            <span class="rodape-marca">AMPS</span>
+            <p class="rodape-lema">Saiba sua vaga antes de entrar</p>
+        </div>
+    </footer>
  
     <div class="login disabled" id="accountPanel">
         <div class="login-box">
-            <button type="button" id="closeLogin" aria-label="Fechar"><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
+            <button type="button" id="closeLogin" aria-label="Fechar"><span class="material-symbols-sharp" aria-hidden="true">close</span></button>
 
             <!-- Login -->
             <div id="accountLoggedOut" class="account-view">
@@ -108,7 +166,7 @@
                         </div>
                         <div class="form-group">
                             <label for="email-cli">E-mail</label>
-                            <input type="email" id="email-cli" placeholder="seu.email@gmail.com" required />
+                            <input type="email" id="email-cli" placeholder="voce@email.com" required />
                         </div>
                         <div class="form-group">
                             <label for="cpf-cli">CPF</label>
@@ -138,7 +196,7 @@
                         </div>
                         <div class="form-group">
                             <label for="email-dono">E-mail</label>
-                            <input type="email" id="email-dono" placeholder="seu.email@gmail.com" required />
+                            <input type="email" id="email-dono" placeholder="voce@email.com" required />
                         </div>
                         <div class="form-group">
                             <label for="cpf-dono">CPF</label>
@@ -169,15 +227,15 @@
  
     <nav class="bottom-nav">
         <button class="nav-btn" id="navHome" aria-label="Home">
-            <span class="material-symbols-outlined">home</span>
+            <span class="material-symbols-sharp">home</span>
             <span class="nav-label">Home</span>
         </button>
         <button class="nav-btn disabled" id="navArea" aria-label="Minha área">
-            <span class="material-symbols-outlined" id="navAreaIcone">grid_view</span>
+            <span class="material-symbols-sharp" id="navAreaIcone">grid_view</span>
             <span class="nav-label" id="navAreaRotulo"></span>
         </button>
         <button class="nav-btn active" id="navConta" aria-label="Conta">
-            <span class="material-symbols-outlined">account_circle</span>
+            <span class="material-symbols-sharp">account_circle</span>
             <span class="nav-label">Conta</span>
         </button>
     </nav>

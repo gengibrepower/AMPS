@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 44 400 376" class="portal" role="img" aria-label="Portal da garagem com a placa da sua vaga">
+<g stroke="#B08A3E" stroke-width="1.5"><path d="M74 420V140M80 420V140M86 420V140M314 420V140M320 420V140M326 420V140"/></g>
+<polygon points="64,138 64,112 92,112 92,92 124,92 124,72 156,72 156,52 244,52 244,72 276,72 276,92 308,92 308,112 336,112 336,138" fill="#F4EEDF"/>
+<polygon points="70,132 70,118 98,118 98,98 130,98 130,78 162,78 162,58 238,58 238,78 270,78 270,98 302,98 302,118 330,118 330,132" fill="none" stroke="#1A1A17" stroke-width="1.5"/>
+<g stroke="#B08A3E" stroke-width="1.2"><path d="M200 112L200 62M200 112L222 66M200 112L178 66M200 112L236 80M200 112L164 80"/></g>
+<path d="M64 104l8-10 8 10-8 10zM320 104l8-10 8 10-8 10z" fill="#E3A23B"/>
+<rect x="96" y="150" width="208" height="36" fill="#1A1A17" stroke="#B08A3E" stroke-width="1.5"/>
+<text x="200" y="174" text-anchor="middle" font-family="Josefin Sans, sans-serif" font-weight="600" font-size="12" letter-spacing="4.5" fill="#E7C977">ESTACIONAMENTO</text>
+<polygon points="120,420 120,214 140,214 140,198 260,198 260,214 280,214 280,420" fill="#F4EEDF"/>
+<polygon points="130,420 130,222 148,222 148,208 252,208 252,222 270,222 270,420" fill="none" stroke="#B08A3E" stroke-width="1"/>
+<text x="200" y="256" text-anchor="middle" font-family="Josefin Sans, sans-serif" font-weight="600" font-size="11" letter-spacing="4" fill="#7A5C1E">SUA VAGA</text>
+<text class="portal-codigo" x="200" y="322" text-anchor="middle" font-family="Limelight, serif" font-size="58" fill="#1A1A17">D-08</text>
+<g fill="#B08A3E"><path d="M186 344l5-5 5 5-5 5z"/><path d="M195 344l5-5 5 5-5 5z"/><path d="M204 344l5-5 5 5-5 5z"/></g>
+<text class="portal-distancia" x="200" y="378" text-anchor="middle" font-family="Josefin Sans, sans-serif" font-size="14" fill="#1A1A17">a 42 m do elevador</text>
+</svg>

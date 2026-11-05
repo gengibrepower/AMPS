@@ -35,16 +35,32 @@ main.pagina-detalhes {
 }
 
 .capa-com-planta .capa-imagem {
-    height: 220px;
-    padding: 56px 20px 16px;
-    background-color: #FBFDFC;
+    height: 236px;
+    padding: 68px 20px 20px;
+    background-color: var(--cor-tinta);
+}
+
+.capa-com-planta .capa-imagem svg {
+    background-color: #FBF8EF;
+    outline: 1px solid var(--cor-ouro);
+    outline-offset: 6px;
 }
 
 .capa-com-planta .capa-texto {
     position: static;
     background: none;
-    padding-top: 20px;
+    padding-top: 24px;
     padding-bottom: 0;
+}
+
+.capa-com-planta .capa-texto::after {
+    content: "";
+    display: block;
+    height: 9px;
+    margin-top: 14px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
 }
 
 /* O degradê garante leitura do nome sobre qualquer foto que o pátio venha a ter. */
@@ -67,33 +83,43 @@ main.pagina-detalhes {
     align-items: center;
     gap: 6px;
     min-height: var(--altura-controle);
-    padding: 0 14px;
-    border-radius: var(--raio-pilula);
-    background-color: color-mix(in srgb, var(--cor-fundo) 70%, transparent);
+    padding: 2px 14px 0;
+    background-color: var(--cor-papel);
     color: var(--cor-texto);
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
     text-decoration: none;
 }
 
-.voltar .material-symbols-outlined {
+.voltar .material-symbols-sharp {
     font-size: 18px;
 }
 
-.voltar:focus-visible,
-.botao-principal:focus-visible {
+.voltar:focus-visible {
     outline: 2px solid var(--cor-texto);
     outline-offset: 2px;
 }
 
+.botao-principal:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
+}
+
 .capa-nome {
-    font-size: var(--texto-xl);
-    font-weight: 700;
-    line-height: 1.2;
+    font-family: var(--fonte-marca);
+    font-size: clamp(28px, 4.4vw, 48px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
 }
 
 .capa-local {
     font-size: var(--texto-md);
-    opacity: 0.85;
+    font-weight: 400;
+    color: var(--cor-texto-apagado);
 }
 
 .conteudo {
@@ -118,7 +144,7 @@ main.pagina-detalhes {
    dos outros blocos em vez de ficar solto no fundo. */
 .bloco-endereco {
     padding: 20px;
-    border: 1px solid var(--cor-borda-sutil);
+    border: 1.5px solid var(--cor-tinta);
     border-radius: var(--raio-card);
     background-color: var(--cor-superficie);
 }
@@ -128,27 +154,27 @@ main.pagina-detalhes {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: var(--altura-acao);
-    padding: 0 24px;
-    border-radius: var(--raio-pilula);
+    min-height: 52px;
+    padding: 4px 24px 0;
+    clip-path: var(--recorte-entalhe);
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
-    font-size: var(--texto-md);
+    font-size: var(--texto-sm);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     text-decoration: none;
 }
 
 .cartao {
     padding: 20px;
-    border: 1px solid var(--cor-borda-sutil);
+    border: 1.5px solid var(--cor-tinta);
     border-radius: var(--raio-card);
     background-color: var(--cor-superficie);
 }
 
 .cartao-titulo {
-    margin-bottom: 14px;
-    font-size: var(--texto-md);
-    font-weight: 600;
+    margin-bottom: 18px;
 }
 
 .cartao-dica {
@@ -163,142 +189,138 @@ main.pagina-detalhes {
     align-items: center;
     gap: 8px;
     margin-bottom: 10px;
-    font-size: var(--texto-md);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
-.titulo-com-icone .material-symbols-outlined {
+.titulo-com-icone .material-symbols-sharp {
     font-size: 20px;
     color: var(--cor-texto-apagado);
 }
 
-/* Vagas agora: o número é a resposta, a barra é o mesmo número de relance. */
+/* Vagas agora: o número é a resposta, o mostrador é o mesmo número de relance. */
 .disponiveis {
     display: flex;
-    align-items: baseline;
     flex-wrap: wrap;
-    gap: 4px 10px;
-    margin-bottom: 16px;
+    align-items: center;
+    gap: 12px 28px;
+}
+
+.disponiveis-mostrador svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.disponiveis-texto {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
 }
 
 .disponiveis-numero {
-    font-size: 3rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--cor-marca);
+    font-family: var(--fonte-numero);
+    font-size: 96px;
+    line-height: 0.85;
     font-variant-numeric: tabular-nums;
 }
 
-.disponiveis-rotulo {
-    font-size: var(--texto-lg);
+.disponiveis-rotulo,
+.disponiveis-estado {
+    font-size: var(--texto-xs);
     font-weight: 600;
-    color: var(--cor-texto-apagado);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
-.disponiveis.lotado .disponiveis-numero,
-.disponiveis.lotado .disponiveis-rotulo {
-    color: var(--cor-perigo);
+.disponiveis.lotado .disponiveis-numero {
+    color: var(--cor-lotado);
 }
 
-.barra {
+.disponiveis-legenda {
     display: flex;
-    gap: 3px;
-    height: 12px;
-    border-radius: var(--raio-pilula);
-    overflow: hidden;
-    background-color: var(--cor-superficie-ativa);
-}
-
-.barra-livre,
-.barra-ocupada {
-    flex-basis: 0;
-}
-
-.barra-livre {
-    background-color: var(--cor-marca);
-}
-
-.barra-ocupada {
-    background-color: var(--cor-perigo);
-}
-
-.barra-legenda {
-    display: flex;
-    gap: 18px;
-    margin-top: 10px;
+    gap: 24px;
+    margin-top: 16px;
     list-style: none;
     font-size: var(--texto-sm);
     color: var(--cor-texto-apagado);
     font-variant-numeric: tabular-nums;
 }
 
-.barra-legenda li,
+.disponiveis-legenda li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.disponiveis-legenda .losango {
+    background-color: var(--cor-areia);
+    box-shadow: inset 0 0 0 1.5px var(--cor-ouro);
+}
+
+.disponiveis-legenda .losango-ocupada {
+    background-color: var(--cor-tinta);
+    box-shadow: none;
+}
+
+/* Tipos de vaga: um card por tipo, com a amostra da tinta do mapa
+   (render/tinta.ts) ao lado do nome e o mostrador do tipo. */
+.tipos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    list-style: none;
+}
+
 .tipo {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px 14px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-papel);
+    text-align: center;
+}
+
+.tipo-nome {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-.ponto {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+.tipo-nome::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-da-vaga, #FBF8EF);
 }
 
-.ponto-livre {
-    background-color: var(--cor-marca);
+.tipo-pcd { --cor-da-vaga: #CFDCE8; }
+.tipo-idoso { --cor-da-vaga: #EFDFAE; }
+.tipo-moto { --cor-da-vaga: #D6DEC8; }
+.tipo-eletrico { --cor-da-vaga: #CFE3DC; }
+
+.tipo-nome,
+.tipo-estado {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
-.ponto-ocupada {
-    background-color: var(--cor-perigo);
-}
-
-/* Tipos de vaga, com a mesma amostra da legenda do mapa (render/tinta.ts). */
-.tipos {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    list-style: none;
-}
-
-.tipo {
-    display: grid;
-    grid-template-columns: 14px 5.5rem minmax(0, 1fr) 4.5rem;
-    gap: 12px;
-    font-size: var(--texto-sm);
-}
-
-.amostra {
-    width: 14px;
-    height: 20px;
-    border-radius: 2px;
-    border: 1px solid var(--cor-borda);
-}
-
-.amostra-comum { background-color: #FFFFFF; }
-.amostra-pcd { background-color: #C2E5FF; }
-.amostra-idoso { background-color: #FBE577; }
-.amostra-moto { background-color: #C9E8CA; }
-.amostra-eletrico { background-color: #B8EAE0; }
-
-.tipo-trilho {
-    height: 6px;
-    border-radius: var(--raio-pilula);
-    background-color: var(--cor-superficie-ativa);
-    overflow: hidden;
-}
-
-.tipo-cheio {
+.tipo-mostrador svg {
     display: block;
-    height: 100%;
-    background-color: var(--cor-marca);
 }
 
 .tipo-valor {
-    text-align: right;
+    font-size: var(--texto-sm);
     color: var(--cor-texto-apagado);
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
 }
 
 /* Destinos: cada um abre o mapa já procurando a vaga mais perto dele. */
@@ -330,13 +352,12 @@ main.pagina-detalhes {
 }
 
 .destino:focus-visible {
-    outline: 2px solid var(--cor-marca);
+    outline: 2px solid var(--cor-tinta);
     outline-offset: -2px;
 }
 
-.destino .material-symbols-outlined:first-child {
-    color: var(--cor-aviso);
-    font-size: 20px;
+.destino .losango {
+    margin: 0 4px;
 }
 
 .destino-nome {
@@ -344,7 +365,7 @@ main.pagina-detalhes {
     font-size: var(--texto-md);
 }
 
-.destino .material-symbols-outlined:last-child {
+.destino .material-symbols-sharp:last-child {
     color: var(--cor-texto-apagado);
 }
 
@@ -363,24 +384,26 @@ main.pagina-detalhes {
     align-items: center;
     gap: 4px;
     margin-top: 12px;
-    color: var(--cor-marca);
+    color: var(--cor-texto);
     font-size: var(--texto-sm);
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: var(--cor-ouro);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
 }
 
 .link-externo:hover {
-    text-decoration: underline;
+    color: var(--cor-ouro-texto);
 }
 
-.link-externo .material-symbols-outlined {
+.link-externo .material-symbols-sharp {
     font-size: 16px;
 }
 
 /* A utilitária precisa vir depois das classes de componente para vencer. */
 .detalhes.disabled,
 .cartao.disabled,
-.barra.disabled,
 .link-externo.disabled {
     display: none;
 }
@@ -399,8 +422,8 @@ main.pagina-detalhes {
     }
 
     .capa-com-planta .capa-imagem {
-        height: 300px;
-        padding: 60px max(48px, calc((100% - 1040px) / 2)) 20px;
+        height: 320px;
+        padding: 72px max(48px, calc((100% - 1040px) / 2 + 48px)) 24px;
     }
 
     /* Mesma borda esquerda da coluna de conteúdo: 1040 de largura máxima e
@@ -440,7 +463,7 @@ main.pagina-detalhes {
         position: sticky;
         top: 24px;
         padding: 24px;
-        border: 1px solid var(--cor-borda-sutil);
+        border: 1.5px solid var(--cor-tinta);
         border-radius: var(--raio-card);
         background-color: var(--cor-superficie);
     }

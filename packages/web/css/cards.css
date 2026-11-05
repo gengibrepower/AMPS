@@ -1,40 +1,47 @@
-/* Card de estacionamento: o mesmo na busca e na página inicial. */
+/* Card de estacionamento: o mesmo na busca e na página inicial. A moldura é o
+   fundo tinta do <li> aparecendo pelo 1,5px de respiro; o recorte em degrau
+   vale para os dois, então o filete acompanha os degraus. */
 .result-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
     width: 100%;
 }
 
 .result-card {
+    position: relative;
     display: flex;
-    flex-direction: column;
-    background-color: var(--cor-superficie);
-    border-radius: var(--raio-card);
-    overflow: hidden;
+    padding: 1.5px;
+    clip-path: var(--recorte-degrau);
+    background-color: var(--cor-tinta);
+}
+
+.result-card:hover {
+    background-color: var(--cor-ouro);
 }
 
 .result-card-link {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    clip-path: var(--recorte-degrau);
+    background-color: var(--cor-superficie);
     color: inherit;
     text-decoration: none;
 }
 
-.result-card:hover {
-    outline: 2px solid var(--cor-marca);
-}
-
 .result-card-link:focus-visible {
-    outline: 2px solid var(--cor-marca);
-    outline-offset: -2px;
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: -6px;
 }
 
 .result-card-planta {
-    height: 148px;
+    position: relative;
+    height: 180px;
+    padding: 34px 18px 16px;
     overflow: hidden;
-    background-color: var(--cor-superficie);
+    background-color: var(--cor-tinta);
 }
 
 .result-card-planta img,
@@ -45,75 +52,113 @@
     object-fit: cover;
 }
 
-/* A planta é papel, como o mapa: o card escuro ganha uma janela clara, e o
-   respiro em volta impede o desenho de encostar na borda. */
-.result-card-planta.com-planta {
-    padding: 10px 14px;
-    background-color: #FBFDFC;
-    border-bottom: 1px solid var(--cor-borda-sutil);
+.result-card-planta.com-planta svg {
+    background-color: #FBF8EF;
+    outline: 1px solid var(--cor-ouro);
+    outline-offset: 5px;
+}
+
+.result-card-etiqueta {
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 12px 3px;
+    background-color: var(--cor-papel);
+    box-shadow: inset 0 0 0 2px var(--cor-papel), inset 0 0 0 3px var(--cor-lotado);
+    color: var(--cor-lotado);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+}
+
+.result-card.lotado,
+.result-card.lotado .result-card-planta {
+    background-color: var(--cor-lotado);
 }
 
 .result-card-body {
     display: flex;
+    flex: 1;
     flex-direction: column;
-    gap: 4px;
-    padding: 16px 20px;
+    gap: 6px;
+    padding: 20px 20px 18px;
+    text-align: center;
 }
 
 .result-card-title {
-    font-size: var(--texto-lg);
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
 }
 
 .result-card-location {
     font-size: var(--texto-sm);
+    font-weight: 400;
     color: var(--cor-texto-apagado);
 }
 
 .result-card-vagas {
     display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-top: 10px;
-    font-size: var(--texto-sm);
-}
-
-.vagas-livres {
-    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: auto;
+    padding-top: 22px;
+    border-top: none;
+    background:
+        var(--ornamento-losangos) center top / 44px 10px no-repeat,
+        linear-gradient(var(--cor-tinta), var(--cor-tinta)) left 4px / calc(50% - 28px) 1.5px no-repeat,
+        linear-gradient(var(--cor-tinta), var(--cor-tinta)) right 4px / calc(50% - 28px) 1.5px no-repeat;
+}
+
+
+.result-card-vagas svg {
+    flex-shrink: 0;
+}
+
+.vagas-contagem {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
-    color: var(--cor-marca);
+}
+
+.vagas-numero {
+    font-family: var(--fonte-numero);
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 0.85;
+    font-variant-numeric: tabular-nums;
+}
+
+.vagas-rotulo,
+.vagas-estado {
+    font-size: 11px;
     font-weight: 600;
-    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
-.vagas-livres::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: currentColor;
+.vagas-quase-cheio {
+    color: var(--cor-aviso);
 }
 
-.vagas-livres.lotado {
-    color: var(--cor-perigo);
+.vagas-lotado {
+    color: var(--cor-lotado);
 }
 
-.vagas-total {
-    color: var(--cor-texto-apagado);
-    font-variant-numeric: tabular-nums;
-}
-
+/* Colunas de largura fixa, centradas: com dois pátios a linha não fica com
+   um buraco à direita. */
 @media (min-width: 768px) {
     .result-list {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .result-list {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(300px, 340px));
+        justify-content: center;
+        gap: 24px;
     }
 }

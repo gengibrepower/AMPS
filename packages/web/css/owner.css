@@ -12,12 +12,10 @@ main {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 20px;
 }
 
-.titulo-linha h2 {
-    font-size: var(--texto-lg);
-    font-weight: 600;
+.titulo-linha .titulo-tripla {
+    flex: 1;
 }
 
 .botao-primario {
@@ -27,12 +25,14 @@ main {
     border: none;
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
-    min-height: var(--altura-controle);
-    padding: 0 16px;
-    border-radius: var(--raio-pilula);
+    min-height: var(--altura-acao);
+    padding: 3px 20px 0;
+    clip-path: var(--recorte-entalhe);
     font-family: inherit;
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
 }
@@ -41,12 +41,17 @@ main {
     background-color: var(--cor-marca-hover);
 }
 
+.botao-primario:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
+}
+
 .botao-primario:disabled {
     opacity: 0.5;
     cursor: default;
 }
 
-.botao-primario .material-symbols-outlined {
+.botao-primario .material-symbols-sharp {
     font-size: 18px;
 }
 
@@ -70,33 +75,32 @@ main {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--cor-borda-sutil);
+    border: 1.5px solid var(--cor-tinta);
     width: var(--altura-controle);
     height: var(--altura-controle);
-    border-radius: 50%;
     background: transparent;
     color: var(--cor-texto-apagado);
     padding: 0;
     cursor: pointer;
 }
 
-.botao-icone .material-symbols-outlined {
+.botao-icone .material-symbols-sharp {
     font-size: 18px;
 }
 
 .botao-icone:hover {
-    border-color: var(--cor-marca);
-    color: var(--cor-texto);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .botao-perigo:hover {
     border-color: var(--cor-perigo);
-    color: var(--cor-perigo);
+    background-color: var(--cor-perigo);
+    color: var(--cor-papel);
 }
 
 .botao-perigo-cheio {
-    border: 1px solid var(--cor-perigo);
-    border-radius: var(--raio-pilula);
+    border: 1.5px solid var(--cor-perigo);
     background: transparent;
     color: var(--cor-perigo);
     min-height: var(--altura-controle);
@@ -119,24 +123,26 @@ main {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px 16px;
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 20px;
     margin-bottom: 20px;
 }
 
 .formulario > h3 {
     grid-row: span 2;
-    font-size: var(--texto-md);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
 }
 
 .formulario-titulo {
     grid-column: 1 / -1;
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--cor-texto-apagado);
+    letter-spacing: 0.3em;
+    color: var(--cor-ouro-texto);
 }
 
 .campo {
@@ -158,26 +164,38 @@ main {
 
 .campo label {
     font-size: var(--texto-xs);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--cor-texto-apagado);
+    letter-spacing: 0.3em;
+    color: var(--cor-texto);
 }
 
 .campo input,
 .campo select {
-    border: 1px solid var(--cor-borda-campo);
-    border-radius: var(--raio-campo);
-    background-color: var(--cor-fundo-sutil);
+    border: 14px solid transparent;
+    border-image: var(--moldura-entalhe) 14 fill / 14px / 0 stretch;
+    background: none;
     color: var(--cor-texto);
     font-family: inherit;
-    font-size: var(--texto-sm);
-    padding: 9px 12px;
-    outline: none;
+    font-size: 19px;
+    padding: 2px 4px;
 }
 
 .campo input:focus,
 .campo select:focus {
-    border-color: var(--cor-marca);
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
+}
+
+/* O select desenha a seta no fundo, então a moldura vai sem o miolo (fill) e
+   o papel fica no fundo, preso ao padding-box para não vazar pelo entalhe. */
+.campo select {
+    appearance: none;
+    padding-right: 28px;
+    border-image: var(--moldura-entalhe) 14 / 14px / 0 stretch;
+    background: var(--cor-papel) var(--seta-campo) no-repeat right 6px center / 14px 8px;
+    background-clip: padding-box;
+    cursor: pointer;
 }
 
 #estado {
@@ -207,13 +225,12 @@ main {
     justify-content: space-between;
     gap: 16px;
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 16px 18px;
 }
 
 .item:hover {
-    border-color: var(--cor-marca);
+    border-color: var(--cor-ouro);
 }
 
 .item-info {
@@ -234,7 +251,7 @@ main {
 }
 
 .item-info:focus-visible::after {
-    outline: 2px solid var(--cor-marca);
+    outline: 2px solid var(--cor-tinta);
     outline-offset: 2px;
 }
 
@@ -272,9 +289,8 @@ main {
     align-items: center;
     min-height: var(--altura-controle);
     flex-shrink: 0;
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-pilula);
-    padding: 0 14px;
+    border: 1.5px solid var(--cor-tinta);
+    padding: 2px 14px 0;
     color: var(--cor-texto);
     font-size: var(--texto-sm);
     text-decoration: none;
@@ -282,7 +298,8 @@ main {
 }
 
 .abrir:hover {
-    border-color: var(--cor-marca);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .etiqueta {
@@ -296,8 +313,9 @@ main {
 }
 
 .etiqueta-publicado {
-    border-color: var(--cor-marca);
-    color: var(--cor-marca);
+    border-color: var(--cor-tinta);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .vazio {
@@ -313,8 +331,7 @@ main {
     align-items: flex-start;
     gap: 12px;
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 24px;
 }
 
@@ -366,7 +383,7 @@ main {
     color: var(--cor-texto);
 }
 
-.voltar-lista .material-symbols-outlined {
+.voltar-lista .material-symbols-sharp {
     font-size: 18px;
 }
 
@@ -384,9 +401,8 @@ main {
 
 .kpi {
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
-    padding: 14px 16px;
+    border: 1.5px solid var(--cor-tinta);
+    padding: 20px 24px;
 }
 
 .kpi-rotulo {
@@ -400,9 +416,10 @@ main {
 }
 
 .kpi-valor {
-    margin-top: 6px;
-    font-size: var(--texto-xl);
+    margin-top: 10px;
+    font-size: 28px;
     font-weight: 600;
+    line-height: 1;
     font-variant-numeric: tabular-nums;
 }
 
@@ -435,8 +452,7 @@ main {
 
 .painel {
     background-color: var(--cor-superficie);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    border: 1.5px solid var(--cor-tinta);
     padding: 18px 20px;
     margin-bottom: 14px;
 }
@@ -570,4 +586,41 @@ main {
     .item-acoes .etiqueta {
         margin-right: auto;
     }
+}
+
+/* Lista vazia: a garagem de portão fechado, para a página não parecer
+   quebrada enquanto não há nada para listar. */
+p.vazio {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 40px 32px 36px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-papel);
+    color: var(--cor-texto);
+    font-size: var(--texto-md);
+    text-align: center;
+}
+
+p.vazio.disabled {
+    display: none;
+}
+
+p.vazio::after {
+    content: "";
+    order: -1;
+    width: 160px;
+    height: 112px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='112' viewBox='0 0 160 112'%3E%3Cpath d='M20 110V44H32V34H44V24H60V14H100V24H116V34H128V44H140V110' fill='none' stroke='%231A1A17' stroke-width='2'/%3E%3Cpath d='M80 14V4M80 14L90 6M80 14L70 6M80 14L97 10M80 14L63 10' stroke='%23B08A3E' stroke-width='1.5'/%3E%3Cpath d='M40 110V58H120V110' fill='none' stroke='%231A1A17' stroke-width='2'/%3E%3Cpath d='M42 66H118M42 74H118M42 82H118M42 90H118M42 98H118M42 106H118' stroke='%23B08A3E' stroke-width='1.25'/%3E%3Cpath d='M80 46L84 50L80 54L76 50Z' fill='%23B08A3E'/%3E%3Cpath d='M4 110.5H156' stroke='%231A1A17' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+p.vazio::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 22px solid transparent;
+    border-image: var(--ornamento-canto) 22 / 22px / 0 stretch;
+    pointer-events: none;
 }
