@@ -118,6 +118,11 @@ function ligarPainel(cena: Cena, grafo: Grafo): void {
     preencherComNos(seletorDeDestino, grafo, 'attractor');
     preencherComNos(seletorDeEntrada, grafo, 'source');
 
+    // O detalhe do pátio linka cada destino direto para cá.
+    const destino = params.get('destino');
+    const conhecido = Array.from(seletorDeDestino?.options ?? []).some((item) => item.value === destino);
+    if (seletorDeDestino && destino !== null && conhecido) seletorDeDestino.value = destino;
+
     botaoLimpar?.addEventListener('click', () => esconderResultado(cena));
 
     formVaga?.addEventListener('submit', async (evento) => {
