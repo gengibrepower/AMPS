@@ -1,48 +1,57 @@
-// Paleta do desenho: o pátio à noite, asfalto escuro e pintura clara. Os
-// valores são passos do Radix Colors (sage, blue, amber, red, teal) e de
-// propósito não leem o vars.css: o Konva pinta no canvas, sem CSS. Todo traço
-// fica acima de 3:1 contra o que tem ao lado (WCAG 1.4.11); o asfalto contra o
-// papel é só preenchimento, quem marca a borda da via é o meio-fio.
-export const PAPEL = '#101211';
+// Paleta do desenho. O canvas é papel: fundo claro e traço escuro, como a
+// planta impressa, porque é o que se lê melhor para editar e no celular sob o
+// sol. Os valores são passos claros do Radix Colors e não leem o vars.css: o
+// Konva pinta no canvas, sem CSS. Todo preenchimento é opaco, para a vaga não
+// misturar com a grade e o asfalto por baixo, e todo traço fica acima de 3:1
+// contra o que tem ao lado (WCAG 1.4.11).
+export const PAPEL = '#FBFDFC';
 
-export const GRADE_FINA = 'rgba(236, 238, 237, 0.05)';
-export const GRADE_GROSSA = 'rgba(236, 238, 237, 0.11)';
-export const EIXO = 'rgba(9, 195, 130, 0.45)';
+export const GRADE_FINA = 'rgba(26, 33, 30, 0.06)';
+export const GRADE_GROSSA = 'rgba(26, 33, 30, 0.14)';
+export const EIXO = 'rgba(32, 131, 104, 0.45)';
 
-export const ASFALTO = '#272A29';
-export const ASFALTO_SELECIONADO = '#0D2847';
-export const MEIO_FIO = '#63706B';
-export const MEIO_FIO_SELECIONADO = '#70B8FF';
-export const PINTURA = '#ADB5B2';
+export const ASFALTO = '#DFE2E0';
+export const ASFALTO_SELECIONADO = '#D5EFFF';
+export const MEIO_FIO = '#7C8481';
+export const MEIO_FIO_SELECIONADO = '#0D74CE';
+export const PINTURA = '#5F6563';
 
-export const VAGA_TRACO = '#ADB5B2';
-export const VAGA_FUNDO = '#171918';
+export const VAGA_TRACO = '#1A211E';
+export const VAGA_FUNDO = '#FFFFFF';
 
-export const OCUPADA_FUNDO = 'rgba(229, 72, 77, 0.32)';
+export const OCUPADA_FUNDO = '#FDBDBE';
 
-export const ENTRADA = '#09C382';
-export const ENTRADA_FUNDO = 'rgba(9, 195, 130, 0.16)';
+export const ENTRADA = '#208368';
+export const ENTRADA_FUNDO = '#D6F1E3';
 
-export const POI = '#FFCA16';
-export const POI_FUNDO = 'rgba(255, 202, 22, 0.14)';
+export const POI = '#AB6400';
+export const POI_FUNDO = '#FFEE9C';
 
-export const VIA = '#ADB5B2';
-export const VIA_FUNDO = '#171918';
+export const VIA = '#5F6563';
+export const VIA_FUNDO = '#FFFFFF';
 
-export const SELECIONADO = '#70B8FF';
+export const SELECIONADO = '#0D74CE';
 
-export const RECUSADO = '#FF9592';
-export const RECUSADO_FUNDO = 'rgba(229, 72, 77, 0.2)';
+export const RECUSADO = '#CE2C31';
+export const RECUSADO_FUNDO = '#FFDBDC';
 
-export const PESO = '#ECEEED';
+export const PESO = '#1A211E';
 
 // Hachura por tipo de vaga: a tinta do traço continua a mesma, muda o fundo.
 export const FUNDO_POR_TIPO: Record<string, string> = {
     comum: VAGA_FUNDO,
-    pcd: 'rgba(0, 144, 255, 0.24)',
-    idoso: 'rgba(255, 197, 61, 0.2)',
-    moto: 'rgba(9, 195, 130, 0.16)',
-    eletrico: 'rgba(18, 165, 148, 0.24)',
+    pcd: '#C2E5FF',
+    idoso: '#FBE577',
+    moto: '#C9E8CA',
+    eletrico: '#B8EAE0',
 };
 
-export const NUMERO_DA_VAGA = '#ADB5B2';
+export const NUMERO_DA_VAGA = '#1A211E';
+
+// A vaga recomendada é a única coisa da planta pintada com o verde da marca; o
+// traço grosso e escuro é o que a separa do papel, já que o verde sozinho dá
+// 2,3:1 nele.
+export const RECOMENDADA_FUNDO = '#09C382';
+export const RECOMENDADA_TRACO = '#1D3B31';
+export const ROTA = '#208368';
+export const ROTA_CONTORNO = '#FFFFFF';
