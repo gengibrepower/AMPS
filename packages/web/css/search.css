@@ -14,10 +14,11 @@ main {
     align-items: center;
     gap: 10px;
     width: 100%;
+    min-height: var(--altura-acao);
     border-radius: var(--raio-pilula);
     border: 1px solid var(--cor-borda-campo);
     background-color: var(--cor-superficie);
-    padding: 6px 18px;
+    padding: 0 18px;
 }
 
 .search-box .material-symbols-outlined {

@@ -66,7 +66,8 @@ main.pagina-detalhes {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    min-height: var(--altura-controle);
+    padding: 0 14px;
     border-radius: var(--raio-pilula);
     background-color: color-mix(in srgb, var(--cor-fundo) 70%, transparent);
     color: var(--cor-texto);
@@ -127,7 +128,7 @@ main.pagina-detalhes {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 48px;
+    min-height: var(--altura-acao);
     padding: 0 24px;
     border-radius: var(--raio-pilula);
     background-color: var(--cor-marca);
@@ -312,7 +313,7 @@ main.pagina-detalhes {
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 48px;
+    min-height: var(--altura-acao);
     padding: 0 8px;
     border-radius: var(--raio-campo);
     color: var(--cor-texto);

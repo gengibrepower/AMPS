@@ -27,7 +27,8 @@ main {
     border: none;
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
-    padding: 9px 16px;
+    min-height: var(--altura-controle);
+    padding: 0 16px;
     border-radius: var(--raio-pilula);
     font-family: inherit;
     font-size: var(--texto-sm);
@@ -70,10 +71,12 @@ main {
     align-items: center;
     justify-content: center;
     border: 1px solid var(--cor-borda-sutil);
+    width: var(--altura-controle);
+    height: var(--altura-controle);
     border-radius: 50%;
     background: transparent;
     color: var(--cor-texto-apagado);
-    padding: 6px;
+    padding: 0;
     cursor: pointer;
 }
 
@@ -96,7 +99,8 @@ main {
     border-radius: var(--raio-pilula);
     background: transparent;
     color: var(--cor-perigo);
-    padding: 7px 14px;
+    min-height: var(--altura-controle);
+    padding: 0 14px;
     font-family: inherit;
     font-size: var(--texto-sm);
     font-weight: 500;
@@ -264,10 +268,13 @@ main {
 }
 
 .abrir {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--altura-controle);
     flex-shrink: 0;
     border: 1px solid var(--cor-borda-sutil);
     border-radius: var(--raio-pilula);
-    padding: 7px 14px;
+    padding: 0 14px;
     color: var(--cor-texto);
     font-size: var(--texto-sm);
     text-decoration: none;
@@ -281,11 +288,10 @@ main {
 .etiqueta {
     flex-shrink: 0;
     border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-pilula);
-    padding: 4px 10px;
+    border-radius: var(--raio-etiqueta);
+    padding: 3px 8px;
     font-size: var(--texto-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-weight: 600;
     color: var(--cor-texto-apagado);
 }
 

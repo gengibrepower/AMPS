@@ -94,7 +94,8 @@ textarea {
 .botao-entrar {
     display: inline-flex;
     align-items: center;
-    padding: 8px 16px;
+    min-height: var(--altura-controle);
+    padding: 0 16px;
     border: 1px solid var(--cor-marca-borda);
     border-radius: var(--raio-pilula);
     background-color: var(--cor-marca-fundo);

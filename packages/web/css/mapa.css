@@ -33,12 +33,16 @@ header {
 .voltar {
     display: flex;
     align-items: center;
-    padding: 4px;
+    justify-content: center;
+    width: var(--altura-controle);
+    height: var(--altura-controle);
+    border-radius: var(--raio-pilula);
     color: var(--cor-texto-apagado);
     text-decoration: none;
 }
 
 .voltar:hover {
+    background-color: var(--cor-superficie-hover);
     color: var(--cor-texto);
 }
 
@@ -135,7 +139,8 @@ header {
 
 .botao-encontrar {
     margin-top: 12px;
-    padding: 12px;
+    min-height: var(--altura-acao);
+    padding: 0 12px;
     border: none;
     border-radius: var(--raio-pilula);
     background-color: var(--cor-marca);
