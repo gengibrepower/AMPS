@@ -34,11 +34,7 @@ export class MapaService {
 
 	async carregarPublicado(estacionamentoId: number): Promise<Mapa> {
 		const estacionamento = await this.estacionamentos.findById(estacionamentoId);
-
-		if (estacionamento === null) {
-			throw new NotFoundError('estacionamento');
-		}
-		if (!estacionamento.publicado) {
+		if (estacionamento === null || !estacionamento.publicado) {
 			throw new NotFoundError('estacionamento');
 		}
 
