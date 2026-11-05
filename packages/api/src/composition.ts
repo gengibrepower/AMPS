@@ -17,6 +17,7 @@ import { EstacionamentoService } from './services/estacionamentoService.js';
 import { MapaService } from './services/mapaService.js';
 import { MetricasService } from './services/metricasService.js';
 import { PublicacaoService } from './services/publicacaoService.js';
+import { RecomendacaoService } from './services/recomendacaoService.js';
 import { ModeloService } from './services/modeloService.js';
 import { TopologiaService } from './services/topologiaService.js';
 import { UsuarioService } from './services/usuarioService.js';
@@ -44,14 +45,16 @@ export function montarApp({
 	const acessoDono = new AcessoDono(donos, estacionamentos);
 	const topologias = new MysqlTopologiaRepository(pool);
 	const vagas = new MysqlVagaRepository(pool);
+	const modelos = new MysqlModeloRepository(pool);
+	const carros = new MysqlCarroRepository(pool);
 	const tokenService = createTokenService(jwtSecret, tokenTtl);
 
 	return createApp({
 		usuarioService: new UsuarioService(usuarios),
 		donoService: new DonoService(donos),
 		authService: new AuthService(usuarios, tokenService),
-		modeloService: new ModeloService(new MysqlModeloRepository(pool)),
-		carroService: new CarroService(new MysqlCarroRepository(pool), usuarios),
+		modeloService: new ModeloService(modelos),
+		carroService: new CarroService(carros, usuarios),
 		estacionamentoService: new EstacionamentoService(estacionamentos, vagas, acessoDono),
 		topologiaService: new TopologiaService(topologias, acessoDono),
 		vagaService: new VagaService(vagas, acessoDono),
@@ -63,6 +66,15 @@ export function montarApp({
 			vagas,
 			motorDeGrafo,
 			acessoDono,
+		),
+		recomendacaoService: new RecomendacaoService(
+			estacionamentos,
+			topologias,
+			vagas,
+			usuarios,
+			carros,
+			modelos,
+			motorDeGrafo,
 		),
 		tokenService,
 		corsOrigin,

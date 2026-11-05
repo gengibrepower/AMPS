@@ -40,6 +40,11 @@ export interface Modelo {
 	readonly nome: string;
 }
 
+export interface DimensoesDoModelo {
+	readonly larguraMm: number;
+	readonly comprimentoMm: number;
+}
+
 export interface Carro {
 	readonly id: number;
 	readonly placa: string;
@@ -128,9 +133,28 @@ export interface DadosDoPerfil {
 	readonly email: string;
 }
 
+export interface PedidoDeRecomendacao {
+	readonly grafo: unknown;
+	readonly veiculo: { readonly largura: number; readonly comprimento: number };
+	readonly indisponiveis: readonly string[];
+	readonly poiId: string;
+	readonly entradaId: string;
+}
+
+export interface Rota {
+	readonly nos: readonly string[];
+	readonly pesoTotal: number;
+}
+
+export interface Recomendacao {
+	readonly vagaNoId: string | null;
+	readonly rota: Rota | null;
+}
+
 // O motor de grafo vive no Merlian. Aqui é só a fronteira.
 export interface MotorDeGrafo {
 	alcancabilidade(grafo: unknown): Promise<Alcancabilidade>;
+	recomendar(pedido: PedidoDeRecomendacao): Promise<Recomendacao>;
 }
 
 export interface UsuarioRepository {
@@ -149,6 +173,7 @@ export interface DonoRepository {
 
 export interface ModeloRepository {
 	listAll(): Promise<readonly Modelo[]>;
+	findDimensoes(id: number): Promise<DimensoesDoModelo | null>;
 }
 
 export interface CarroRepository {

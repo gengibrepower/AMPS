@@ -9,6 +9,8 @@ import {
     ENTRADA_FUNDO,
     POI,
     POI_FUNDO,
+    RECOMENDADA_FUNDO,
+    RECOMENDADA_TRACO,
     RECUSADO,
     RECUSADO_FUNDO,
     SELECIONADO,
@@ -158,9 +160,17 @@ export function realcarNo(
     papel: Papel,
     selecionado: boolean,
     recusado = false,
+    recomendado = false,
 ): void {
     const desenho = grupo.findOne<Konva.Shape>('Shape');
     if (desenho === undefined) return;
+
+    if (recomendado) {
+        desenho.stroke(RECOMENDADA_TRACO);
+        desenho.strokeWidth(3);
+        desenho.fill(RECOMENDADA_FUNDO);
+        return;
+    }
 
     if (recusado) {
         desenho.stroke(RECUSADO);

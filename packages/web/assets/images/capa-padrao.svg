@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+<rect width="1200" height="400" fill="#171918"/>
+<rect y="200" width="1200" height="100" fill="#202221"/>
+<path d="M0 250H1200" stroke="#373B39" stroke-width="3" stroke-dasharray="28 22"/>
+<path d="M0 40H1200" stroke="#2E3130" stroke-width="4"/>
+<g stroke="#373B39" stroke-width="4" fill="none"><path d="M0 40V190"/><path d="M0 310V460"/><path d="M60 40V190"/><path d="M60 310V460"/><path d="M120 40V190"/><path d="M120 310V460"/><path d="M180 40V190"/><path d="M180 310V460"/><path d="M240 40V190"/><path d="M240 310V460"/><path d="M300 40V190"/><path d="M300 310V460"/><path d="M360 40V190"/><path d="M360 310V460"/><path d="M420 40V190"/><path d="M420 310V460"/><path d="M480 40V190"/><path d="M480 310V460"/><path d="M540 40V190"/><path d="M540 310V460"/><path d="M600 40V190"/><path d="M600 310V460"/><path d="M660 40V190"/><path d="M660 310V460"/><path d="M720 40V190"/><path d="M720 310V460"/><path d="M780 40V190"/><path d="M780 310V460"/><path d="M840 40V190"/><path d="M840 310V460"/><path d="M900 40V190"/><path d="M900 310V460"/><path d="M960 40V190"/><path d="M960 310V460"/><path d="M1020 40V190"/><path d="M1020 310V460"/><path d="M1080 40V190"/><path d="M1080 310V460"/><path d="M1140 40V190"/><path d="M1140 310V460"/><path d="M1200 40V190"/><path d="M1200 310V460"/><path d="M1260 40V190"/><path d="M1260 310V460"/></g>
+<rect x="600" y="40" width="60" height="150" fill="#09C382" fill-opacity="0.12"/>
+<path d="M600 190V40H660V190" stroke="#09C382" stroke-width="4" fill="none"/>
+</svg>

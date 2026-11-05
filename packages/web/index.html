@@ -9,24 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,chevron_right,directions_car,grid_view,home,menu,person,search"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,chevron_right,close,directions_car,grid_view,home,logout,menu,person,search"/>
 </head>
 <body>
-    <header>
-        <button id="menu-button" aria-label="Abrir menu"><span class="material-symbols-outlined">menu</span></button>
-        <div class="logo">
-            <img id="logo-holder" src="assets/images/logo_holder.png" alt="AMPS">
-            <h1 id="logo-text">AMPS</h1>
-        </div>
+    <header class="cabecalho">
+        <button type="button" id="menu-button" class="cabecalho-menu" aria-label="Abrir menu">
+            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
+        <a class="marca" href="/index.html">
+            <img src="/assets/images/logo_holder.png" alt="">
+            <span class="marca-nome">AMPS</span>
+        </a>
+        <div class="cabecalho-conta" id="cabecalhoConta"></div>
     </header>
 
-    <nav class="sidebar-nav disabled">
+    <nav class="sidebar-nav disabled" aria-label="Menu">
         <div class="sidebar">
-            <button id="close-sidebar-button" aria-label="Fechar menu">X</button>
+            <button type="button" id="close-sidebar-button" aria-label="Fechar menu">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
             <ul class="nav-list" id="navLista">
                 <li class="nav-item nav-item-account">
                     <button type="button" id="sidebarAccountBtn" aria-label="Conta">
-                        <span class="material-symbols-outlined">account_circle</span>
+                        <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
                         <span id="sidebarAccountLabel">Entrar</span>
                     </button>
                 </li>
@@ -35,6 +40,14 @@
     </nav>
  
     <main>
+        <section class="boas-vindas">
+            <h1 class="boas-vindas-titulo">Saiba sua vaga antes de entrar</h1>
+            <p class="boas-vindas-texto">
+                Busque o estacionamento, diga para onde você vai e o AMPS mostra a
+                vaga livre mais perto e o caminho até ela.
+            </p>
+        </section>
+
         <form action="client/search.html" method="GET" class="search-box">
             <span class="material-symbols-outlined">search</span>
             <input type="search" name="q" placeholder="Pesquisar estacionamento..." autocomplete="off">
@@ -48,12 +61,12 @@
  
     <div class="login disabled" id="accountPanel">
         <div class="login-box">
-            <button id="closeLogin" aria-label="Fechar conta">X</button>
+            <button type="button" id="closeLogin" aria-label="Fechar"><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
 
             <!-- Login -->
             <div id="accountLoggedOut" class="account-view">
                 <div class="accountLogin">
-                    <h2>Acessar Conta</h2>
+                    <h2>Entrar</h2>
                         <form id="login-form">
                             <div class="form-group">
                                 <label for="email">E-mail</label>
@@ -82,7 +95,7 @@
             <!-- Criar conta -->
             <div id="accountRegisterClient" class="account-view disabled">
                 <div class="accountLogin">
-                    <h2>Criar Conta</h2>
+                    <h2>Criar conta</h2>
                     <form id="client-form">
                         <div class="form-group">
                             <label for="nome-cli">Nome Completo</label>
@@ -100,7 +113,7 @@
                             <label for="senha-cli">Senha</label>
                             <input type="password" id="senha-cli" required minlength="8" />
                         </div>
-                        <button type="submit" class="btn-primary">Cadastrar Cliente</button>
+                        <button type="submit" class="btn-primary">Criar conta</button>
                     </form>
                     <div id="client-msg" class="message"></div>
                     <div class="links">
@@ -112,7 +125,7 @@
             <!-- Criar conta de dono -->
             <div id="accountRegisterOwner" class="account-view disabled">
                 <div class="accountLogin">
-                    <h2>Cadastrar Estacionamento</h2>
+                    <h2>Cadastrar estacionamento</h2>
                     <form id="owner-form">
                         <div class="form-group">
                             <label for="nome-dono">Nome do Responsável</label>
@@ -138,7 +151,7 @@
                             <label for="senha-dono">Senha</label>
                             <input type="password" id="senha-dono" required minlength="8" />
                         </div>
-                        <button type="submit" class="btn-primary">Cadastrar Estacionamento</button>
+                        <button type="submit" class="btn-primary">Cadastrar estacionamento</button>
                     </form>
                     <div id="owner-msg" class="message"></div>
                     <div class="links">

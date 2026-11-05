@@ -111,11 +111,19 @@ WHERE t.estacionamento_id = ?;
 O editor não desenha um diagrama de nós e setas: desenha a **planta** do pátio.
 Quem mexer nisso precisa saber por quê, senão "conserta" e quebra.
 
-- **O canvas é papel.** Fundo branco e traço escuro, com a interface em volta
-  (cabeçalho, barra de status) continuando escura. A paleta do desenho vive em
-  `render/tinta.ts`, separada do `vars.css`: o verde `#17724C` da interface, que
-  serve para botão, vira 2,3:1 de contraste quando é traço de 1 px sobre fundo
-  escuro, e some.
+- **O canvas é papel.** Fundo claro e traço escuro, como a planta impressa, nos
+  dois mapas: é o que se lê melhor para editar e no celular sob o sol. Já foi
+  escuro por uma versão e voltou, porque editar ficou difícil. A paleta vive em
+  `render/tinta.ts`, separada do `vars.css` porque o Konva pinta sem CSS.
+  **Todo preenchimento é opaco**: vaga translúcida misturava com a grade e o
+  asfalto por baixo e perdia o tipo. Todo traço fica acima de 3:1 contra o que
+  tem ao lado (WCAG 1.4.11).
+- **O caminho recomendado anda na faixa certa.** Em `graph/rota.ts`: na mão
+  dupla, desloca meia faixa para a direita de quem dirige (a mesma regra do
+  `segmento`), dobra as esquinas no cruzamento das faixas e, na vaga, segue
+  pela via até a doca e termina na frente dela, em vez de cortar até o centro.
+  A vaga recomendada é a única coisa pintada com o verde da marca; quem a
+  separa do papel é o traço grosso e escuro, porque o verde sozinho dá 2,3:1.
 - **O corredor tem largura de verdade** — 3,2 m por sentido, 6,4 m na mão dupla.
   Desenhar a via como linha fina foi o erro que fez a vaga de 2,5 × 5 m parecer
   desproporcional: tudo está em escala, então a rua também precisa estar.

@@ -40,6 +40,27 @@ navegação se refaz a cada login e logout, sem recarregar a página. O único i
 fixo no HTML é o botão de conta do `index.html`; os links que não levavam a
 lugar nenhum saíram.
 
+## O cabeçalho
+
+As sete páginas de conteúdo têm o mesmo `<header class="cabecalho">`: menu,
+marca e um `#cabecalhoConta` vazio, que `renderAccountPanel()` preenche. Logado,
+vira nome, iniciais (link para o perfil) e o botão de sair; deslogado, vira
+"Entrar". Mapa e editor ficam de fora: são telas cheias com barra de
+ferramentas própria.
+
+- **Nenhuma página escreve nome nem trata o sair.** Isso mora só no
+  `navegacao.ts`. Página que limpa a sessão (o 401 do `relatar()`) chama
+  `renderAccountPanel()` para o cabeçalho voltar a "Entrar".
+- **O "Entrar" fora do `index.html` é um link para `/index.html#entrar`.** O
+  painel de login só existe no início, e o `navegacao.ts` o abre quando chega
+  com esse hash. O mesmo vale para o botão de conta da sidebar.
+- **Os caminhos do cabeçalho são absolutos** (`/assets/...`, `/index.html`),
+  pelo mesmo motivo dos `href` de `DESTINOS`: o HTML é igual em todas as pastas.
+- **Reset, cabeçalho e sidebar vivem em `css/base.css`**, importado pelo
+  `style.css`, `search.css` e `owner.css`. A utilitária `.disabled` não foi
+  junto: o `@import` vem antes das regras da página, e ela perderia para
+  qualquer `display` declarado depois. Cada CSS de página a mantém no fim.
+
 **Esconder item de menu não é segurança.** Quem protege é o `#bloqueio` da
 página e o 403 da API. O menu é conveniência — e há um teste em
 `sessao.test.ts` que garante que `meusPatios` nunca aparece para quem não é

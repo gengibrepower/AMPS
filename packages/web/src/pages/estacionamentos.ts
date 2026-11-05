@@ -8,14 +8,13 @@ import {
 import type { DadosEstacionamento, EstacionamentoWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
 import { enderecoEmLinha } from '../dom/endereco';
+import { renderAccountPanel } from '../dom/navegacao';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const bloqueio = document.getElementById('bloqueio') as HTMLElement | null;
 const bloqueioTexto = document.getElementById('bloqueioTexto') as HTMLElement | null;
+const bloqueioLink = document.getElementById('bloqueioLink') as HTMLAnchorElement | null;
 const area = document.getElementById('area') as HTMLElement | null;
-const conta = document.getElementById('conta') as HTMLElement | null;
-const donoNome = document.getElementById('donoNome') as HTMLElement | null;
-const sair = document.getElementById('sair') as HTMLButtonElement | null;
 const abrirNovo = document.getElementById('abrirNovo') as HTMLButtonElement | null;
 const cancelarPatio = document.getElementById('cancelarPatio') as HTMLButtonElement | null;
 const salvarPatio = document.getElementById('salvarPatio') as HTMLButtonElement | null;
@@ -166,7 +165,7 @@ function bloquear(texto: string): void {
     if (bloqueioTexto) bloqueioTexto.textContent = texto;
     bloqueio?.classList.remove('disabled');
     area?.classList.add('disabled');
-    conta?.classList.add('disabled');
+    renderAccountPanel();
 }
 
 function abrirFormulario(estacionamento: EstacionamentoWire | null): void {
@@ -272,19 +271,17 @@ formPatio?.addEventListener('submit', async (evento: Event) => {
 abrirNovo?.addEventListener('click', () => abrirFormulario(null));
 cancelarPatio?.addEventListener('click', () => fecharFormulario());
 
-sair?.addEventListener('click', () => {
-    clearSession();
-    window.location.href = '../index.html';
-});
-
 const usuario = usuarioAtual();
 
 if (getSession() === null) {
     bloquear('Entre com uma conta de dono para ver seus estacionamentos.');
 } else if (usuario?.tipo_conta !== 'dono') {
-    bloquear('Esta área é só para contas de dono.');
+    bloquear('Você entrou com uma conta de cliente. Esta área é das contas de dono.');
+    if (bloqueioLink) {
+        bloqueioLink.href = '../index.html';
+        bloqueioLink.textContent = 'Buscar estacionamento';
+    }
 } else {
-    if (donoNome) donoNome.textContent = usuario.nome;
     area?.classList.remove('disabled');
     void carregar();
 }

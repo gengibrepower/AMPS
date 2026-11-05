@@ -1,4 +1,4 @@
-import imagemPadrao from '../../assets/images/default-img.png';
+import imagemPadrao from '../../assets/images/capa-padrao.svg';
 import { ApiError, pesquisarEstacionamentos } from '../api';
 import type { EnderecoWire, EstacionamentoWire } from '../api';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';

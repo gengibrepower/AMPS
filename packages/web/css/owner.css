@@ -1,62 +1,4 @@
-@import url(vars.css);
-
-@font-face {
-    font-family: "Baunk";
-    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
-}
-
-:root {
-    --linha: rgba(255, 255, 255, 0.12);
-    --apagado: rgba(232, 232, 233, 0.65);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: var(--font-main);
-    min-height: 100vh;
-}
-
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--linha);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-primary);
-    text-decoration: none;
-}
-
-.logo img {
-    width: 28px;
-    height: 28px;
-}
-
-#logo-text {
-    font-family: var(--font-logo);
-    font-size: 1.35rem;
-}
-
-.conta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.85rem;
-    color: var(--apagado);
-}
+@import url(base.css);
 
 main {
     width: 100%;
@@ -74,7 +16,7 @@ main {
 }
 
 .titulo-linha h2 {
-    font-size: 1.15rem;
+    font-size: var(--texto-lg);
     font-weight: 600;
 }
 
@@ -82,16 +24,20 @@ main {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid var(--btn-green-border);
-    background-color: var(--btn-green-bg);
-    color: var(--text-primary);
-    padding: 8px 14px;
-    border-radius: var(--radius-pill);
+    border: none;
+    background-color: var(--cor-marca);
+    color: var(--cor-sobre-marca);
+    padding: 9px 16px;
+    border-radius: var(--raio-pilula);
     font-family: inherit;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: var(--texto-sm);
+    font-weight: 600;
     text-decoration: none;
     cursor: pointer;
+}
+
+.botao-primario:hover {
+    background-color: var(--cor-marca-hover);
 }
 
 .botao-primario:disabled {
@@ -108,25 +54,25 @@ main {
     align-items: center;
     border: none;
     background: transparent;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
     padding: 8px;
     font-family: inherit;
-    font-size: 0.85rem;
+    font-size: var(--texto-sm);
     cursor: pointer;
 }
 
 .botao-texto:hover {
-    color: var(--text-primary);
+    color: var(--cor-texto);
 }
 
 .botao-icone {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--linha);
+    border: 1px solid var(--cor-borda-sutil);
     border-radius: 50%;
     background: transparent;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
     padding: 6px;
     cursor: pointer;
 }
@@ -136,23 +82,23 @@ main {
 }
 
 .botao-icone:hover {
-    border-color: var(--btn-green-border);
-    color: var(--text-primary);
+    border-color: var(--cor-marca);
+    color: var(--cor-texto);
 }
 
 .botao-perigo:hover {
-    border-color: var(--status-full);
-    color: var(--status-full);
+    border-color: var(--cor-perigo);
+    color: var(--cor-perigo);
 }
 
 .botao-perigo-cheio {
-    border: 1px solid var(--status-full);
-    border-radius: var(--radius-pill);
+    border: 1px solid var(--cor-perigo);
+    border-radius: var(--raio-pilula);
     background: transparent;
-    color: var(--status-full);
+    color: var(--cor-perigo);
     padding: 7px 14px;
     font-family: inherit;
-    font-size: 0.82rem;
+    font-size: var(--texto-sm);
     font-weight: 500;
     white-space: nowrap;
     cursor: pointer;
@@ -168,19 +114,25 @@ main {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px 16px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--linha);
-    border-radius: 12px;
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
     padding: 20px;
     margin-bottom: 20px;
 }
 
+.formulario > h3 {
+    grid-row: span 2;
+    font-size: var(--texto-md);
+    font-weight: 600;
+}
+
 .formulario-titulo {
     grid-column: 1 / -1;
-    font-size: 0.8rem;
+    font-size: var(--texto-sm);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .campo {
@@ -201,27 +153,27 @@ main {
 }
 
 .campo label {
-    font-size: 0.75rem;
+    font-size: var(--texto-xs);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .campo input,
 .campo select {
-    border: 1px solid var(--search-border);
-    border-radius: 8px;
-    background-color: var(--search-bg);
-    color: var(--text-primary);
+    border: 1px solid var(--cor-borda-campo);
+    border-radius: var(--raio-campo);
+    background-color: var(--cor-fundo-sutil);
+    color: var(--cor-texto);
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: var(--texto-sm);
     padding: 9px 12px;
     outline: none;
 }
 
 .campo input:focus,
 .campo select:focus {
-    border-color: var(--btn-green-border);
+    border-color: var(--cor-marca);
 }
 
 #estado {
@@ -250,14 +202,14 @@ main {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--linha);
-    border-radius: 12px;
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
     padding: 16px 18px;
 }
 
 .item:hover {
-    border-color: var(--btn-green-border);
+    border-color: var(--cor-marca);
 }
 
 .item-info {
@@ -278,19 +230,19 @@ main {
 }
 
 .item-info:focus-visible::after {
-    outline: 2px solid var(--btn-green-border);
+    outline: 2px solid var(--cor-marca);
     outline-offset: 2px;
 }
 
 .item-nome {
-    font-size: 1rem;
+    font-size: var(--texto-md);
     font-weight: 600;
 }
 
 .item-endereco {
     margin-top: 4px;
-    font-size: 0.85rem;
-    color: var(--apagado);
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
 }
 
 .item-acoes {
@@ -306,45 +258,45 @@ main {
 }
 
 .confirmar-texto {
-    font-size: 0.82rem;
-    color: var(--apagado);
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
     text-align: right;
 }
 
 .abrir {
     flex-shrink: 0;
-    border: 1px solid var(--linha);
-    border-radius: var(--radius-pill);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-pilula);
     padding: 7px 14px;
-    color: var(--text-primary);
-    font-size: 0.82rem;
+    color: var(--cor-texto);
+    font-size: var(--texto-sm);
     text-decoration: none;
     white-space: nowrap;
 }
 
 .abrir:hover {
-    border-color: var(--btn-green-border);
+    border-color: var(--cor-marca);
 }
 
 .etiqueta {
     flex-shrink: 0;
-    border: 1px solid var(--linha);
-    border-radius: var(--radius-pill);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-pilula);
     padding: 4px 10px;
-    font-size: 0.72rem;
+    font-size: var(--texto-xs);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .etiqueta-publicado {
-    border-color: var(--status-available);
-    color: var(--status-available);
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
 }
 
 .vazio {
-    color: var(--apagado);
-    font-size: 0.9rem;
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-sm);
     line-height: 1.5;
 }
 
@@ -354,26 +306,26 @@ main {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--linha);
-    border-radius: 12px;
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
     padding: 24px;
 }
 
 .bloqueio h2 {
-    font-size: 1.1rem;
+    font-size: var(--texto-lg);
     font-weight: 600;
 }
 
 .bloqueio p {
-    font-size: 0.9rem;
-    color: var(--apagado);
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
     line-height: 1.5;
 }
 
 .message {
     margin-bottom: 16px;
-    font-size: 0.85rem;
+    font-size: var(--texto-sm);
     font-weight: 500;
 }
 
@@ -382,15 +334,15 @@ main {
 }
 
 .msg-success {
-    color: var(--status-available);
+    color: var(--cor-marca);
 }
 
 .msg-error {
-    color: var(--status-full);
+    color: var(--cor-perigo);
 }
 
 .msg-info {
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 /* Painel do pátio */
@@ -399,13 +351,13 @@ main {
     align-items: center;
     gap: 6px;
     margin-bottom: 18px;
-    color: var(--apagado);
-    font-size: 0.85rem;
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-sm);
     text-decoration: none;
 }
 
 .voltar-lista:hover {
-    color: var(--text-primary);
+    color: var(--cor-texto);
 }
 
 .voltar-lista .material-symbols-outlined {
@@ -425,9 +377,9 @@ main {
 }
 
 .kpi {
-    background-color: var(--card-bg);
-    border: 1px solid var(--linha);
-    border-radius: 12px;
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
     padding: 14px 16px;
 }
 
@@ -435,15 +387,15 @@ main {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.72rem;
+    font-size: var(--texto-xs);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .kpi-valor {
     margin-top: 6px;
-    font-size: 1.6rem;
+    font-size: var(--texto-xl);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
 }
@@ -455,36 +407,41 @@ main {
     flex-shrink: 0;
 }
 
-.ponto-livre,
+.ponto-livre {
+    background-color: var(--cor-marca);
+}
+
+/* Na barra, livre é o trilho vazio: a cor só aparece onde há carro. Pintar o
+   livre de verde fazia o pátio vazio parecer lotado. */
 .fatia-livre {
-    background-color: var(--status-available);
+    background-color: var(--cor-superficie-ativa);
 }
 
 .ponto-ocupada,
 .fatia-ocupada {
-    background-color: var(--status-full);
+    background-color: var(--cor-perigo);
 }
 
 .ponto-reservada,
 .fatia-reservada {
-    background-color: var(--star-color);
+    background-color: var(--cor-aviso);
 }
 
 .painel {
-    background-color: var(--card-bg);
-    border: 1px solid var(--linha);
-    border-radius: 12px;
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
     padding: 18px 20px;
     margin-bottom: 14px;
 }
 
 .painel-titulo {
     margin-bottom: 14px;
-    font-size: 0.8rem;
+    font-size: var(--texto-sm);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .paineis {
@@ -501,7 +458,7 @@ main {
     display: flex;
     gap: 2px;
     height: 14px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--raio-pilula);
     overflow: hidden;
 }
 
@@ -522,26 +479,26 @@ main {
     grid-template-columns: 76px minmax(0, 1fr) 7.5rem;
     align-items: center;
     gap: 12px;
-    font-size: 0.85rem;
+    font-size: var(--texto-sm);
 }
 
 .tipo-trilho {
     height: 8px;
-    border-radius: var(--radius-pill);
-    background-color: var(--search-bg);
+    border-radius: var(--raio-pilula);
+    background-color: var(--cor-superficie-ativa);
     overflow: hidden;
 }
 
 .tipo-cheio {
     display: block;
     height: 100%;
-    background-color: var(--status-available);
+    background-color: var(--cor-marca);
 }
 
 .tipo-valor {
     text-align: right;
-    color: var(--apagado);
-    font-size: 0.8rem;
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-sm);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
@@ -550,7 +507,7 @@ main {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    font-size: 0.85rem;
+    font-size: var(--texto-sm);
 }
 
 .numeros div {
@@ -560,7 +517,7 @@ main {
 }
 
 .numeros dt {
-    color: var(--apagado);
+    color: var(--cor-texto-apagado);
 }
 
 .numeros dd {
@@ -588,5 +545,23 @@ main {
     .campo-logradouro,
     .campo-cidade {
         grid-column: span 1;
+    }
+
+    .formulario > h3 {
+        grid-row: auto;
+    }
+
+    .item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .item-acoes {
+        flex-wrap: wrap;
+    }
+
+    .item-acoes .etiqueta {
+        margin-right: auto;
     }
 }

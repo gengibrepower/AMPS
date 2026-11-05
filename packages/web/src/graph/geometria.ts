@@ -2,6 +2,10 @@
 // fronteira entre as duas unidades.
 export const PIXELS_POR_METRO = 20;
 
+// Uma faixa de rolamento, em metros. A mão dupla é duas delas, e cada sentido
+// corre no meio da sua.
+export const LARGURA_DA_FAIXA = 3.2;
+
 export interface Ponto {
     readonly x: number;
     readonly y: number;

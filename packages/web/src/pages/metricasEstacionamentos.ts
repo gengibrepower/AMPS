@@ -2,15 +2,13 @@ import { ApiError, carregarMetricas } from '../api';
 import type { MetricasWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
 import { enderecoEmLinha } from '../dom/endereco';
+import { renderAccountPanel } from '../dom/navegacao';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const bloqueio = document.getElementById('bloqueio') as HTMLElement | null;
 const bloqueioTexto = document.getElementById('bloqueioTexto') as HTMLElement | null;
 const bloqueioLink = document.getElementById('bloqueioLink') as HTMLAnchorElement | null;
 const area = document.getElementById('area') as HTMLElement | null;
-const conta = document.getElementById('conta') as HTMLElement | null;
-const donoNome = document.getElementById('donoNome') as HTMLElement | null;
-const sair = document.getElementById('sair') as HTMLButtonElement | null;
 const atualizar = document.getElementById('atualizar') as HTMLButtonElement | null;
 const mensagem = document.getElementById('mensagem') as HTMLElement | null;
 const barraOcupacao = document.getElementById('barraOcupacao') as HTMLElement | null;
@@ -157,25 +155,33 @@ function renderizar(metricas: MetricasWire): void {
     renderizarDesenho(metricas);
 }
 
-function bloquear(texto: string, paraLogin: boolean): void {
+type Saida = 'login' | 'lista' | 'busca';
+
+const SAIDAS: Record<Saida, { readonly href: string; readonly texto: string }> = {
+    login: { href: '../index.html#entrar', texto: 'Ir para o login' },
+    lista: { href: 'estacionamentos.html', texto: 'Voltar à lista' },
+    busca: { href: '../index.html', texto: 'Buscar estacionamento' },
+};
+
+function bloquear(texto: string, saida: Saida): void {
     if (bloqueioTexto) bloqueioTexto.textContent = texto;
     if (bloqueioLink) {
-        bloqueioLink.href = paraLogin ? '../index.html' : 'estacionamentos.html';
-        bloqueioLink.textContent = paraLogin ? 'Ir para o login' : 'Voltar à lista';
+        bloqueioLink.href = SAIDAS[saida].href;
+        bloqueioLink.textContent = SAIDAS[saida].texto;
     }
     bloqueio?.classList.remove('disabled');
     area?.classList.add('disabled');
-    if (paraLogin) conta?.classList.add('disabled');
+    if (saida !== 'lista') renderAccountPanel();
 }
 
 function relatar(erro: unknown): void {
     if (erro instanceof ApiError && erro.status === 401) {
         clearSession();
-        bloquear('Sua sessão expirou. Entre de novo para continuar.', true);
+        bloquear('Sua sessão expirou. Entre de novo para continuar.', 'login');
         return;
     }
     if (erro instanceof ApiError && (erro.status === 403 || erro.status === 404)) {
-        bloquear('Este estacionamento não é seu ou não existe.', false);
+        bloquear('Este estacionamento não é seu ou não existe.', 'lista');
         return;
     }
     mostrarMensagem(mensagem, erro instanceof ApiError ? erro.message : 'Algo deu errado.', 'error');
@@ -194,23 +200,16 @@ async function carregar(id: number): Promise<void> {
     }
 }
 
-sair?.addEventListener('click', () => {
-    clearSession();
-    window.location.href = '../index.html';
-});
-
 const usuario = usuarioAtual();
 const id = idDaUrl();
 
 if (getSession() === null) {
-    bloquear('Entre com uma conta de dono para ver o painel do pátio.', true);
+    bloquear('Entre com uma conta de dono para ver o painel do pátio.', 'login');
 } else if (usuario?.tipo_conta !== 'dono') {
-    bloquear('Esta área é só para contas de dono.', true);
+    bloquear('Você entrou com uma conta de cliente. Esta área é das contas de dono.', 'busca');
 } else if (id === null) {
-    if (donoNome) donoNome.textContent = usuario.nome;
-    bloquear('Abra o painel a partir da lista de estacionamentos.', false);
+    bloquear('Abra o painel a partir da lista de estacionamentos.', 'lista');
 } else {
-    if (donoNome) donoNome.textContent = usuario.nome;
     atualizar?.addEventListener('click', () => void carregar(id));
     void carregar(id);
 }

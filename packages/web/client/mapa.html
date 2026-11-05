@@ -19,7 +19,54 @@
     </header>
 
     <p id="mensagem"></p>
-    <div id="palco" class="palco"></div>
+    <div class="area-do-mapa">
+        <div id="palco" class="palco"></div>
+
+        <aside class="painel" aria-labelledby="painelTitulo">
+            <h2 id="painelTitulo" class="painel-titulo">Encontrar vaga</h2>
+
+            <p id="semConta" class="painel-aviso disabled">
+                Entre com sua conta para receber uma vaga.
+                <a href="/index.html#entrar">Entrar</a>
+            </p>
+            <p id="semCarro" class="painel-aviso disabled">
+                Cadastre um carro para o AMPS saber em que vaga ele cabe.
+                <a href="/client/carro.html">Cadastrar carro</a>
+            </p>
+
+            <form id="formVaga" class="painel-form">
+                <label for="carro">Carro</label>
+                <select id="carro" required></select>
+
+                <label for="destino">Para onde você vai</label>
+                <select id="destino" required></select>
+
+                <label for="entrada">Por onde você entra</label>
+                <select id="entrada" required></select>
+
+                <button type="submit" id="encontrar" class="botao-encontrar">Encontrar vaga</button>
+            </form>
+
+            <div id="resultado" class="resultado disabled" aria-live="polite">
+                <span class="resultado-rotulo">Sua vaga</span>
+                <strong id="resultadoNumero" class="resultado-numero"></strong>
+                <span id="resultadoDetalhe" class="resultado-detalhe"></span>
+                <button type="button" id="limpar" class="botao-limpar">Escolher de novo</button>
+            </div>
+
+            <p id="avisoVaga" class="message" aria-live="polite"></p>
+
+            <ul class="legenda" aria-label="Legenda">
+                <li><i class="amostra amostra-livre"></i>Livre</li>
+                <li><i class="amostra amostra-ocupada"></i>Ocupada</li>
+                <li><i class="amostra amostra-pcd"></i>PCD</li>
+                <li><i class="amostra amostra-idoso"></i>Idoso</li>
+                <li><i class="amostra amostra-moto"></i>Moto</li>
+                <li><i class="amostra amostra-eletrico"></i>Elétrico</li>
+                <li><i class="amostra amostra-sua"></i>Sua vaga</li>
+            </ul>
+        </aside>
+    </div>
     <script type="module" src="../src/client-map/mapa.ts"></script>
 </body>
 </html>

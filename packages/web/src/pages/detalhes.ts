@@ -7,6 +7,7 @@ import type { EnderecoWire } from '../api';
 import { pontosDeInteresse, vagasLivres, vagasPorTipo } from '../client-map/resumo';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 import { comoGrafo } from '../graph/tipos';
+import { salvarHistorico } from '../historico';
 import type { TipoDeVaga } from '../graph/tipos';
 
 const ROTULOS: Record<TipoDeVaga, string> = {
@@ -61,6 +62,7 @@ if (!Number.isInteger(id) || id <= 0) {
             ]);
 
             document.title = `${estacionamento.nome} - AMPS`;
+            salvarHistorico(estacionamento);
             if (nome) nome.textContent = estacionamento.nome;
 
             const { bairro, cidade, estado } = estacionamento.endereco;
