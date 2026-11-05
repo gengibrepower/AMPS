@@ -109,6 +109,19 @@ main.pagina-detalhes {
     gap: 28px;
 }
 
+.principal {
+    gap: 16px;
+}
+
+/* No celular a lateral vem antes, empilhada: o endereço ganha o mesmo card
+   dos outros blocos em vez de ficar solto no fundo. */
+.bloco-endereco {
+    padding: 20px;
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
+    background-color: var(--cor-superficie);
+}
+
 .botao-principal {
     display: inline-flex;
     align-items: center;
@@ -124,40 +137,61 @@ main.pagina-detalhes {
     text-decoration: none;
 }
 
-.bloco h3 {
-    margin-bottom: 12px;
+.cartao {
+    padding: 20px;
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
+    background-color: var(--cor-superficie);
+}
+
+.cartao-titulo {
+    margin-bottom: 14px;
     font-size: var(--texto-md);
     font-weight: 600;
 }
 
-.principal .bloco + .bloco {
-    padding-top: 28px;
-    border-top: 1px solid var(--cor-borda-campo);
-}
-
-.bloco-dica {
-    margin: -6px 0 12px;
+.cartao-dica {
+    margin: -8px 0 14px;
     font-size: var(--texto-sm);
-    opacity: 0.7;
+    color: var(--cor-texto-apagado);
+    line-height: 1.5;
 }
 
+.titulo-com-icone {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: var(--texto-md);
+    font-weight: 600;
+}
+
+.titulo-com-icone .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--cor-texto-apagado);
+}
+
+/* Vagas agora: o número é a resposta, a barra é o mesmo número de relance. */
 .disponiveis {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
     gap: 4px 10px;
-    margin-bottom: 6px;
+    margin-bottom: 16px;
 }
 
 .disponiveis-numero {
     font-size: 3rem;
     font-weight: 700;
     line-height: 1;
+    color: var(--cor-marca);
+    font-variant-numeric: tabular-nums;
 }
 
 .disponiveis-rotulo {
     font-size: var(--texto-lg);
     font-weight: 600;
+    color: var(--cor-texto-apagado);
 }
 
 .disponiveis.lotado .disponiveis-numero,
@@ -165,30 +199,152 @@ main.pagina-detalhes {
     color: var(--cor-perigo);
 }
 
-.total {
-    margin-bottom: 16px;
-    font-size: var(--texto-md);
-    opacity: 0.7;
-}
-
-/* O separador só aparece quando a ocupação foi preenchida. */
-.ocupacao:not(:empty)::before {
-    content: " · ";
-}
-
-.etiquetas {
+.barra {
     display: flex;
-    flex-wrap: wrap;
+    gap: 3px;
+    height: 12px;
+    border-radius: var(--raio-pilula);
+    overflow: hidden;
+    background-color: var(--cor-superficie-ativa);
+}
+
+.barra-livre,
+.barra-ocupada {
+    flex-basis: 0;
+}
+
+.barra-livre {
+    background-color: var(--cor-marca);
+}
+
+.barra-ocupada {
+    background-color: var(--cor-perigo);
+}
+
+.barra-legenda {
+    display: flex;
+    gap: 18px;
+    margin-top: 10px;
+    list-style: none;
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
+    font-variant-numeric: tabular-nums;
+}
+
+.barra-legenda li,
+.tipo {
+    display: flex;
+    align-items: center;
     gap: 8px;
+}
+
+.ponto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.ponto-livre {
+    background-color: var(--cor-marca);
+}
+
+.ponto-ocupada {
+    background-color: var(--cor-perigo);
+}
+
+/* Tipos de vaga, com a mesma amostra da legenda do mapa (render/tinta.ts). */
+.tipos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     list-style: none;
 }
 
-.etiquetas li {
-    padding: 8px 14px;
-    border: 1px solid var(--cor-borda-campo);
-    border-radius: var(--raio-pilula);
-    background-color: var(--cor-superficie);
+.tipo {
+    display: grid;
+    grid-template-columns: 14px 5.5rem minmax(0, 1fr) 4.5rem;
+    gap: 12px;
     font-size: var(--texto-sm);
+}
+
+.amostra {
+    width: 14px;
+    height: 20px;
+    border-radius: 2px;
+    border: 1px solid var(--cor-borda);
+}
+
+.amostra-comum { background-color: #FFFFFF; }
+.amostra-pcd { background-color: #C2E5FF; }
+.amostra-idoso { background-color: #FBE577; }
+.amostra-moto { background-color: #C9E8CA; }
+.amostra-eletrico { background-color: #B8EAE0; }
+
+.tipo-trilho {
+    height: 6px;
+    border-radius: var(--raio-pilula);
+    background-color: var(--cor-superficie-ativa);
+    overflow: hidden;
+}
+
+.tipo-cheio {
+    display: block;
+    height: 100%;
+    background-color: var(--cor-marca);
+}
+
+.tipo-valor {
+    text-align: right;
+    color: var(--cor-texto-apagado);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Destinos: cada um abre o mapa já procurando a vaga mais perto dele. */
+.destinos {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0 -8px;
+}
+
+.destino {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 8px;
+    border-radius: var(--raio-campo);
+    color: var(--cor-texto);
+    text-decoration: none;
+}
+
+.destinos li + li .destino {
+    border-top: 1px solid var(--cor-borda-sutil);
+    border-radius: 0;
+}
+
+.destino:hover {
+    background-color: var(--cor-superficie-hover);
+}
+
+.destino:focus-visible {
+    outline: 2px solid var(--cor-marca);
+    outline-offset: -2px;
+}
+
+.destino .material-symbols-outlined:first-child {
+    color: var(--cor-aviso);
+    font-size: 20px;
+}
+
+.destino-nome {
+    flex: 1;
+    font-size: var(--texto-md);
+}
+
+.destino .material-symbols-outlined:last-child {
+    color: var(--cor-texto-apagado);
 }
 
 .endereco {
@@ -197,12 +353,34 @@ main.pagina-detalhes {
     gap: 4px;
     list-style: none;
     font-size: var(--texto-md);
-    opacity: 0.85;
+    color: var(--cor-texto-apagado);
+    line-height: 1.4;
+}
+
+.link-externo {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    color: var(--cor-marca);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.link-externo:hover {
+    text-decoration: underline;
+}
+
+.link-externo .material-symbols-outlined {
+    font-size: 16px;
 }
 
 /* A utilitária precisa vir depois das classes de componente para vencer. */
 .detalhes.disabled,
-.bloco.disabled {
+.cartao.disabled,
+.barra.disabled,
+.link-externo.disabled {
     display: none;
 }
 
@@ -224,12 +402,20 @@ main.pagina-detalhes {
         padding: 60px max(48px, calc((100% - 1040px) / 2)) 20px;
     }
 
+    /* Mesma borda esquerda da coluna de conteúdo: 1040 de largura máxima e
+       48 de respiro por dentro. */
     .capa-texto {
-        padding: 32px max(48px, calc((100% - 1040px) / 2));
+        padding: 32px max(48px, calc((100% - 1040px) / 2 + 48px));
     }
 
     .voltar {
-        left: max(48px, calc((100% - 1040px) / 2));
+        left: max(48px, calc((100% - 1040px) / 2 + 48px));
+    }
+
+    .bloco-endereco {
+        padding: 0;
+        border: none;
+        background: none;
     }
 
     .capa-nome {
@@ -253,7 +439,7 @@ main.pagina-detalhes {
         position: sticky;
         top: 24px;
         padding: 24px;
-        border: 1px solid var(--cor-borda-campo);
+        border: 1px solid var(--cor-borda-sutil);
         border-radius: var(--raio-card);
         background-color: var(--cor-superficie);
     }

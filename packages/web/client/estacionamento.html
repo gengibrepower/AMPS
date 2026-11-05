@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/search.css">
     <link rel="stylesheet" href="../css/detalhes.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,arrow_back,close,directions_car,grid_view,logout,map,menu,person,search"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,arrow_back,chevron_right,close,directions_car,grid_view,location_on,logout,map,menu,near_me,open_in_new,person,search"/>
 </head>
 <body>
     <header class="cabecalho">
@@ -58,33 +58,49 @@
             <div class="conteudo">
                 <aside class="lateral">
                     <a id="verMapa" href="" class="botao-principal">
-                        <span class="material-symbols-outlined">map</span>
+                        <span class="material-symbols-outlined" aria-hidden="true">map</span>
                         Ver mapa
                     </a>
 
-                    <section class="bloco">
-                        <h3>Endereço</h3>
+                    <section class="bloco-endereco" aria-labelledby="tituloEndereco">
+                        <h3 id="tituloEndereco" class="titulo-com-icone">
+                            <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+                            Endereço
+                        </h3>
                         <ul id="endereco" class="endereco"></ul>
+                        <a id="abrirNoMaps" href="" class="link-externo disabled" target="_blank" rel="noopener">
+                            Abrir no Google Maps
+                            <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+                        </a>
                     </section>
                 </aside>
 
                 <div class="principal">
-                    <section class="bloco">
-                        <h3>Vagas</h3>
+                    <section class="cartao" aria-labelledby="tituloAgora">
+                        <h3 id="tituloAgora" class="cartao-titulo">Vagas agora</h3>
                         <p id="disponiveis" class="disponiveis">
                             <span id="totalDeVagasLivres" class="disponiveis-numero"></span>
                             <span id="rotuloDoTotalLivres" class="disponiveis-rotulo"></span>
                         </p>
-                        <p class="total">
-                            <span id="totalDeVagas"></span> <span id="rotuloDoTotal"></span><span id="ocupacao" class="ocupacao"></span>
-                        </p>
-                        <ul id="vagasPorTipo" class="etiquetas"></ul>
+                        <div id="barraDeOcupacao" class="barra" role="img">
+                            <span id="barraLivre" class="barra-livre"></span>
+                            <span id="barraOcupada" class="barra-ocupada"></span>
+                        </div>
+                        <ul class="barra-legenda">
+                            <li><i class="ponto ponto-livre"></i><span id="legendaLivres"></span></li>
+                            <li><i class="ponto ponto-ocupada"></i><span id="legendaOcupadas"></span></li>
+                        </ul>
                     </section>
 
-                    <section id="secaoPois" class="bloco disabled">
-                        <h3>Pontos de interesse</h3>
-                        <p class="bloco-dica">Lugares do pátio marcados pelo estacionamento.</p>
-                        <ul id="pontos" class="etiquetas"></ul>
+                    <section class="cartao" aria-labelledby="tituloTipos">
+                        <h3 id="tituloTipos" class="cartao-titulo">Tipos de vaga</h3>
+                        <ul id="vagasPorTipo" class="tipos"></ul>
+                    </section>
+
+                    <section id="secaoPois" class="cartao disabled" aria-labelledby="tituloDestinos">
+                        <h3 id="tituloDestinos" class="cartao-titulo">Para onde você vai?</h3>
+                        <p class="cartao-dica">Escolha um destino e o mapa já abre procurando a vaga mais perto dele.</p>
+                        <ul id="pontos" class="destinos"></ul>
                     </section>
                 </div>
             </div>

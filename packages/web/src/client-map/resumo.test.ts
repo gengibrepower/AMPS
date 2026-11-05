@@ -3,18 +3,23 @@ import { pontosDeInteresse, vagasLivres, vagasPorTipo } from './resumo';
 import type { Grafo } from '../graph/tipos';
 
 describe('vagasPorTipo', () => {
-    it('conta por tipo na ordem fixa, sem os tipos ausentes', () => {
-        const vagas = [{ tipo: 'pcd' }, { tipo: 'comum' }, { tipo: 'comum' }, { tipo: 'moto' }];
+    it('conta por tipo na ordem fixa, sem os tipos ausentes, e separa as livres', () => {
+        const vagas = [
+            { tipo: 'pcd', status: 'livre' },
+            { tipo: 'comum', status: 'ocupada' },
+            { tipo: 'comum', status: 'livre' },
+            { tipo: 'moto', status: 'reservada' },
+        ];
 
         expect(vagasPorTipo(vagas)).toEqual([
-            { tipo: 'comum', quantidade: 2 },
-            { tipo: 'pcd', quantidade: 1 },
-            { tipo: 'moto', quantidade: 1 },
+            { tipo: 'comum', quantidade: 2, livres: 1 },
+            { tipo: 'pcd', quantidade: 1, livres: 1 },
+            { tipo: 'moto', quantidade: 1, livres: 0 },
         ]);
     });
 
     it('trata tipo desconhecido como comum, igual ao desenho', () => {
-        expect(vagasPorTipo([{ tipo: 'vip' }])).toEqual([{ tipo: 'comum', quantidade: 1 }]);
+        expect(vagasPorTipo([{ tipo: 'vip' }])).toEqual([{ tipo: 'comum', quantidade: 1, livres: 0 }]);
     });
 
     it('devolve lista vazia sem vagas', () => {
@@ -33,12 +38,15 @@ describe('pontosDeInteresse', () => {
         edges: [],
     };
 
-    it('lista só os POIs, com o rótulo do dono', () => {
-        expect(pontosDeInteresse(grafo)[0]).toBe('Entrada do shopping');
+    it('lista só os POIs, com o id e o rótulo do dono', () => {
+        expect(pontosDeInteresse(grafo)[0]).toEqual({ id: 'p1', nome: 'Entrada do shopping' });
     });
 
     it('dá nome a POI sem rótulo ou com rótulo em branco', () => {
-        expect(pontosDeInteresse(grafo).slice(1)).toEqual(['Ponto sem nome', 'Ponto sem nome']);
+        expect(pontosDeInteresse(grafo).slice(1).map((ponto) => ponto.nome)).toEqual([
+            'Ponto sem nome',
+            'Ponto sem nome',
+        ]);
     });
 });
 
