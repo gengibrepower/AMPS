@@ -1,155 +1,11 @@
-@import url(vars.css);
+@import url(base.css);
 
-@font-face {
-    font-family: "Baunk";
-    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: var(--cor-fundo);
-    color: var(--cor-texto);
-    font-family: var(--fonte-texto);
-    min-height: 100vh;
-}
-
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 20px;
-}
-
-#menu-button {
-    display: flex;
-    flex-shrink: 0;
-    border: none;
-    background-color: transparent;
-    color: var(--cor-texto);
-    padding: 8px;
-    cursor: pointer;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-#logo-text {
-    font-family: var(--fonte-marca);
-    font-size: var(--texto-xl);
-}
-
-#logo-holder {
-    width: 32px;
-    height: 32px;
-}
-
-.login-link {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--cor-marca);
-    background-color: var(--cor-marca-fundo);
-    color: var(--cor-texto);
-    padding: 8px 14px;
-    border-radius: var(--raio-pilula);
-    font-size: var(--texto-sm);
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-/* Sidebar */
-.sidebar-nav {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.sidebar {
-    position: relative;
-    width: 100%;
-    max-height: 80vh;
-    background-color: var(--cor-superficie);
-    padding: 2rem 1.5rem;
-    border-radius: 24px 24px 0 0;
-}
-
-#close-sidebar-button {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    border: none;
-    background: transparent;
-    color: var(--cor-texto);
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-.nav-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 3rem;
-}
-
-.nav-item a,
-.nav-item button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 14px 16px;
-    border: none;
-    background: transparent;
-    color: var(--cor-texto);
-    text-decoration: none;
-    font-family: inherit;
-    font-size: var(--texto-md);
-    text-align: left;
-    cursor: pointer;
-}
-
-.nav-item-account {
-    margin-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#sidebarAccountLabel {
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.nav-item a .material-symbols-outlined {
-    flex-shrink: 0;
-}
-
-.disabled {
-    display: none;
-}
-
-/* Main */
 main {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    padding: 8px 20px 24px;
+    padding: 24px 16px;
 }
 
 .search-box {
@@ -164,8 +20,7 @@ main {
 }
 
 .search-box .material-symbols-outlined {
-    color: var(--cor-texto);
-    opacity: 0.75;
+    color: var(--cor-texto-apagado);
 }
 
 .search-box input {
@@ -178,8 +33,7 @@ main {
 }
 
 .search-box input::placeholder {
-    color: var(--cor-texto);
-    opacity: 0.6;
+    color: var(--cor-texto-apagado);
 }
 
 main > h2 {
@@ -262,10 +116,6 @@ main > h2 {
 }
 
 @media (min-width: 768px) {
-    header {
-        padding: 32px 48px;
-    }
-
     main {
         width: 80%;
         margin: 0 auto;
@@ -278,21 +128,14 @@ main > h2 {
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
-
-    .sidebar-nav {
-        align-items: stretch;
-        justify-content: flex-start;
-    }
-
-    .sidebar {
-        width: 280px;
-        max-height: 100%;
-        border-radius: 0;
-    }
 }
 
 @media (min-width: 1200px) {
     .result-list {
         grid-template-columns: repeat(3, 1fr);
     }
+}
+
+.disabled {
+    display: none;
 }

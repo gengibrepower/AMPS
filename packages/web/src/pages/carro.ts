@@ -7,16 +7,13 @@ import {
     type CarroWire,
     type ModeloWire,
 } from '../api';
-import { clearSession, getSession, usuarioAtual } from '../auth';
+import { clearSession, getSession } from '../auth';
+import { renderAccountPanel } from '../dom/navegacao';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const bloqueio = document.querySelector<HTMLElement>('#bloqueio');
 const bloqueioTexto = document.querySelector<HTMLElement>('#bloqueioTexto');
 const area = document.querySelector<HTMLElement>('#area');
-const usuarioNome = document.querySelector<HTMLElement>('#usuarioNome');
-const conta = document.querySelector<HTMLElement>('#conta');
-
-const sair = document.querySelector<HTMLButtonElement>('#sair');
 const abrirNovo = document.querySelector<HTMLButtonElement>('#abrirNovo');
 const cancelarNovo = document.querySelector<HTMLButtonElement>('#cancelarNovo');
 const salvarNovo = document.querySelector<HTMLButtonElement>('#salvarNovo');
@@ -142,7 +139,7 @@ function bloquear(texto: string): void {
 
     bloqueio?.classList.remove('disabled');
     area?.classList.add('disabled');
-    conta?.classList.add('disabled');
+    renderAccountPanel();
 }
 
 function relatar(erro: unknown): void {
@@ -191,20 +188,9 @@ formNovo?.addEventListener('submit', async (event) => {
     }
 });
 
-sair?.addEventListener('click', () => {
-    clearSession();
-    window.location.href = '../index.html';
-});
-
-const usuario = usuarioAtual();
-
 if (getSession() === null) {
     bloquear('Entre com sua conta para ver seus carros.');
 } else {
-    if (usuarioNome !== null && usuario !== null) {
-        usuarioNome.textContent = usuario.nome;
-    }
-
     area?.classList.remove('disabled');
 
     void (async () => {
@@ -215,4 +201,4 @@ if (getSession() === null) {
             relatar(erro);
         }
     })();
-}
+}

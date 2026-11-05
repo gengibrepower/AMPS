@@ -6,6 +6,7 @@ import {
     type UsuarioWire,
 } from '../api';
 import { clearSession, getSession, saveSession } from '../auth';
+import { renderAccountPanel } from '../dom/navegacao';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const SENHA_MINIMA = 8;
@@ -13,9 +14,6 @@ const SENHA_MINIMA = 8;
 const bloqueio = document.querySelector<HTMLElement>('#bloqueio');
 const bloqueioTexto = document.querySelector<HTMLElement>('#bloqueioTexto');
 const area = document.querySelector<HTMLElement>('#area');
-const usuarioNome = document.querySelector<HTMLElement>('#usuarioNome');
-const conta = document.querySelector<HTMLElement>('#conta');
-const sair = document.querySelector<HTMLButtonElement>('#sair');
 
 const formDados = document.querySelector<HTMLFormElement>('#formDados');
 const nome = document.querySelector<HTMLInputElement>('#nome');
@@ -37,7 +35,7 @@ function bloquear(texto: string): void {
 
     bloqueio?.classList.remove('disabled');
     area?.classList.add('disabled');
-    conta?.classList.add('disabled');
+    renderAccountPanel();
 }
 
 function relatar(erro: unknown, alvo: HTMLElement | null): void {
@@ -67,7 +65,6 @@ function relatar(erro: unknown, alvo: HTMLElement | null): void {
 function preencher(usuario: UsuarioWire): void {
     if (nome !== null) nome.value = usuario.nome;
     if (email !== null) email.value = usuario.email;
-    if (usuarioNome !== null) usuarioNome.textContent = usuario.nome;
 }
 
 function guardarNaSessao(usuario: UsuarioWire): void {
@@ -75,6 +72,7 @@ function guardarNaSessao(usuario: UsuarioWire): void {
     if (sessao !== null) {
         saveSession({ ...sessao, usuario });
     }
+    renderAccountPanel();
 }
 
 formDados?.addEventListener('submit', async (event) => {
@@ -141,11 +139,6 @@ formSenha?.addEventListener('submit', async (event) => {
     } finally {
         if (salvarSenha !== null) salvarSenha.disabled = false;
     }
-});
-
-sair?.addEventListener('click', () => {
-    clearSession();
-    window.location.href = '../index.html';
 });
 
 if (getSession() === null) {

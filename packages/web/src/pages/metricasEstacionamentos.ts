@@ -2,15 +2,13 @@ import { ApiError, carregarMetricas } from '../api';
 import type { MetricasWire } from '../api';
 import { clearSession, getSession, usuarioAtual } from '../auth';
 import { enderecoEmLinha } from '../dom/endereco';
+import { renderAccountPanel } from '../dom/navegacao';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 
 const bloqueio = document.getElementById('bloqueio') as HTMLElement | null;
 const bloqueioTexto = document.getElementById('bloqueioTexto') as HTMLElement | null;
 const bloqueioLink = document.getElementById('bloqueioLink') as HTMLAnchorElement | null;
 const area = document.getElementById('area') as HTMLElement | null;
-const conta = document.getElementById('conta') as HTMLElement | null;
-const donoNome = document.getElementById('donoNome') as HTMLElement | null;
-const sair = document.getElementById('sair') as HTMLButtonElement | null;
 const atualizar = document.getElementById('atualizar') as HTMLButtonElement | null;
 const mensagem = document.getElementById('mensagem') as HTMLElement | null;
 const barraOcupacao = document.getElementById('barraOcupacao') as HTMLElement | null;
@@ -165,7 +163,7 @@ function bloquear(texto: string, paraLogin: boolean): void {
     }
     bloqueio?.classList.remove('disabled');
     area?.classList.add('disabled');
-    if (paraLogin) conta?.classList.add('disabled');
+    if (paraLogin) renderAccountPanel();
 }
 
 function relatar(erro: unknown): void {
@@ -194,11 +192,6 @@ async function carregar(id: number): Promise<void> {
     }
 }
 
-sair?.addEventListener('click', () => {
-    clearSession();
-    window.location.href = '../index.html';
-});
-
 const usuario = usuarioAtual();
 const id = idDaUrl();
 
@@ -207,10 +200,8 @@ if (getSession() === null) {
 } else if (usuario?.tipo_conta !== 'dono') {
     bloquear('Esta área é só para contas de dono.', true);
 } else if (id === null) {
-    if (donoNome) donoNome.textContent = usuario.nome;
     bloquear('Abra o painel a partir da lista de estacionamentos.', false);
 } else {
-    if (donoNome) donoNome.textContent = usuario.nome;
     atualizar?.addEventListener('click', () => void carregar(id));
     void carregar(id);
 }

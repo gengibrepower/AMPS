@@ -8,21 +8,35 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/owner.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,logout"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,add,close,directions_car,grid_view,logout,menu,person,search"/>
 </head>
 <body>
-    <header>
-        <a class="logo" href="../index.html">
-            <img src="../assets/images/logo_holder.png" alt="">
-            <span id="logo-text">AMPS</span>
+    <header class="cabecalho">
+        <button type="button" id="menu-button" class="cabecalho-menu" aria-label="Abrir menu">
+            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
+        <a class="marca" href="/index.html">
+            <img src="/assets/images/logo_holder.png" alt="">
+            <span class="marca-nome">AMPS</span>
         </a>
-        <div class="conta" id="conta">
-            <span id="usuarioNome"></span>
-            <button type="button" id="sair" class="botao-texto" aria-label="Sair">
-                <span class="material-symbols-outlined">logout</span>
-            </button>
-        </div>
+        <div class="cabecalho-conta" id="cabecalhoConta"></div>
     </header>
+
+    <nav class="sidebar-nav disabled" aria-label="Menu">
+        <div class="sidebar">
+            <button type="button" id="close-sidebar-button" aria-label="Fechar menu">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+            <ul class="nav-list" id="navLista">
+                <li class="nav-item nav-item-account">
+                    <button type="button" id="sidebarAccountBtn" aria-label="Conta">
+                        <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+                        <span id="sidebarAccountLabel">Entrar</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
     <main>
         <section id="bloqueio" class="bloqueio disabled">

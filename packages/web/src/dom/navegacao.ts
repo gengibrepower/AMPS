@@ -26,6 +26,7 @@ const bottomAreaButton = document.getElementById('navArea') as HTMLButtonElement
 const bottomAreaIcon = document.getElementById('navAreaIcone') as HTMLElement | null;
 const bottomAreaLabel = document.getElementById('navAreaRotulo') as HTMLElement | null;
 const logoutButton = document.getElementById('logoutBtn') as HTMLButtonElement | null;
+const cabecalhoConta = document.getElementById('cabecalhoConta') as HTMLElement | null;
 
 let destinoDaBarra = '/index.html';
 
@@ -54,6 +55,7 @@ function itemDeNavegacao(destino: Destino): HTMLLIElement {
 
     const link = document.createElement('a');
     link.href = destino.href;
+    if (destino.href === paginaAtual()) link.setAttribute('aria-current', 'page');
     link.append(icone, destino.rotulo);
 
     item.append(link);
@@ -72,6 +74,79 @@ function renderBarraDeBaixo(destinos: readonly Destino[]): void {
     if (bottomAreaLabel) bottomAreaLabel.textContent = destino.rotulo;
     bottomAreaButton?.setAttribute('aria-label', destino.rotulo);
     destinoDaBarra = destino.href;
+}
+
+function paginaAtual(): string {
+    return window.location.pathname === '/' ? '/index.html' : window.location.pathname;
+}
+
+function iniciais(nome: string): string {
+    const partes = nome.trim().split(/\s+/).filter(Boolean);
+    const primeira = partes[0]?.[0] ?? '';
+    const ultima = partes.length > 1 ? (partes[partes.length - 1]?.[0] ?? '') : '';
+    return (primeira + ultima).toUpperCase();
+}
+
+function sair(): void {
+    clearSession();
+    window.location.href = '/index.html';
+}
+
+function iconeDeMaterial(nome: string): HTMLSpanElement {
+    const span = document.createElement('span');
+    span.className = 'material-symbols-outlined';
+    span.setAttribute('aria-hidden', 'true');
+    span.textContent = nome;
+    return span;
+}
+
+function renderCabecalho(nome: string | null): void {
+    if (!cabecalhoConta) return;
+
+    if (nome === null) {
+        if (accountContent) {
+            const entrar = document.createElement('button');
+            entrar.type = 'button';
+            entrar.className = 'botao-entrar';
+            entrar.textContent = 'Entrar';
+            entrar.addEventListener('click', toggleAccountContent);
+            cabecalhoConta.replaceChildren(entrar);
+        } else {
+            const entrar = document.createElement('a');
+            entrar.href = '/index.html#entrar';
+            entrar.className = 'botao-entrar';
+            entrar.textContent = 'Entrar';
+            cabecalhoConta.replaceChildren(entrar);
+        }
+        return;
+    }
+
+    const chip = document.createElement('a');
+    chip.className = 'conta-chip';
+    chip.href = '/client/perfil.html';
+    chip.title = 'Meu perfil';
+
+    const rotulo = document.createElement('span');
+    rotulo.className = 'conta-nome';
+    rotulo.textContent = nome;
+
+    const avatar = document.createElement('span');
+    avatar.className = 'avatar';
+    avatar.setAttribute('aria-hidden', 'true');
+    avatar.textContent = iniciais(nome);
+
+    chip.append(rotulo, avatar);
+
+    const botaoSair = document.createElement('button');
+    botaoSair.type = 'button';
+    botaoSair.id = 'sair';
+    botaoSair.className = 'botao-sair';
+    botaoSair.setAttribute('aria-label', 'Sair');
+    botaoSair.title = 'Sair';
+    botaoSair.append(iconeDeMaterial('logout'));
+    botaoSair.addEventListener('click', sair);
+
+    cabecalhoConta.replaceChildren(chip, botaoSair);
 }
 
 function renderNavegacao(tipo: string | null): void {
@@ -98,6 +173,7 @@ export function renderAccountPanel(): void {
     }
 
     renderNavegacao(session?.usuario.tipo_conta ?? null);
+    renderCabecalho(session?.usuario.nome ?? null);
 }
 
 function toggleAccountContent(): void {
@@ -116,6 +192,10 @@ bottomAreaButton?.addEventListener('click', () => {
 });
 
 sidebarAccountButton?.addEventListener('click', () => {
+    if (!accountContent) {
+        window.location.href = getSession() ? '/client/perfil.html' : '/index.html#entrar';
+        return;
+    }
     toggleSidebar();
     toggleAccountContent();
 });
@@ -144,3 +224,8 @@ for (const [id, destino] of navegacao) {
 }
 
 renderAccountPanel();
+
+if (window.location.hash === '#entrar' && accountContent && !getSession()) {
+    accountContent.classList.remove('disabled');
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+}

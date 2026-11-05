@@ -1,0 +1,277 @@
+@import url(vars.css);
+
+@font-face {
+    font-family: "Baunk";
+    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: var(--fonte-texto);
+    min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+:focus-visible {
+    outline: 2px solid var(--cor-marca);
+    outline-offset: 2px;
+}
+
+.cabecalho {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--altura-cabecalho);
+    padding: 0 12px;
+    background-color: var(--cor-fundo);
+    border-bottom: 1px solid var(--cor-borda-sutil);
+}
+
+.cabecalho-menu {
+    display: inline-flex;
+    flex-shrink: 0;
+    padding: 8px;
+    border: none;
+    border-radius: var(--raio-campo);
+    background: transparent;
+    color: var(--cor-texto);
+    cursor: pointer;
+}
+
+.cabecalho-menu:hover {
+    background-color: var(--cor-superficie);
+}
+
+.marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cor-texto);
+    text-decoration: none;
+}
+
+.marca img {
+    width: 28px;
+    height: 28px;
+}
+
+.marca-nome {
+    font-family: var(--fonte-marca);
+    font-size: var(--texto-xl);
+    line-height: 1;
+}
+
+.cabecalho-conta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    min-width: 0;
+}
+
+.botao-entrar {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid var(--cor-marca-borda);
+    border-radius: var(--raio-pilula);
+    background-color: var(--cor-marca-fundo);
+    color: var(--cor-texto);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.botao-entrar:hover {
+    border-color: var(--cor-marca);
+}
+
+.conta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 4px 4px 4px 12px;
+    border-radius: var(--raio-pilula);
+    color: var(--cor-texto-apagado);
+    font-size: var(--texto-sm);
+    text-decoration: none;
+}
+
+.conta-chip:hover {
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+.conta-nome {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--cor-marca-fundo);
+    border: 1px solid var(--cor-marca-borda);
+    color: var(--cor-marca);
+    font-size: var(--texto-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.botao-sair {
+    display: inline-flex;
+    padding: 8px;
+    border: none;
+    border-radius: var(--raio-campo);
+    background: transparent;
+    color: var(--cor-texto-apagado);
+    cursor: pointer;
+}
+
+.botao-sair:hover {
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+.sidebar-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background-color: var(--cor-veu);
+}
+
+.sidebar {
+    position: relative;
+    width: 100%;
+    max-height: 80vh;
+    background-color: var(--cor-fundo-sutil);
+    border-top: 1px solid var(--cor-borda-sutil);
+    padding: 24px 16px;
+    border-radius: var(--raio-card) var(--raio-card) 0 0;
+}
+
+#close-sidebar-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    padding: 8px;
+    border: none;
+    border-radius: var(--raio-campo);
+    background: transparent;
+    color: var(--cor-texto-apagado);
+    cursor: pointer;
+}
+
+#close-sidebar-button:hover {
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 40px;
+}
+
+.nav-item a,
+.nav-item button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: var(--raio-campo);
+    background: transparent;
+    color: var(--cor-texto);
+    text-decoration: none;
+    font-size: var(--texto-md);
+    text-align: left;
+    cursor: pointer;
+}
+
+.nav-item a:hover,
+.nav-item button:hover {
+    background-color: var(--cor-superficie);
+}
+
+.nav-item a[aria-current="page"] {
+    background-color: var(--cor-marca-fundo);
+    color: var(--cor-marca);
+}
+
+.nav-item .material-symbols-outlined {
+    flex-shrink: 0;
+}
+
+.nav-item-account {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--cor-borda-sutil);
+}
+
+/* Nome e email têm tamanho imprevisível e a sidebar tem 280px fixos. Sem
+   min-width: 0 o span não encolhe (padrão de item flex) e empurra o botão
+   para fora. */
+#sidebarAccountLabel {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 479px) {
+    .conta-nome {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .cabecalho {
+        padding: 0 24px;
+    }
+
+    .sidebar-nav {
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+
+    .sidebar {
+        width: 280px;
+        max-height: 100%;
+        border-top: none;
+        border-right: 1px solid var(--cor-borda-sutil);
+        border-radius: 0;
+    }
+}

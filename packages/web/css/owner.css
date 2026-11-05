@@ -1,60 +1,4 @@
-@import url(vars.css);
-
-@font-face {
-    font-family: "Baunk";
-    src: url("../assets/fonts/baunk/Baunk.otf") format("opentype");
-}
-
-:root {
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: var(--cor-fundo);
-    color: var(--cor-texto);
-    font-family: var(--fonte-texto);
-    min-height: 100vh;
-}
-
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--cor-borda-sutil);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--cor-texto);
-    text-decoration: none;
-}
-
-.logo img {
-    width: 28px;
-    height: 28px;
-}
-
-#logo-text {
-    font-family: var(--fonte-marca);
-    font-size: var(--texto-xl);
-}
-
-.conta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: var(--texto-sm);
-    color: var(--cor-texto-apagado);
-}
+@import url(base.css);
 
 main {
     width: 100%;
@@ -209,7 +153,7 @@ main {
 .campo select {
     border: 1px solid var(--cor-borda-campo);
     border-radius: var(--raio-campo);
-    background-color: var(--cor-superficie);
+    background-color: var(--cor-fundo-sutil);
     color: var(--cor-texto);
     font-family: inherit;
     font-size: var(--texto-sm);
@@ -526,7 +470,7 @@ main {
 .tipo-trilho {
     height: 8px;
     border-radius: var(--raio-pilula);
-    background-color: var(--cor-superficie);
+    background-color: var(--cor-superficie-ativa);
     overflow: hidden;
 }
 

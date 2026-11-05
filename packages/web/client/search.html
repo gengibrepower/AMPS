@@ -8,27 +8,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/search.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,directions_car,grid_view,menu,person,search"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=account_circle,close,directions_car,grid_view,logout,menu,person,search"/>
 </head>
 <body>
-    <header>
-        <button id="menu-button" aria-label="Abrir menu"><span class="material-symbols-outlined">menu</span></button>
-        <div class="logo">
-            <img id="logo-holder" src="../assets/images/logo_holder.png" alt="AMPS">
-            <h1 id="logo-text">AMPS</h1>
-        </div>
-        <a href="../index.html" class="login-link">Entrar</a>
+    <header class="cabecalho">
+        <button type="button" id="menu-button" class="cabecalho-menu" aria-label="Abrir menu">
+            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
+        <a class="marca" href="/index.html">
+            <img src="/assets/images/logo_holder.png" alt="">
+            <span class="marca-nome">AMPS</span>
+        </a>
+        <div class="cabecalho-conta" id="cabecalhoConta"></div>
     </header>
 
-    <nav class="sidebar-nav disabled">
+    <nav class="sidebar-nav disabled" aria-label="Menu">
         <div class="sidebar">
-            <button id="close-sidebar-button" aria-label="Fechar menu">X</button>
+            <button type="button" id="close-sidebar-button" aria-label="Fechar menu">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
             <ul class="nav-list" id="navLista">
                 <li class="nav-item nav-item-account">
-                    <a href="/index.html">
-                        <span class="material-symbols-outlined">account_circle</span>
+                    <button type="button" id="sidebarAccountBtn" aria-label="Conta">
+                        <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
                         <span id="sidebarAccountLabel">Entrar</span>
-                    </a>
+                    </button>
                 </li>
             </ul>
         </div>
