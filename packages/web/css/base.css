@@ -11,8 +11,14 @@
     box-sizing: border-box;
 }
 
+/* Teste: a planta de um pátio pintada no chão, quase na cor do fundo. É textura,
+   não desenho: o traço fica a 1,08:1 do fundo para nunca competir com texto.
+   O tile é grande e variado para a repetição não aparecer. */
 body {
     background-color: var(--cor-fundo);
+    background-image: url(../assets/images/fundo-patio.svg);
+    background-size: 1120px 840px;
+    background-attachment: fixed;
     color: var(--cor-texto);
     font-family: var(--fonte-texto);
     min-height: 100vh;
@@ -88,7 +94,8 @@ textarea {
 .botao-entrar {
     display: inline-flex;
     align-items: center;
-    padding: 8px 16px;
+    min-height: var(--altura-controle);
+    padding: 0 16px;
     border: 1px solid var(--cor-marca-borda);
     border-radius: var(--raio-pilula);
     background-color: var(--cor-marca-fundo);
@@ -233,6 +240,12 @@ textarea {
 
 .nav-item .material-symbols-outlined {
     flex-shrink: 0;
+}
+
+/* As páginas mostram este item em telas largas com display: block, que
+   venceria o [hidden] do navegador. */
+.nav-item-account[hidden] {
+    display: none;
 }
 
 .nav-item-account {

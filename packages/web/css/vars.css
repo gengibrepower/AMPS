@@ -44,6 +44,14 @@
     --raio-campo: 8px;
     --raio-card: 14px;
     --raio-pilula: 999px;
+    --raio-etiqueta: 6px;
+
+    /* Três alturas de controle (escala do IBM Carbon): ação principal, padrão
+       e compacta. A busca da home vai a 56, a barra do Material 3. */
+    --altura-busca: 56px;
+    --altura-acao: 48px;
+    --altura-controle: 40px;
+    --altura-compacta: 32px;
 
     --altura-cabecalho: 64px;
 }

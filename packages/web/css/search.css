@@ -1,4 +1,5 @@
 @import url(base.css);
+@import url(cards.css);
 
 main {
     display: flex;
@@ -13,10 +14,11 @@ main {
     align-items: center;
     gap: 10px;
     width: 100%;
+    min-height: var(--altura-acao);
     border-radius: var(--raio-pilula);
     border: 1px solid var(--cor-borda-campo);
     background-color: var(--cor-superficie);
-    padding: 6px 18px;
+    padding: 0 18px;
 }
 
 .search-box .material-symbols-outlined {
@@ -42,62 +44,6 @@ main > h2 {
     font-weight: 600;
 }
 
-.result-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-}
-
-.result-card {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--cor-superficie);
-    border-radius: var(--raio-card);
-    overflow: hidden;
-}
-
-.result-card-link {
-    display: flex;
-    flex-direction: column;
-    color: inherit;
-    text-decoration: none;
-}
-
-.result-card:hover {
-    outline: 2px solid var(--cor-marca);
-}
-
-.result-card-link:focus-visible {
-    outline: 2px solid var(--cor-marca);
-    outline-offset: -2px;
-}
-
-.result-card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    background-color: var(--cor-superficie);
-}
-
-.result-card-body {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 16px 20px;
-}
-
-.result-card-title {
-    font-size: var(--texto-lg);
-    font-weight: 600;
-}
-
-.result-card-location {
-    font-size: var(--texto-sm);
-    opacity: 0.85;
-}
-
 .message {
     font-size: var(--texto-sm);
     font-weight: 500;
@@ -121,18 +67,6 @@ main > h2 {
         margin: 0 auto;
         padding: 24px 48px 64px;
         gap: 24px;
-    }
-
-    .result-list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .result-list {
-        grid-template-columns: repeat(3, 1fr);
     }
 }
 

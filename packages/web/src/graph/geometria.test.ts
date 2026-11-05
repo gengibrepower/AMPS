@@ -118,6 +118,17 @@ describe('ajusteParaCaixa', () => {
         expect(metrosParaPixels(20) * ajuste.zoom).toBeLessThanOrEqual(300 - 40);
     });
 
+    it('centraliza na parte da tela que sobra fora da cobertura', () => {
+        const coberto = { topo: 0, direita: 0, base: 200, esquerda: 300 };
+        const ajuste = ajusteParaCaixa(caixa, 1000, 600, 60, 0.2, 8, coberto);
+        const centro = {
+            x: metrosParaPixels(10) * ajuste.zoom + ajuste.x,
+            y: metrosParaPixels(5) * ajuste.zoom + ajuste.y,
+        };
+        expect(centro).toEqual({ x: 650, y: 200 });
+        expect(metrosParaPixels(20) * ajuste.zoom).toBeLessThanOrEqual(700 - 120);
+    });
+
     it('respeita o teto de zoom com caixa minúscula', () => {
         const ponto = { minX: 5, minY: 5, maxX: 5, maxY: 5 };
         expect(ajusteParaCaixa(ponto, 1000, 600, 60, 0.2, 8).zoom).toBe(1);

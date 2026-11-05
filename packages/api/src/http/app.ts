@@ -286,7 +286,12 @@ export function createApp(deps: AppDeps): Express {
 		const termo = req.query['q'];
 		const q = typeof termo === 'string' ? termo.trim() : '';
 		const estacionamentos = await deps.estacionamentoService.pesquisar(q);
-		res.status(200).json(estacionamentos.map(estacionamentoWire));
+		res.status(200).json(
+			estacionamentos.map((estacionamento) => ({
+				...estacionamentoWire(estacionamento),
+				vagas: estacionamento.vagas,
+			})),
+		);
 	});
 
 	app.get('/busca/:id', async (req, res) => {

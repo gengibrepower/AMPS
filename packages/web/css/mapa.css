@@ -33,12 +33,16 @@ header {
 .voltar {
     display: flex;
     align-items: center;
-    padding: 4px;
+    justify-content: center;
+    width: var(--altura-controle);
+    height: var(--altura-controle);
+    border-radius: var(--raio-pilula);
     color: var(--cor-texto-apagado);
     text-decoration: none;
 }
 
 .voltar:hover {
+    background-color: var(--cor-superficie-hover);
     color: var(--cor-texto);
 }
 
@@ -135,7 +139,8 @@ header {
 
 .botao-encontrar {
     margin-top: 12px;
-    padding: 12px;
+    min-height: var(--altura-acao);
+    padding: 0 12px;
     border: none;
     border-radius: var(--raio-pilula);
     background-color: var(--cor-marca);
@@ -238,6 +243,35 @@ header {
 .amostra-moto { background-color: #C9E8CA; }
 .amostra-eletrico { background-color: #B8EAE0; }
 .amostra-sua { background-color: #09C382; border-color: #1D3B31; border-width: 2.5px; }
+
+@media (max-width: 767px) {
+    .painel {
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .painel.com-resultado .painel-titulo,
+    .painel.com-resultado .legenda {
+        display: none;
+    }
+
+    .painel-form {
+        gap: 4px;
+    }
+
+    .painel-form label {
+        margin-top: 4px;
+    }
+
+    .botao-encontrar {
+        margin-top: 10px;
+        padding: 10px;
+    }
+
+    .legenda {
+        padding-top: 10px;
+    }
+}
 
 @media (min-width: 768px) {
     .painel {

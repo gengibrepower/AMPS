@@ -1,4 +1,5 @@
 @import url(base.css);
+@import url(cards.css);
 
 body {
     display: flex;
@@ -40,10 +41,11 @@ main {
     align-items: center;
     gap: 10px;
     width: 100%;
+    min-height: var(--altura-busca);
     border-radius: var(--raio-pilula);
     border: 1px solid var(--cor-borda-campo);
     background-color: var(--cor-superficie);
-    padding: 6px 18px;
+    padding: 0 20px;
 }
 
 .search-box .material-symbols-outlined {
@@ -139,8 +141,12 @@ main {
     top: 12px;
     right: 12px;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--altura-controle);
+    height: var(--altura-controle);
     margin: 0;
-    padding: 6px;
+    padding: 0;
     border: none;
     border-radius: var(--raio-pilula);
     background: transparent;
@@ -222,7 +228,8 @@ main {
 .login .account-action {
     display: block;
     margin-top: 20px;
-    padding: 14px;
+    min-height: var(--altura-acao);
+    padding: 0 14px;
     width: 100%;
     border: none;
     border-radius: var(--raio-pilula);
@@ -232,6 +239,19 @@ main {
     font-weight: 600;
     text-align: center;
     text-decoration: none;
+}
+
+.patios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.patios-titulo {
+    font-size: var(--texto-md);
+    font-weight: 600;
 }
 
 .historico {

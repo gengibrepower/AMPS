@@ -2,6 +2,7 @@ import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import type {
 	DadosDoEstacionamento,
 	Estacionamento,
+	EstacionamentoNaBusca,
 	EstacionamentoRepository,
 	NovoEstacionamento,
 } from '../../ports.js';
@@ -22,6 +23,12 @@ interface EstacionamentoRow extends RowDataPacket {
 	estado: string | null;
 }
 
+// O SUM do MySQL volta como DECIMAL, que o mysql2 entrega em string.
+interface EstacionamentoNaBuscaRow extends EstacionamentoRow {
+	vagas_livres: number | string;
+	vagas_total: number | string;
+}
+
 const INSERT = `
 INSERT INTO estacionamentos
 	(dono_id, nome_estacionamento, cep, logradouro, numero, bairro, complemento, cidade, estado)
@@ -37,17 +44,23 @@ ORDER BY id
 `;
 
 const SELECT_PUBLICADOS = `
-SELECT id, dono_id, nome_estacionamento, publicado,
-	   cep, logradouro, numero, bairro, complemento, cidade, estado
-FROM estacionamentos
-WHERE publicado = 1
+SELECT e.id, e.dono_id, e.nome_estacionamento, e.publicado,
+	   e.cep, e.logradouro, e.numero, e.bairro, e.complemento, e.cidade, e.estado,
+	   COALESCE(v.livres, 0) AS vagas_livres, COALESCE(v.total, 0) AS vagas_total
+FROM estacionamentos e
+LEFT JOIN (
+	SELECT estacionamento_id, SUM(status = 'livre') AS livres, COUNT(*) AS total
+	FROM vagas
+	GROUP BY estacionamento_id
+) v ON v.estacionamento_id = e.id
+WHERE e.publicado = 1
 	AND (
-		nome_estacionamento LIKE CONCAT('%', ?, '%') ESCAPE '!'
-		OR cidade LIKE CONCAT('%', ?, '%') ESCAPE '!'
-		OR bairro LIKE CONCAT('%', ?, '%') ESCAPE '!'
-		OR logradouro LIKE CONCAT('%', ?, '%') ESCAPE '!'
+		e.nome_estacionamento LIKE CONCAT('%', ?, '%') ESCAPE '!'
+		OR e.cidade LIKE CONCAT('%', ?, '%') ESCAPE '!'
+		OR e.bairro LIKE CONCAT('%', ?, '%') ESCAPE '!'
+		OR e.logradouro LIKE CONCAT('%', ?, '%') ESCAPE '!'
 	)
-ORDER BY nome_estacionamento
+ORDER BY e.nome_estacionamento
 LIMIT 50
 `;
 
@@ -127,10 +140,13 @@ export class MysqlEstacionamentoRepository implements EstacionamentoRepository {
 		return rows.map(toEstacionamento);
 	}
 
-	async searchPublicados(termo: string): Promise<readonly Estacionamento[]> {
+	async searchPublicados(termo: string): Promise<readonly EstacionamentoNaBusca[]> {
 		const literal = termo.replace(/[!%_]/g, '!$&');
-		const [rows] = await this.pool.execute<EstacionamentoRow[]>(SELECT_PUBLICADOS, [literal, literal, literal, literal]);
-		return rows.map(toEstacionamento);
+		const [rows] = await this.pool.execute<EstacionamentoNaBuscaRow[]>(SELECT_PUBLICADOS, [literal, literal, literal, literal]);
+		return rows.map((row) => ({
+			...toEstacionamento(row),
+			vagas: { livres: Number(row.vagas_livres), total: Number(row.vagas_total) },
+		}));
 	}
 
 	async findById(id: number): Promise<Estacionamento | null> {

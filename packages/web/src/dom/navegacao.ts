@@ -163,6 +163,11 @@ function renderNavegacao(tipo: string | null): void {
 export function renderAccountPanel(): void {
     const session = getSession();
 
+    // Logado, o nome já está no chip do cabeçalho; o item da sidebar só
+    // existe para quem ainda precisa entrar.
+    const itemDaConta = sidebarAccountButton?.closest('li');
+    if (itemDaConta) itemDaConta.hidden = session !== null;
+
     if (session) {
         if (accountEmail) accountEmail.textContent = session.usuario.email;
         if (sidebarAccountLabel) sidebarAccountLabel.textContent = session.usuario.nome;

@@ -59,8 +59,12 @@ export function excluirEstacionamento(id: number): Promise<null> {
     return pedirAutenticado<null>(`/estacionamentos/${id}`, { method: 'DELETE' });
 }
 
-export function pesquisarEstacionamentos(q: string): Promise<readonly EstacionamentoWire[]> {
-    return pedir<readonly EstacionamentoWire[]>(`/busca?q=${encodeURIComponent(q)}`);
+export interface EstacionamentoNaBuscaWire extends EstacionamentoWire {
+    readonly vagas: { readonly livres: number; readonly total: number };
+}
+
+export function pesquisarEstacionamentos(q: string): Promise<readonly EstacionamentoNaBuscaWire[]> {
+    return pedir<readonly EstacionamentoNaBuscaWire[]>(`/busca?q=${encodeURIComponent(q)}`);
 }
 
 export function buscarEstacionamentoPublicado(id: number): Promise<EstacionamentoWire> {

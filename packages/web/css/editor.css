@@ -61,11 +61,10 @@ header {
 .etiqueta {
     flex-shrink: 0;
     border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-pilula);
-    padding: 2px 9px;
+    border-radius: var(--raio-etiqueta);
+    padding: 2px 8px;
     font-size: var(--texto-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-weight: 600;
     color: var(--cor-texto-apagado);
 }
 
