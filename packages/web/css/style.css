@@ -1,4 +1,5 @@
 @import url(base.css);
+@import url(cards.css);
 
 body {
     display: flex;
@@ -232,6 +233,19 @@ main {
     font-weight: 600;
     text-align: center;
     text-decoration: none;
+}
+
+.patios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.patios-titulo {
+    font-size: var(--texto-md);
+    font-weight: 600;
 }
 
 .historico {
