@@ -235,6 +235,12 @@ textarea {
     flex-shrink: 0;
 }
 
+/* As páginas mostram este item em telas largas com display: block, que
+   venceria o [hidden] do navegador. */
+.nav-item-account[hidden] {
+    display: none;
+}
+
 .nav-item-account {
     margin-top: 12px;
     padding-top: 12px;
