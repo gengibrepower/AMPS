@@ -6,14 +6,15 @@ import {
     listarModelos,
     recomendarVaga,
 } from '../api';
-import type { CarroWire, ModeloWire, VagaPublicaWire } from '../api';
+import type { CarroWire, ModeloWire } from '../api';
 import { getSession } from '../auth';
 import { criarPalco } from '../graph/render/palco';
 import { criarCena } from '../graph/render/cena';
 import type { Cena } from '../graph/render/cena';
 import type { Cobertura } from '../graph/geometria';
-import { comoGrafo, comoStatusDeVaga, comoTipoDeVaga } from '../graph/tipos';
-import type { DadosDaVaga, Grafo, Papel } from '../graph/tipos';
+import { comoGrafo } from '../graph/tipos';
+import type { Grafo, Papel } from '../graph/tipos';
+import { comoDadosDaVaga } from './vagas';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
 import { salvarHistorico } from '../historico';
 
@@ -50,18 +51,6 @@ function cobertura(): Cobertura {
         return { ...sem, base: Math.max(0, area.bottom - caixa.top) };
     }
     return { ...sem, esquerda: Math.max(0, caixa.right - area.left) };
-}
-
-// A rota pública não manda o sensor, e o público não tem por que saber qual é.
-function comoDadosDaVaga(vaga: VagaPublicaWire): DadosDaVaga {
-    return {
-        noId: vaga.no_id,
-        numero: vaga.numero,
-        tipo: comoTipoDeVaga(vaga.tipo),
-        rotacaoGraus: vaga.rotacao_graus,
-        sensor: null,
-        status: comoStatusDeVaga(vaga.status),
-    };
 }
 
 function opcao(valor: string, texto: string): HTMLOptionElement {
