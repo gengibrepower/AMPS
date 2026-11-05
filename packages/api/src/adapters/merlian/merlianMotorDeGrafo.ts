@@ -1,11 +1,21 @@
 import { UnavailableError, UnprocessableError } from '../../errors.js';
-import type { Alcancabilidade, MotorDeGrafo } from '../../ports.js';
+import type {
+	Alcancabilidade,
+	MotorDeGrafo,
+	PedidoDeRecomendacao,
+	Recomendacao,
+} from '../../ports.js';
 
 const SERVICO = 'merlian';
 
 interface RespostaAlcancabilidade {
 	byEntrance?: readonly { entranceId?: string; reachableSlotIds?: readonly string[] }[];
 	unreachableSlotIds?: readonly string[];
+}
+
+interface RespostaRecomendacao {
+	slot?: { id?: string } | null;
+	route?: { nodes?: readonly string[]; totalWeight?: number } | null;
 }
 
 interface CorpoDeErro {
@@ -42,6 +52,27 @@ export class MerlianMotorDeGrafo implements MotorDeGrafo {
 				vagasAlcancaveis: entrada.reachableSlotIds ?? [],
 			})),
 			vagasInalcancaveis: resposta.unreachableSlotIds ?? [],
+		};
+	}
+
+	async recomendar(pedido: PedidoDeRecomendacao): Promise<Recomendacao> {
+		const corpo = await this.post('/v1/recommendations', {
+			graph: pedido.grafo,
+			vehicle: {
+				dimensions: { width: pedido.veiculo.largura, length: pedido.veiculo.comprimento },
+			},
+			occupancy: pedido.indisponiveis,
+			poiId: pedido.poiId,
+			entranceId: pedido.entradaId,
+		});
+		const resposta = corpo as RespostaRecomendacao;
+
+		return {
+			vagaNoId: resposta.slot?.id ?? null,
+			rota:
+				resposta.route?.nodes === undefined
+					? null
+					: { nos: resposta.route.nodes, pesoTotal: resposta.route.totalWeight ?? 0 },
 		};
 	}
 

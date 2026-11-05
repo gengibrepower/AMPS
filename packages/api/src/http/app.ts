@@ -8,6 +8,7 @@ import type { MapaService } from '../services/mapaService.js';
 import type { MetricasService } from '../services/metricasService.js';
 import type { ModeloService } from '../services/modeloService.js';
 import type { PublicacaoService } from '../services/publicacaoService.js';
+import type { RecomendacaoService } from '../services/recomendacaoService.js';
 import type { TopologiaService } from '../services/topologiaService.js';
 import type { VagaService } from '../services/vagaService.js';
 import type { UsuarioService } from '../services/usuarioService.js';
@@ -28,6 +29,7 @@ export interface AppDeps {
 	readonly mapaService: MapaService;
 	readonly metricasService: MetricasService;
 	readonly publicacaoService: PublicacaoService;
+	readonly recomendacaoService: RecomendacaoService;
 	readonly tokenService: TokenService;
 	readonly corsOrigin: string;
 }
@@ -304,6 +306,37 @@ export function createApp(deps: AppDeps): Express {
 			versao: mapa.versao,
 			grafo: mapa.grafo,
 			vagas: mapa.vagas.map(vagaPublicaWire),
+		});
+	});
+
+	app.post('/busca/:id/recomendacao', autenticar(deps.tokenService), async (req, res) => {
+		const auth = autenticado(req, res);
+		if (auth === null) return;
+
+		const id = idDaRota(req, res);
+		if (id === null) return;
+
+		const dados = exigir(req, res, ['poi', 'entrada']);
+		if (dados === null) return;
+
+		const carroId = Number((req.body as Record<string, unknown>)['carro_id']);
+		if (!Number.isInteger(carroId)) {
+			res.status(400).json({ erro: 'campos obrigatorios ausentes', campos: ['carro_id'] });
+			return;
+		}
+
+		const recomendada = await deps.recomendacaoService.recomendar(auth.sub, id, {
+			carroId,
+			poiId: dados.poi,
+			entradaId: dados.entrada,
+		});
+		res.status(200).json({
+			vaga: recomendada.vaga === null
+				? null
+				: { no_id: recomendada.vaga.noId, numero: recomendada.vaga.numero },
+			rota: recomendada.rota === null
+				? null
+				: { nos: recomendada.rota.nos, peso_total: recomendada.rota.pesoTotal },
 		});
 	});
 

@@ -3,7 +3,7 @@ import request from 'supertest';
 import type { Express } from 'express';
 import type { ResultSetHeader } from 'mysql2/promise';
 import { UnavailableError } from '../errors.js';
-import type { Alcancabilidade, MotorDeGrafo } from '../ports.js';
+import type { Alcancabilidade, MotorDeGrafo, Recomendacao } from '../ports.js';
 import { usarBancoDeTeste } from '../adapters/mysql/testSupport.js';
 import { createTokenService } from '../security/jwt.js';
 import { montarApp } from '../composition.js';
@@ -27,6 +27,9 @@ const merlian = {
 		return merlian.erro === null
 			? Promise.resolve(merlian.resposta)
 			: Promise.reject(merlian.erro);
+	},
+	recomendar(): Promise<Recomendacao> {
+		return Promise.resolve({ vagaNoId: null, rota: null });
 	},
 } satisfies MotorDeGrafo & Record<string, unknown>;
 
