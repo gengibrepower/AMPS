@@ -1,3 +1,4 @@
+import '../dom/navegacao';
 import { pesquisarEstacionamentos } from '../api';
 import { criarCardDeEstacionamento } from '../busca/card';
 import { lerHistorico } from '../historico';

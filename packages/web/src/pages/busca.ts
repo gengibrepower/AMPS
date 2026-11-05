@@ -1,3 +1,4 @@
+import '../dom/navegacao';
 import { ApiError, pesquisarEstacionamentos } from '../api';
 import { criarCardDeEstacionamento } from '../busca/card';
 import { limparMensagem, mostrarMensagem } from '../dom/ui';
