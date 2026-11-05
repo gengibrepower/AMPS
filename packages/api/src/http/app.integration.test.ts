@@ -1361,6 +1361,13 @@ describe('GET /busca', () => {
 		expect(nomes(resposta.body)).toEqual(['Estaciona & Cia']);
 	});
 
+	it.each(['%', '_', '!'])('trata %s como caractere, nao como curinga', async (termo) => {
+		const resposta = await request(app).get('/busca').query({ q: termo });
+
+		expect(resposta.status).toBe(200);
+		expect(resposta.body).toEqual([]);
+	});
+
 	it('lista vazia quando nada casa', async () => {
 		const resposta = await request(app).get('/busca').query({ q: 'Curitiba' });
 
