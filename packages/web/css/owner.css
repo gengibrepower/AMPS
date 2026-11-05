@@ -12,17 +12,10 @@ main {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 20px;
-}
-
-.titulo-linha h2 {
-    font-size: var(--texto-lg);
-    font-weight: 600;
 }
 
 .titulo-linha .titulo-tripla {
     flex: 1;
-    font-size: 13px;
 }
 
 .botao-primario {
