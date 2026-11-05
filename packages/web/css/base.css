@@ -242,10 +242,9 @@ textarea {
     position: relative;
     width: 100%;
     max-height: 80vh;
-    background-color: var(--cor-fundo-sutil);
-    border-top: 1px solid var(--cor-borda-sutil);
+    background-color: var(--cor-papel);
+    border-top: 1.5px solid var(--cor-tinta);
     padding: 24px 16px;
-    border-radius: var(--raio-card) var(--raio-card) 0 0;
 }
 
 #close-sidebar-button {
@@ -297,8 +296,8 @@ textarea {
 }
 
 .nav-item a[aria-current="page"] {
-    background-color: var(--cor-marca-fundo);
-    color: var(--cor-marca);
+    box-shadow: inset 3px 0 0 var(--cor-tinta);
+    font-weight: 600;
 }
 
 .nav-item .material-symbols-sharp {
@@ -416,7 +415,6 @@ textarea {
         width: 280px;
         max-height: 100%;
         border-top: none;
-        border-right: 1px solid var(--cor-borda-sutil);
-        border-radius: 0;
+        border-right: 1.5px solid var(--cor-tinta);
     }
 }

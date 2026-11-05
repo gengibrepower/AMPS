@@ -59,26 +59,34 @@ main {
     text-align: center;
 }
 
-.vitrine::before,
-.vitrine::after {
+.vitrine::before {
     content: "";
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
-    border-radius: 50%;
-}
-
-.vitrine::before {
     bottom: -500px;
     width: 1100px;
     height: 1100px;
+    transform: translateX(-50%);
+    border-radius: 50%;
     background: repeating-conic-gradient(from 0deg, var(--cor-areia) 0deg 3deg, var(--cor-creme) 3deg 6deg);
 }
 
-.vitrine::after {
-    bottom: -250px;
-    width: 900px;
-    height: 620px;
+/* O arco de aro duplo nasce logo acima do texto, não do pé da seção: a altura
+   do título muda com a largura, e ancorado embaixo o aro cortava a divisa. */
+.vitrine-base {
+    position: relative;
+}
+
+.vitrine-base::before {
+    content: "";
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    z-index: -1;
+    width: 1000px;
+    height: 440px;
+    transform: translateX(-50%);
+    border-radius: 50%;
     background-color: var(--cor-creme);
     box-shadow: 0 0 0 1.5px var(--cor-ouro), 0 0 0 12px var(--cor-creme), 0 0 0 13.5px var(--cor-ouro);
 }
@@ -116,12 +124,12 @@ main {
     display: block;
     max-width: 100%;
     height: auto;
-    margin: 24px auto 0;
+    margin: 24px auto 48px;
 }
 
 .vitrine-texto {
     max-width: 600px;
-    margin: 20px auto 0;
+    margin: 0 auto;
     font-size: clamp(17px, 2vw, 20px);
     font-weight: 400;
     line-height: 1.6;
@@ -253,28 +261,34 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background-color: var(--cor-superficie);
-    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+    background-color: var(--cor-papel);
+    border-top: 1.5px solid var(--cor-tinta);
+    box-shadow: 0 -4px 0 -2.5px var(--cor-ouro);
+    padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
 }
 
 .nav-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
     border: none;
     background: transparent;
-    color: var(--cor-marca);
-    opacity: 0.6;
+    color: var(--cor-texto-apagado);
+    font-family: inherit;
     cursor: pointer;
 }
 
 .nav-label {
-    font-size: var(--texto-xs);
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    margin-right: -0.24em;
+    text-transform: uppercase;
 }
 
 .nav-item-account {
@@ -532,10 +546,10 @@ main {
         height: 1240px;
     }
 
-    .vitrine::after {
-        bottom: -395px;
-        width: 1100px;
-        height: 700px;
+    .vitrine-base::before {
+        top: -26px;
+        width: 1800px;
+        height: 600px;
     }
 
     .faixa-agora {

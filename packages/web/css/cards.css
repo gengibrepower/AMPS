@@ -38,8 +38,8 @@
 
 .result-card-planta {
     position: relative;
-    height: 176px;
-    padding: 30px 16px 14px;
+    height: 172px;
+    padding: 26px 18px 16px;
     overflow: hidden;
     background-color: var(--cor-tinta);
 }
@@ -52,9 +52,14 @@
     object-fit: cover;
 }
 
+.result-card-planta.com-planta svg {
+    outline: 1px solid var(--cor-ouro);
+    outline-offset: 5px;
+}
+
 .result-card-etiqueta {
     position: absolute;
-    top: 4px;
+    top: 3px;
     left: 50%;
     transform: translateX(-50%);
     padding: 5px 12px 3px;
