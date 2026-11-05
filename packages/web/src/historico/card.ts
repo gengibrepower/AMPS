@@ -14,7 +14,7 @@ export function criarCardDoHistorico(item: ItemDoHistorico): HTMLLIElement {
 
     const link = document.createElement('a');
     link.className = 'historico-link';
-    link.href = `/client/estacionamento.html?id=${item.id}`;
+    link.href = `/client/estacionamento-publicado.html?id=${item.id}`;
 
     const texto = document.createElement('span');
     texto.className = 'historico-texto';

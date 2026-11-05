@@ -163,7 +163,7 @@ type Saida = 'login' | 'lista' | 'busca';
 
 const SAIDAS: Record<Saida, { readonly href: string; readonly texto: string }> = {
     login: { href: '../index.html#entrar', texto: 'Ir para o login' },
-    lista: { href: 'estacionamentos.html', texto: 'Voltar à lista' },
+    lista: { href: 'meus-estacionamentos.html', texto: 'Voltar à lista' },
     busca: { href: '../index.html', texto: 'Buscar estacionamento' },
 };
 
