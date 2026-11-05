@@ -55,10 +55,198 @@ header {
     padding: 8px 12px;
 }
 
+.area-do-mapa {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
 .palco {
     width: 100%;
     height: 100%;
     background-color: #FBFDFC;
+}
+
+.painel {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 55%;
+    overflow-y: auto;
+    padding: 16px;
+    border: 1px solid var(--cor-borda-sutil);
+    border-radius: var(--raio-card);
+    background-color: var(--cor-fundo-sutil);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.painel-titulo {
+    font-size: var(--texto-md);
+    font-weight: 700;
+}
+
+.painel-aviso {
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
+    line-height: 1.5;
+}
+
+.painel-aviso a {
+    color: var(--cor-marca);
+    font-weight: 600;
+}
+
+.painel-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.painel-form label {
+    margin-top: 6px;
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cor-texto-apagado);
+}
+
+.painel-form select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--cor-borda-campo);
+    border-radius: var(--raio-campo);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: inherit;
+    font-size: var(--texto-sm);
+}
+
+.painel-form select:focus-visible,
+.botao-encontrar:focus-visible,
+.botao-limpar:focus-visible {
+    outline: 2px solid var(--cor-marca);
+    outline-offset: 2px;
+}
+
+.botao-encontrar {
+    margin-top: 12px;
+    padding: 12px;
+    border: none;
+    border-radius: var(--raio-pilula);
+    background-color: var(--cor-marca);
+    color: var(--cor-sobre-marca);
+    font-family: inherit;
+    font-size: var(--texto-md);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.botao-encontrar:hover {
+    background-color: var(--cor-marca-hover);
+}
+
+.botao-encontrar:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.resultado {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 14px;
+    border: 1px solid var(--cor-marca-borda);
+    border-radius: var(--raio-campo);
+    background-color: var(--cor-marca-fundo);
+}
+
+.resultado-rotulo {
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cor-marca);
+}
+
+.resultado-numero {
+    font-size: var(--texto-2xl);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.resultado-detalhe {
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
+}
+
+.botao-limpar {
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--cor-marca);
+    font-family: inherit;
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.message:empty {
+    display: none;
+}
+
+.message {
+    font-size: var(--texto-sm);
+}
+
+.legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    list-style: none;
+    padding-top: 12px;
+    border-top: 1px solid var(--cor-borda-sutil);
+    font-size: var(--texto-xs);
+    color: var(--cor-texto-apagado);
+}
+
+.legenda li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* As amostras repetem a tinta do canvas (render/tinta.ts), que o CSS não lê. */
+.amostra {
+    width: 12px;
+    height: 18px;
+    border: 1.5px solid #1A211E;
+    border-radius: 2px;
+}
+
+.amostra-livre { background-color: #FFFFFF; }
+.amostra-ocupada { background-color: #FDBDBE; }
+.amostra-pcd { background-color: #C2E5FF; }
+.amostra-idoso { background-color: #FBE577; }
+.amostra-moto { background-color: #C9E8CA; }
+.amostra-eletrico { background-color: #B8EAE0; }
+.amostra-sua { background-color: #09C382; border-color: #1D3B31; border-width: 2.5px; }
+
+@media (min-width: 768px) {
+    .painel {
+        top: 12px;
+        right: auto;
+        bottom: auto;
+        width: 300px;
+        max-height: calc(100% - 24px);
+    }
 }
 
 .msg-success {
@@ -71,4 +259,8 @@ header {
 
 .msg-info {
     opacity: 0.85;
+}
+
+.disabled {
+    display: none;
 }

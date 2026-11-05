@@ -98,3 +98,24 @@ export function despublicar(estacionamentoId: number): Promise<EstacionamentoWir
         method: 'DELETE',
     });
 }
+
+export interface EscolhaDeVaga {
+    readonly carroId: number;
+    readonly poi: string;
+    readonly entrada: string;
+}
+
+export interface RecomendacaoWire {
+    readonly vaga: { readonly no_id: string; readonly numero: string } | null;
+    readonly rota: { readonly nos: readonly string[]; readonly peso_total: number } | null;
+}
+
+export function recomendarVaga(
+    estacionamentoId: number,
+    escolha: EscolhaDeVaga,
+): Promise<RecomendacaoWire> {
+    return pedirAutenticado<RecomendacaoWire>(`/busca/${estacionamentoId}/recomendacao`, {
+        method: 'POST',
+        body: JSON.stringify({ carro_id: escolha.carroId, poi: escolha.poi, entrada: escolha.entrada }),
+    });
+}

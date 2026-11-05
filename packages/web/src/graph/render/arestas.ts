@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { metrosParaPixels, pontosAoLongo, segmento } from '../geometria';
+import { LARGURA_DA_FAIXA, metrosParaPixels, pontosAoLongo, segmento } from '../geometria';
 import type { Ponto } from '../geometria';
 import {
     ASFALTO,
@@ -12,7 +12,6 @@ import {
 
 // Tudo aqui está em metros, como o resto do modelo: o corredor é desenhado na
 // largura de verdade, senão a vaga parece desproporcional ao lado dele.
-const LARGURA_DA_FAIXA = 3.2;
 const DESVIO_DA_MAO_DUPLA = LARGURA_DA_FAIXA / 2;
 
 // Setas pintadas ao longo do corredor, para o sentido ser legível em qualquer

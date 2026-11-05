@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { direcao, encaixarNaTela, encaixarPonto, pixelsParaMetros } from '../geometria';
+import { direcao, encaixarNaTela, encaixarPonto, metrosParaPixels, pixelsParaMetros } from '../geometria';
 import type { Ponto } from '../geometria';
 import {
     acharNo,
@@ -9,11 +9,12 @@ import {
     docaDaVaga,
     temInversa,
 } from '../modelo';
+import { pontosDaRota } from '../rota';
 import { GRAFO_VAZIO } from '../tipos';
 import type { Aresta, DadosDaVaga, Grafo, NoVaga } from '../tipos';
 import { desenharAresta, desenharDoca, ladoDoTraco, meioFioEmMetros, realcarAresta } from './arestas';
 import { desenharNo, mostrarNumeros, realcarNo, recuoDoNo } from './nos';
-import { PESO } from './tinta';
+import { PESO, ROTA, ROTA_CONTORNO } from './tinta';
 import type { Palco } from './palco';
 
 // O que a cena faz com o ponteiro. Apontar arrasta; ligar precisa do clique no
@@ -33,11 +34,17 @@ const ZOOM_MINIMO_DO_NUMERO = 0.6;
 // de via e não entra na caixa deles.
 const FOLGA_DO_ENQUADRAMENTO = 3.5;
 
+// Larguras do caminho em metros, como a via: o traço engrossa com o zoom junto
+// com o asfalto em vez de virar um fio no zoom alto.
+const LARGURA_DA_ROTA = 1.1;
+const LARGURA_DO_CONTORNO = 1.9;
+
 export interface Cena {
     desenhar(grafo: Grafo, vagas: readonly DadosDaVaga[]): void;
     enquadrar(): void;
     selecionar(selecao: Selecao): void;
     recusar(ids: readonly string[]): void;
+    recomendar(vagaNoId: string | null, rota: readonly string[]): void;
     modo(modo: ModoDaCena): void;
     aoSelecionar(ouvinte: (selecao: Selecao) => void): void;
     aoClicarNoNo(ouvinte: (id: string) => void): void;
@@ -54,8 +61,9 @@ function mesmaSelecao(a: Selecao, b: Selecao): boolean {
 
 export function criarCena(palco: Palco): Cena {
     const camadaDeArestas = new Konva.Group();
+    const camadaDaRota = new Konva.Group({ listening: false });
     const camadaDeNos = new Konva.Group();
-    palco.camadaConteudo.add(camadaDeArestas, camadaDeNos);
+    palco.camadaConteudo.add(camadaDeArestas, camadaDaRota, camadaDeNos);
 
     const grupos = new Map<string, Konva.Group>();
     const angulos = new Map<string, number>();
@@ -72,6 +80,8 @@ export function criarCena(palco: Palco): Cena {
     let selecao: Selecao = null;
     let arrastavel = true;
     let recusados: ReadonlySet<string> = new Set();
+    let recomendada: string | null = null;
+    let rota: readonly string[] = [];
 
     function aplicarRealce(): void {
         for (const no of grafo.nodes) {
@@ -82,6 +92,7 @@ export function criarCena(palco: Palco): Cena {
                     no.role,
                     selecao?.tipo === 'no' && selecao.id === no.id,
                     recusados.has(no.id),
+                    recomendada === no.id,
                 );
             }
         }
@@ -215,6 +226,38 @@ export function criarCena(palco: Palco): Cena {
         docas.set(vaga.id, traco);
     }
 
+    function desenharRota(): void {
+        camadaDaRota.destroyChildren();
+        const pontos = pontosDaRota(grafo, rota);
+        if (pontos.length < 2) return;
+
+        const emPixels = pontos.flatMap((ponto) => [
+            metrosParaPixels(ponto.x),
+            metrosParaPixels(ponto.y),
+        ]);
+        const comum = {
+            points: emPixels,
+            lineCap: 'round' as const,
+            lineJoin: 'round' as const,
+            pointerLength: metrosParaPixels(1.6),
+            pointerWidth: metrosParaPixels(1.6),
+        };
+        camadaDaRota.add(
+            new Konva.Arrow({
+                ...comum,
+                stroke: ROTA_CONTORNO,
+                fill: ROTA_CONTORNO,
+                strokeWidth: metrosParaPixels(LARGURA_DO_CONTORNO),
+            }),
+            new Konva.Arrow({
+                ...comum,
+                stroke: ROTA,
+                fill: ROTA,
+                strokeWidth: metrosParaPixels(LARGURA_DA_ROTA),
+            }),
+        );
+    }
+
     // O arrasto do nó pousa na grade de 1 m. O Konva conversa em coordenada
     // absoluta de tela, e a conta desce até os metros para o encaixe valer no
     // modelo, não no pixel.
@@ -288,6 +331,7 @@ export function criarCena(palco: Palco): Cena {
                 desenharUmaDoca(no);
             }
 
+            desenharRota();
             esquecerSelecaoMorta();
             ajustarPesos();
             aplicarRealce();
@@ -312,6 +356,13 @@ export function criarCena(palco: Palco): Cena {
         // torna a mensagem inútil.
         recusar(ids: readonly string[]): void {
             recusados = new Set(ids);
+            aplicarRealce();
+        },
+
+        recomendar(vagaNoId: string | null, novaRota: readonly string[]): void {
+            recomendada = vagaNoId;
+            rota = novaRota;
+            desenharRota();
             aplicarRealce();
         },
 
