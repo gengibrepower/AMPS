@@ -4,8 +4,23 @@
 .accountLogin h2 {
     text-align: center;
     color: var(--cor-texto);
-    margin-bottom: 24px;
-    font-weight: 600;
+    margin-bottom: 28px;
+    font-family: var(--fonte-marca);
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    margin-right: -0.12em;
+    text-transform: uppercase;
+}
+
+.container h2::after,
+.accountLogin h2::after {
+    content: "";
+    display: block;
+    width: 72px;
+    height: 7px;
+    margin: 14px auto 0;
+    border-block: 1.5px solid var(--cor-ouro);
 }
 
 .form-group {
@@ -86,13 +101,16 @@ button.btn-primary:focus-visible {
 }
 
 .links a {
-    color: var(--cor-marca);
+    align-self: center;
+    padding-bottom: 2px;
+    border-bottom: 1.5px solid var(--cor-ouro);
+    color: var(--cor-texto);
+    font-weight: 500;
     text-decoration: none;
 }
 
 .links a:hover {
-    color: var(--cor-marca-hover);
-    text-decoration: underline;
+    border-bottom-color: var(--cor-tinta);
 }
 
 .message {
