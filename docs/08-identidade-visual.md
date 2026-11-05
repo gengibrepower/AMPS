@@ -127,6 +127,19 @@ A Baunk sai.
   - a faixa preta tem raios de sol quase pretos saindo do pé;
   - o fundo da página é um padrão de escamas em leque a cerca de 1,05:1 do
     creme, que dá textura sem competir com texto.
+- **O preto nunca é chapado.** Cada superfície escura tem o seu padrão, em ouro
+  a 7–16% ou num preto um pouco mais claro: zigue-zague escalonado no chapéu
+  do card e no rodapé, raios na capa do detalhe e na faixa da home, caneluras
+  verticais no painel "Sua vaga", frisos horizontais nos botões e treliça de
+  losangos no frontão.
+- **Frontão.** A linha de título das páginas internas (carros, perfil, pátios,
+  painel do pátio) é uma marquise preta com topo em degrau, moldura de canto,
+  leque no alto e o título em Limelight ouro claro. Os controles dentro dela
+  invertem: botão primário em ouro com filete de tinta, contornos em ouro.
+- **Rodapé.** Toda página com rolagem termina num horizonte de garagens
+  escalonadas, com janelas acesas em ouro, sobre uma faixa preta com "AMPS"
+  entre losangos e chevron no pé. O corpo é coluna flex e o rodapé tem
+  `margin-top: auto`, então mesmo página curta assenta embaixo.
 
 O `clip-path` corta a borda. Para moldura com recorte, use dois elementos: o de
 fora com o fundo da cor da borda e `padding: 1.5px`, e o de dentro com o mesmo
