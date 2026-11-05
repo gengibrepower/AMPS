@@ -27,24 +27,43 @@ textarea {
 }
 
 :focus-visible {
-    outline: 2px solid var(--cor-marca);
-    outline-offset: 2px;
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
+/* Faixa de chevron em cima (12px) e linha tripla embaixo (9px), as duas
+   desenhadas no fundo para não depender de marcação nas sete páginas. */
 .cabecalho {
     position: sticky;
     top: 0;
     z-index: 10;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 8px;
-    height: var(--altura-cabecalho);
-    padding: 0 12px;
-    background-color: var(--cor-fundo);
-    border-bottom: 1px solid var(--cor-borda-sutil);
+    height: calc(var(--altura-cabecalho) + 21px);
+    padding: 12px 12px 9px;
+    background:
+        linear-gradient(135deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 12px repeat-x,
+        linear-gradient(225deg, var(--cor-ouro) 25%, transparent 25%) -8px 0 / 16px 12px repeat-x,
+        linear-gradient(var(--cor-tinta), var(--cor-tinta)) 0 0 / 100% 12px no-repeat,
+        var(--cor-fundo);
+}
+
+.cabecalho::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 9px;
+    border-top: 1.5px solid var(--cor-ouro);
+    border-bottom: 1.5px solid var(--cor-ouro);
+    background: linear-gradient(var(--cor-ouro), var(--cor-ouro)) center / 100% 1.5px no-repeat;
 }
 
 .cabecalho-menu {
+    justify-self: start;
     display: inline-flex;
     flex-shrink: 0;
     padding: 8px;
@@ -62,27 +81,37 @@ textarea {
 .marca {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     color: var(--cor-texto);
     text-decoration: none;
 }
 
-.marca img {
-    width: 28px;
-    height: 28px;
+.marca-p {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding-top: 5px;
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
+    font-family: var(--fonte-marca);
+    font-size: 24px;
+    clip-path: polygon(0 8px, 8px 8px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 8px, 100% 8px, 100% 100%, 0 100%);
 }
 
 .marca-nome {
     font-family: var(--fonte-marca);
-    font-size: var(--texto-xl);
+    font-size: 28px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     line-height: 1;
 }
 
 .cabecalho-conta {
+    justify-self: end;
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-left: auto;
     min-width: 0;
 }
 
@@ -90,20 +119,22 @@ textarea {
     display: inline-flex;
     align-items: center;
     min-height: var(--altura-controle);
-    padding: 0 16px;
-    border: 1px solid var(--cor-marca-borda);
-    border-radius: var(--raio-pilula);
-    background-color: var(--cor-marca-fundo);
+    padding: 2px 16px 0;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-superficie);
     color: var(--cor-texto);
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
 }
 
 .botao-entrar:hover {
-    border-color: var(--cor-marca);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
 }
 
 .conta-chip {
@@ -134,13 +165,13 @@ textarea {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: var(--cor-marca-fundo);
-    border: 1px solid var(--cor-marca-borda);
-    color: var(--cor-marca);
-    font-size: var(--texto-xs);
+    width: 40px;
+    height: 40px;
+    padding-top: 2px;
+    clip-path: var(--recorte-losango);
+    background-color: var(--cor-tinta);
+    color: var(--cor-ouro-claro);
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.04em;
 }
@@ -263,11 +294,37 @@ textarea {
     .conta-nome {
         display: none;
     }
+
+    .cabecalho {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .marca {
+        justify-self: start;
+        gap: 8px;
+    }
+
+    .marca-p {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+
+    .marca-nome {
+        font-size: 22px;
+        letter-spacing: 0.12em;
+    }
+
+    .botao-entrar {
+        padding: 2px 12px 0;
+        letter-spacing: 0.16em;
+    }
 }
 
 @media (min-width: 768px) {
     .cabecalho {
-        padding: 0 24px;
+        padding-left: 24px;
+        padding-right: 24px;
     }
 
     .sidebar-nav {

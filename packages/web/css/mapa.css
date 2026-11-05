@@ -122,32 +122,38 @@ header {
 .painel-form select {
     width: 100%;
     padding: 9px 12px;
-    border: 1px solid var(--cor-borda-campo);
+    border: 1.5px solid var(--cor-borda-campo);
     border-radius: var(--raio-campo);
-    background-color: var(--cor-fundo);
+    background-color: var(--cor-superficie);
     color: var(--cor-texto);
     font-family: inherit;
-    font-size: var(--texto-sm);
+    font-size: var(--texto-md);
 }
 
 .painel-form select:focus-visible,
-.botao-encontrar:focus-visible,
 .botao-limpar:focus-visible {
-    outline: 2px solid var(--cor-marca);
-    outline-offset: 2px;
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
+}
+
+.botao-encontrar:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
 }
 
 .botao-encontrar {
     margin-top: 12px;
-    min-height: var(--altura-acao);
-    padding: 0 12px;
+    min-height: 52px;
+    padding: 4px 12px 0;
     border: none;
-    border-radius: var(--raio-pilula);
+    clip-path: var(--recorte-entalhe);
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
     font-family: inherit;
-    font-size: var(--texto-md);
+    font-size: var(--texto-sm);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     cursor: pointer;
 }
 

@@ -27,18 +27,25 @@ main {
     border: none;
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
-    min-height: var(--altura-controle);
-    padding: 0 16px;
-    border-radius: var(--raio-pilula);
+    min-height: var(--altura-acao);
+    padding: 3px 20px 0;
+    clip-path: var(--recorte-entalhe);
     font-family: inherit;
-    font-size: var(--texto-sm);
+    font-size: var(--texto-xs);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
 }
 
 .botao-primario:hover {
     background-color: var(--cor-marca-hover);
+}
+
+.botao-primario:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
 }
 
 .botao-primario:disabled {
@@ -165,19 +172,19 @@ main {
 
 .campo input,
 .campo select {
-    border: 1px solid var(--cor-borda-campo);
+    border: 1.5px solid var(--cor-borda-campo);
     border-radius: var(--raio-campo);
-    background-color: var(--cor-fundo-sutil);
+    background-color: var(--cor-superficie);
     color: var(--cor-texto);
     font-family: inherit;
-    font-size: var(--texto-sm);
-    padding: 9px 12px;
-    outline: none;
+    font-size: var(--texto-md);
+    padding: 10px 12px;
 }
 
 .campo input:focus,
 .campo select:focus {
-    border-color: var(--cor-marca);
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
 #estado {

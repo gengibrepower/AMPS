@@ -79,10 +79,14 @@ main.pagina-detalhes {
     font-size: 18px;
 }
 
-.voltar:focus-visible,
-.botao-principal:focus-visible {
+.voltar:focus-visible {
     outline: 2px solid var(--cor-texto);
     outline-offset: 2px;
+}
+
+.botao-principal:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
 }
 
 .capa-nome {
@@ -128,13 +132,15 @@ main.pagina-detalhes {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: var(--altura-acao);
-    padding: 0 24px;
-    border-radius: var(--raio-pilula);
+    min-height: 52px;
+    padding: 4px 24px 0;
+    clip-path: var(--recorte-entalhe);
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
-    font-size: var(--texto-md);
+    font-size: var(--texto-sm);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     text-decoration: none;
 }
 

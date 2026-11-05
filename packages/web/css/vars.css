@@ -53,10 +53,15 @@
     --texto-xl: 1.5rem;
     --texto-2xl: 2rem;
 
-    --raio-campo: 8px;
-    --raio-card: 14px;
-    --raio-pilula: 999px;
-    --raio-etiqueta: 6px;
+    --raio-campo: 0;
+    --raio-card: 0;
+    --raio-pilula: 0;
+    --raio-etiqueta: 0;
+
+    /* O clip-path corta borda e outline: elemento entalhado não tem borda, e o
+       foco dele é desenhado por dentro (outline-offset negativo). */
+    --recorte-entalhe: polygon(0 8px, 8px 8px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 8px, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 8px), 0 calc(100% - 8px));
+    --recorte-losango: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 
     /* Três alturas de controle (escala do IBM Carbon): ação principal, padrão
        e compacta. A busca da home vai a 56, a barra do Material 3. */

@@ -43,9 +43,15 @@ main {
     width: 100%;
     min-height: var(--altura-busca);
     border-radius: var(--raio-pilula);
-    border: 1px solid var(--cor-borda-campo);
+    border: 1.5px solid var(--cor-borda-campo);
+    box-shadow: inset 0 0 0 4px var(--cor-superficie), inset 0 0 0 5px var(--cor-ouro);
     background-color: var(--cor-superficie);
     padding: 0 20px;
+}
+
+.search-box:focus-within {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
 .search-box .material-symbols-outlined {
@@ -125,9 +131,9 @@ main {
     margin: auto;
     width: min(512px, 100%);
     padding: clamp(2rem, 6vh, 3rem) clamp(1.5rem, 6vw, 4rem);
-    background-color: var(--cor-fundo-sutil);
-    border: 1px solid var(--cor-borda-sutil);
-    border-radius: var(--raio-card);
+    background-color: var(--cor-superficie);
+    border: 1.5px solid var(--cor-tinta);
+    box-shadow: inset 0 0 0 6px var(--cor-superficie), inset 0 0 0 7px var(--cor-ouro);
 }
 
 .login h1 {
@@ -148,7 +154,7 @@ main {
     margin: 0;
     padding: 0;
     border: none;
-    border-radius: var(--raio-pilula);
+    clip-path: none;
     background: transparent;
     color: var(--cor-texto-apagado);
     cursor: pointer;
@@ -188,24 +194,36 @@ main {
 
 .login input {
     padding: 12px 14px;
-    background-color: var(--cor-fundo);
+    background-color: var(--cor-superficie);
     color: var(--cor-texto);
-    border: 1px solid var(--cor-borda-campo);
+    border: 1.5px solid var(--cor-borda-campo);
     border-radius: var(--raio-campo);
     font-size: var(--texto-md);
-    outline: none;
+}
+
+.login input:focus-visible {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
 .login button {
     margin-top: 20px;
-    padding: 14px;
+    min-height: 52px;
+    padding: 4px 14px 0;
     border: none;
-    border-radius: var(--raio-pilula);
+    clip-path: var(--recorte-entalhe);
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
     font-weight: 600;
-    font-size: var(--texto-md);
+    font-size: var(--texto-sm);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     cursor: pointer;
+}
+
+.login button:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
 }
 
 .login p {
@@ -231,12 +249,16 @@ main {
     min-height: var(--altura-acao);
     padding: 0 14px;
     width: 100%;
+    padding-top: 4px;
     border: none;
-    border-radius: var(--raio-pilula);
+    clip-path: var(--recorte-entalhe);
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
-    font-size: var(--texto-md);
+    font-size: var(--texto-sm);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    line-height: 48px;
+    text-transform: uppercase;
     text-align: center;
     text-decoration: none;
 }

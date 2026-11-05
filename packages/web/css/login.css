@@ -23,12 +23,11 @@ label {
 input {
     width: 100%;
     padding: 12px;
-    background-color: var(--cor-fundo-sutil);
+    background-color: var(--cor-superficie);
     color: var(--cor-texto);
-    border: 1px solid var(--cor-borda-campo);
+    border: 1.5px solid var(--cor-borda-campo);
     border-radius: var(--raio-campo);
     font-size: var(--texto-md);
-    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 input::placeholder {
@@ -36,9 +35,8 @@ input::placeholder {
 }
 
 input:focus {
-    border-color: var(--cor-marca);
-    outline: none;
-    box-shadow: 0 0 0 3px var(--cor-marca-fundo);
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
 /* O autofill do Chrome pinta o campo de amarelo-claro por cima do fundo. */
@@ -46,19 +44,22 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px var(--cor-fundo-sutil) inset !important;
+    -webkit-box-shadow: 0 0 0 30px var(--cor-superficie) inset !important;
     -webkit-text-fill-color: var(--cor-texto) !important;
 }
 
 button.btn-primary {
     width: 100%;
-    padding: 14px;
+    min-height: 52px;
+    padding: 4px 14px 0;
     background-color: var(--cor-marca);
     color: var(--cor-sobre-marca);
     border: none;
-    border-radius: var(--raio-pilula);
-    font-size: var(--texto-md);
+    clip-path: var(--recorte-entalhe);
+    font-size: var(--texto-sm);
     font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     cursor: pointer;
     margin-top: 16px;
     transition: background-color 0.15s;
@@ -66,6 +67,11 @@ button.btn-primary {
 
 button.btn-primary:hover {
     background-color: var(--cor-marca-hover);
+}
+
+button.btn-primary:focus-visible {
+    outline: 2px solid var(--cor-ouro-claro);
+    outline-offset: -6px;
 }
 
 .links {

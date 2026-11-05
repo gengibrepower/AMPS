@@ -16,9 +16,15 @@ main {
     width: 100%;
     min-height: var(--altura-acao);
     border-radius: var(--raio-pilula);
-    border: 1px solid var(--cor-borda-campo);
+    border: 1.5px solid var(--cor-borda-campo);
+    box-shadow: inset 0 0 0 4px var(--cor-superficie), inset 0 0 0 5px var(--cor-ouro);
     background-color: var(--cor-superficie);
     padding: 0 18px;
+}
+
+.search-box:focus-within {
+    outline: 2px solid var(--cor-tinta);
+    outline-offset: 3px;
 }
 
 .search-box .material-symbols-outlined {
