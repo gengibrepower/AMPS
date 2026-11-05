@@ -53,6 +53,7 @@
 }
 
 .result-card-planta.com-planta svg {
+    background-color: #FBF8EF;
     outline: 1px solid var(--cor-ouro);
     outline-offset: 5px;
 }

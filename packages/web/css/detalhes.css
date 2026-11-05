@@ -40,6 +40,12 @@ main.pagina-detalhes {
     background-color: var(--cor-tinta);
 }
 
+.capa-com-planta .capa-imagem svg {
+    background-color: #FBF8EF;
+    outline: 1px solid var(--cor-ouro);
+    outline-offset: 6px;
+}
+
 .capa-com-planta .capa-texto {
     position: static;
     background: none;
@@ -260,8 +266,8 @@ main.pagina-detalhes {
     box-shadow: none;
 }
 
-/* Tipos de vaga: um card por tipo, com a tinta do mapa (render/tinta.ts) na
-   faixa de cima e o mostrador do tipo. */
+/* Tipos de vaga: um card por tipo, com a amostra da tinta do mapa
+   (render/tinta.ts) ao lado do nome e o mostrador do tipo. */
 .tipos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -274,25 +280,30 @@ main.pagina-detalhes {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 0 12px 14px;
+    padding: 16px 12px 14px;
     border: 1.5px solid var(--cor-tinta);
     background-color: var(--cor-papel);
     text-align: center;
 }
 
-.tipo::before {
-    content: "";
-    align-self: stretch;
-    height: 10px;
-    margin: 0 -12px 4px;
-    border-bottom: 1.5px solid var(--cor-tinta);
+.tipo-nome {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.tipo-comum::before { background-color: #FBF8EF; }
-.tipo-pcd::before { background-color: #CFDCE8; }
-.tipo-idoso::before { background-color: #EFDFAE; }
-.tipo-moto::before { background-color: #D6DEC8; }
-.tipo-eletrico::before { background-color: #CFE3DC; }
+.tipo-nome::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-da-vaga, #FBF8EF);
+}
+
+.tipo-pcd { --cor-da-vaga: #CFDCE8; }
+.tipo-idoso { --cor-da-vaga: #EFDFAE; }
+.tipo-moto { --cor-da-vaga: #D6DEC8; }
+.tipo-eletrico { --cor-da-vaga: #CFE3DC; }
 
 .tipo-nome,
 .tipo-estado {
