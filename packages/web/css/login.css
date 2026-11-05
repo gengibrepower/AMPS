@@ -6,10 +6,11 @@
     color: var(--cor-texto);
     margin-bottom: 28px;
     font-family: var(--fonte-marca);
-    font-size: 30px;
+    font-size: clamp(22px, 6.4vw, 30px);
     font-weight: 400;
     letter-spacing: 0.12em;
     margin-right: -0.12em;
+    overflow-wrap: break-word;
     text-transform: uppercase;
 }
 
