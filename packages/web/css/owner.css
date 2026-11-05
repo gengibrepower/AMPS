@@ -587,3 +587,40 @@ main {
         margin-right: auto;
     }
 }
+
+/* Lista vazia: a garagem de portão fechado, para a página não parecer
+   quebrada enquanto não há nada para listar. */
+p.vazio {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 40px 32px 36px;
+    border: 1.5px solid var(--cor-tinta);
+    background-color: var(--cor-papel);
+    color: var(--cor-texto);
+    font-size: var(--texto-md);
+    text-align: center;
+}
+
+p.vazio.disabled {
+    display: none;
+}
+
+p.vazio::after {
+    content: "";
+    order: -1;
+    width: 160px;
+    height: 112px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='112' viewBox='0 0 160 112'%3E%3Cpath d='M20 110V44H32V34H44V24H60V14H100V24H116V34H128V44H140V110' fill='none' stroke='%231A1A17' stroke-width='2'/%3E%3Cpath d='M80 14V4M80 14L90 6M80 14L70 6M80 14L97 10M80 14L63 10' stroke='%23B08A3E' stroke-width='1.5'/%3E%3Cpath d='M40 110V58H120V110' fill='none' stroke='%231A1A17' stroke-width='2'/%3E%3Cpath d='M42 66H118M42 74H118M42 82H118M42 90H118M42 98H118M42 106H118' stroke='%23B08A3E' stroke-width='1.25'/%3E%3Cpath d='M80 46L84 50L80 54L76 50Z' fill='%23B08A3E'/%3E%3Cpath d='M4 110.5H156' stroke='%231A1A17' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+p.vazio::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 22px solid transparent;
+    border-image: var(--ornamento-canto) 22 / 22px / 0 stretch;
+    pointer-events: none;
+}
