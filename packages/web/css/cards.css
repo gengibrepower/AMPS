@@ -1,0 +1,119 @@
+/* Card de estacionamento: o mesmo na busca e na página inicial. */
+.result-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.result-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--cor-superficie);
+    border-radius: var(--raio-card);
+    overflow: hidden;
+}
+
+.result-card-link {
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+    text-decoration: none;
+}
+
+.result-card:hover {
+    outline: 2px solid var(--cor-marca);
+}
+
+.result-card-link:focus-visible {
+    outline: 2px solid var(--cor-marca);
+    outline-offset: -2px;
+}
+
+.result-card-planta {
+    height: 148px;
+    overflow: hidden;
+    background-color: var(--cor-superficie);
+}
+
+.result-card-planta img,
+.result-card-planta svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* A planta é papel, como o mapa: o card escuro ganha uma janela clara, e o
+   respiro em volta impede o desenho de encostar na borda. */
+.result-card-planta.com-planta {
+    padding: 10px 14px;
+    background-color: #FBFDFC;
+    border-bottom: 1px solid var(--cor-borda-sutil);
+}
+
+.result-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 20px;
+}
+
+.result-card-title {
+    font-size: var(--texto-lg);
+    font-weight: 600;
+}
+
+.result-card-location {
+    font-size: var(--texto-sm);
+    color: var(--cor-texto-apagado);
+}
+
+.result-card-vagas {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: var(--texto-sm);
+}
+
+.vagas-livres {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cor-marca);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.vagas-livres::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.vagas-livres.lotado {
+    color: var(--cor-perigo);
+}
+
+.vagas-total {
+    color: var(--cor-texto-apagado);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 768px) {
+    .result-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .result-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
