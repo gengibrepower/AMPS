@@ -11,8 +11,14 @@
     box-sizing: border-box;
 }
 
+/* Teste: a planta de um pátio pintada no chão, quase na cor do fundo. É textura,
+   não desenho: o traço fica a 1,08:1 do fundo para nunca competir com texto.
+   O tile é grande e variado para a repetição não aparecer. */
 body {
     background-color: var(--cor-fundo);
+    background-image: url(../assets/images/fundo-patio.svg);
+    background-size: 1120px 840px;
+    background-attachment: fixed;
     color: var(--cor-texto);
     font-family: var(--fonte-texto);
     min-height: 100vh;
