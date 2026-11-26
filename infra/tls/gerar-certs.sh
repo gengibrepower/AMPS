@@ -20,8 +20,13 @@ mkdir -p "$OUT"
 echo "[*] Gerando a CA própria (AMPS Root CA)..."
 if [[ ! -f "$OUT/ca.key" ]]; then
   openssl genrsa -out "$OUT/ca.key" 4096
+  # Extensões de CA obrigatórias para validadores estritos (ex.: OpenSSL 3 no Python):
+  # basicConstraints CA:TRUE e keyUsage keyCertSign/cRLSign.
   openssl req -x509 -new -nodes -key "$OUT/ca.key" -sha256 -days "$DAYS_CA" \
     -subj "/C=BR/ST=PR/L=Curitiba/O=AMPS Lab/OU=Seguranca/CN=AMPS Root CA" \
+    -addext "basicConstraints=critical,CA:TRUE" \
+    -addext "keyUsage=critical,keyCertSign,cRLSign" \
+    -addext "subjectKeyIdentifier=hash" \
     -out "$OUT/ca.crt"
   echo "    CA criada: out/ca.crt"
 else
