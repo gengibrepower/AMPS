@@ -70,6 +70,10 @@ openssl x509 -req -in "$OUT/server.csr" -CA "$OUT/ca.crt" -CAkey "$OUT/ca.key" \
 # Cadeia completa (servidor + CA) para quem precisar do bundle.
 cat "$OUT/server.crt" "$OUT/ca.crt" > "$OUT/server-fullchain.crt"
 
+# Certs legíveis pelo container do Caddy (que roda com cap_drop ALL, sem
+# CAP_DAC_OVERRIDE). São certificados de laboratório, ignorados pelo git.
+chmod 644 "$OUT"/*.crt "$OUT"/*.key
+
 echo "[*] Pronto. Arquivos em infra/tls/out/:"
 ls -1 "$OUT" | sed 's/^/    /'
 echo
