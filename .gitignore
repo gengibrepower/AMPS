@@ -147,3 +147,6 @@ mise.toml
 
 # TLS: chaves e certs gerados (nao versionar)
 infra/tls/out/
+
+# Logs de segurança (runtime)
+logs/
