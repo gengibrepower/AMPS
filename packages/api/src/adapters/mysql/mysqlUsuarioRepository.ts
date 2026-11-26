@@ -1,6 +1,7 @@
 import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import type { DadosDoPerfil, NovoUsuario, TipoConta, Usuario, UsuarioComSenha, UsuarioRepository } from '../../ports.js';
 import { asConflict } from './duplicate.js';
+import { cifrar, decifrar } from '../../security/cripto.js';
 
 interface UsuarioRow extends RowDataPacket {
 	id: number;
@@ -55,7 +56,8 @@ function toUsuario(row: UsuarioRow): Usuario {
 		id: row.id,
 		nome: row.nome,
 		email: row.email,
-		cpf: row.cpf,
+		// CPF é cifrado em repouso (AES-256-GCM) — decifra ao ler.
+		cpf: decifrar(row.cpf),
 		tipoConta: row.tipo_conta,
 	};
 }
@@ -68,7 +70,7 @@ export class MysqlUsuarioRepository implements UsuarioRepository {
 			const [result] = await this.pool.execute<ResultSetHeader>(INSERT, [
 				novo.nome,
 				novo.email,
-				novo.cpf,
+				cifrar(novo.cpf),
 				novo.senhaHash,
 				novo.tipoConta,
 			]);
