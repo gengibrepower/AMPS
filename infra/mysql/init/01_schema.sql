@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     id           INT AUTO_INCREMENT PRIMARY KEY,
     nome         VARCHAR(150)                          NOT NULL,
     email        VARCHAR(150)                          NOT NULL UNIQUE,
-    cpf          VARCHAR(14)                           NOT NULL UNIQUE,
+    cpf          VARCHAR(255)                           NOT NULL UNIQUE,
     senha        VARCHAR(255)                          NOT NULL,
     tipo_conta   ENUM('common_user', 'dono', 'p_admin') NOT NULL DEFAULT 'common_user',
     data_criacao TIMESTAMP                             DEFAULT CURRENT_TIMESTAMP
