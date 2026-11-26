@@ -2,6 +2,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: amps-mysql
+    init: true
     restart: unless-stopped
     # Exige TLS em conexões TCP (RA2 — dados em trânsito até o banco). O MySQL 8 já
     # serve TLS com certificado próprio gerado na inicialização.
@@ -33,6 +34,9 @@ services:
   caddy:
     image: caddy:2.8
     container_name: amps-caddy
+    # init (tini) como PID 1: recolhe os processos-filho órfãos do healthcheck (ssl_client do
+    # wget). Sem ele, viram zumbis, acumulam e esgotam o pids_limit em ~2h.
+    init: true
     restart: unless-stopped
     network_mode: host
     # Hardening (RA3): sem novos privilégios, sem capabilities, FS raiz somente-leitura
