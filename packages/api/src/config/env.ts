@@ -12,6 +12,8 @@ export interface MysqlConfig {
 	readonly user: string;
 	readonly password: string;
 	readonly database: string;
+	// Quando true, a conexão API↔MySQL usa TLS (confidencialidade em trânsito, RA2).
+	readonly ssl: boolean;
 }
 
 export interface AuthConfig {
@@ -38,6 +40,7 @@ export function loadMysqlConfig(): MysqlConfig {
 		user: process.env['MYSQL_USER'] ?? 'root',
 		password: required('MYSQL_PASSWORD'),
 		database: process.env['MYSQL_DATABASE'] ?? 'parking_system',
+		ssl: (process.env['MYSQL_SSL'] ?? '').toLowerCase() === 'true',
 	};
 }
 
