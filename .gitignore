@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 
 #mise
 mise.toml
+
+# TLS: chaves e certs gerados (nao versionar)
+infra/tls/out/

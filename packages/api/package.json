@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "dev": "tsx --env-file=../../.env src/main.ts"
+    "dev": "NODE_EXTRA_CA_CERTS=../../infra/tls/out/ca.crt MYSQL_SSL=true MERLIAN_URL=https://localhost:8444 tsx --env-file=../../.env src/main.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.1",

@@ -1,0 +1,18 @@
+{
+	# Sem ACME/Let's Encrypt: usamos nossa CA própria (X.509) para TLS local.
+	auto_https off
+	admin off
+}
+
+# Borda TLS da API — termina HTTPS e repassa para a API (HTTP interno) em :3001.
+https://localhost:8443, https://amps.local:8443, https://127.0.0.1:8443 {
+	tls /certs/server.crt /certs/server.key
+	reverse_proxy 127.0.0.1:3001
+}
+
+# Borda TLS do Merlian — termina HTTPS e repassa para o Merlian em :3000.
+# A API passa a chamar https://localhost:8444 (confiando na nossa CA).
+https://localhost:8444, https://amps.local:8444, https://127.0.0.1:8444 {
+	tls /certs/server.crt /certs/server.key
+	reverse_proxy 127.0.0.1:3000
+}
