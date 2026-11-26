@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "dev": "NODE_EXTRA_CA_CERTS=../../infra/tls/out/ca.crt MYSQL_SSL=true MERLIAN_URL=https://localhost:8444 tsx --env-file=../../.env src/main.ts"
+    "dev": "NODE_EXTRA_CA_CERTS=../../infra/tls/out/ca.crt MYSQL_SSL=true MERLIAN_URL=https://localhost:8444 SECURITY_LOG=../../logs/seguranca.log tsx --env-file=../../.env src/main.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.5",
+    "helmet": "^8.3.0",
     "jose": "^6.2.12",
     "mysql2": "^3.24.4"
   },

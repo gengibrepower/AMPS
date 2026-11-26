@@ -10,6 +10,9 @@ export function createTestPool(): Pool {
 		database: process.env['MYSQL_DATABASE'] ?? 'parking_system',
 		waitForConnections: true,
 		connectionLimit: 5,
+		// O MySQL do compose exige TLS (--require-secure-transport=ON); ativa salvo
+		// MYSQL_SSL=false explícito.
+		...(process.env['MYSQL_SSL'] === 'false' ? {} : { ssl: { rejectUnauthorized: false } }),
 	});
 }
 

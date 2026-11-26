@@ -16,6 +16,7 @@ import type { TokenClaims, TokenService } from '../security/jwt.js';
 import type { Endereco, Estacionamento, TipoVaga, Usuario, Vaga, VagaDoEditor } from '../ports.js';
 import { autenticar } from './authMiddleware.js';
 import { errorHandler } from './errorHandler.js';
+import { endurecer, limiteLogin, registrarEventoSeguranca } from './endurecimento.js';
 
 export interface AppDeps {
 	readonly usuarioService: UsuarioService;
@@ -208,6 +209,8 @@ function usuarioWire(usuario: Usuario): Record<string, unknown> {
 export function createApp(deps: AppDeps): Express {
 	const app = express();
 
+	// Endurecimento (RA3): cabeçalhos de segurança (helmet) + confiança no proxy TLS.
+	endurecer(app);
 	app.use(cors({ origin: deps.corsOrigin }));
 	app.use(express.json());
 
@@ -230,12 +233,14 @@ export function createApp(deps: AppDeps): Express {
 		});
 	});
 
-	app.post('/auth/login', async (req, res) => {
+	app.post('/auth/login', limiteLogin, async (req, res) => {
 		const dados = exigir(req, res, ['email', 'senha']);
 		if (dados === null) return;
 
 		const autenticado = await deps.authService.login(dados.email, dados.senha);
 		if (autenticado === null) {
+			// Falha de autenticação: registra para detecção de brute-force (Fail2ban).
+			await registrarEventoSeguranca('AUTH_FAIL', req, dados.email);
 			res.status(401).json({ erro: 'credenciais invalidas' });
 			return;
 		}
