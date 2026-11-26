@@ -18,6 +18,8 @@ RUN npm ci --ignore-scripts
 # ---- Stage 2: runtime mínimo e não-root ----
 FROM node:22-bookworm-slim AS runtime
 ENV NODE_ENV=production
+# Dentro do contêiner a rede já isola; escuta em todas as interfaces do contêiner.
+ENV HOST=0.0.0.0
 WORKDIR /app
 # Copia só o necessário: node_modules e o código da API.
 COPY --from=deps /app/node_modules ./node_modules
