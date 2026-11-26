@@ -7,6 +7,7 @@ import type {
 	UsuarioComDono,
 } from '../../ports.js';
 import { asConflict } from './duplicate.js';
+import { cifrar } from '../../security/cripto.js';
 
 const INSERT_USUARIO = `
 INSERT INTO usuarios (nome, email, cpf, senha, tipo_conta)
@@ -40,7 +41,7 @@ export class MysqlDonoRepository implements DonoRepository {
 			const [result] = await connection.execute<ResultSetHeader>(INSERT_USUARIO, [
 				usuario.nome,
 				usuario.email,
-				usuario.cpf,
+				cifrar(usuario.cpf),
 				usuario.senhaHash,
 				usuario.tipoConta,
 			]);
