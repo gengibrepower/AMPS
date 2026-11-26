@@ -53,12 +53,16 @@ export function loadAuthConfig(): AuthConfig {
 }
 
 export interface ServerConfig {
+	readonly host: string;
 	readonly port: number;
 	readonly corsOrigin: string;
 }
 
 export function loadServerConfig(): ServerConfig {
 	return {
+		// Só o loopback por padrão: o acesso externo passa pela borda TLS (Caddy).
+		// Escutar em todas as interfaces deixaria a API em HTTP claro exposta na rede.
+		host: process.env['HOST'] ?? '127.0.0.1',
 		port: port('PORT', 3001),
 		corsOrigin: process.env['CORS_ORIGIN'] ?? 'http://localhost:5173',
 	};

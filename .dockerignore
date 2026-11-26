@@ -1,0 +1,11 @@
+node_modules
+**/node_modules
+.git
+logs
+infra/tls/out
+*.log
+packages/web
+dist
+coverage
+.env
+.env.*

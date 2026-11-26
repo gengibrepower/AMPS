@@ -2,18 +2,31 @@ services:
   mysql:
     image: mysql:8.0
     container_name: amps-mysql
+    init: true
     restart: unless-stopped
     # Exige TLS em conexões TCP (RA2 — dados em trânsito até o banco). O MySQL 8 já
     # serve TLS com certificado próprio gerado na inicialização.
     command: ["--require-secure-transport=ON"]
+    # Hardening (RA3): sem escalonamento de privilégio, porta só no loopback,
+    # limites de recursos e healthcheck.
+    security_opt:
+      - no-new-privileges:true
     ports:
-      - "3307:3306"
+      - "127.0.0.1:3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./infra/mysql/init:/docker-entrypoint-initdb.d:ro
+    pids_limit: 512
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # Borda TLS (Projeto Final de Segurança): termina HTTPS com a CA própria e
   # repassa para a API (:3001) e o Merlian (:3000), que seguem em HTTP no loopback.
@@ -21,13 +34,37 @@ services:
   caddy:
     image: caddy:2.8
     container_name: amps-caddy
+    # init (tini) como PID 1: recolhe os processos-filho órfãos do healthcheck (ssl_client do
+    # wget). Sem ele, viram zumbis, acumulam e esgotam o pids_limit em ~2h.
+    init: true
     restart: unless-stopped
     network_mode: host
+    # Hardening (RA3): sem novos privilégios, sem capabilities, FS raiz somente-leitura
+    # (dados/config em volumes; /tmp em tmpfs). Healthcheck no endpoint TLS.
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    # O binário do Caddy tem file-capability NET_BIND_SERVICE; com no-new-privileges
+    # é preciso readmiti-la para o exec não falhar ("operation not permitted").
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
       - ./infra/proxy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./infra/tls/out:/certs:ro
       - caddy_data:/data
       - caddy_config:/config
+    pids_limit: 256
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "--no-check-certificate", "https://localhost:8443/modelos"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
   mysql_data:

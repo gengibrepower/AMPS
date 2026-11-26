@@ -61,6 +61,16 @@ beforeEach(async () => {
 });
 
 describe('POST /usuarios', () => {
+	it('devolve 400 (não 500) para JSON malformado', async () => {
+		const resposta = await request(app)
+			.post('/usuarios')
+			.set('Content-Type', 'application/json')
+			.send('{"nome":');
+
+		expect(resposta.status).toBe(400);
+		expect(resposta.body).toEqual({ erro: 'json invalido' });
+	});
+
 	it('cadastra e devolve 201 sem vazar senha', async () => {
 		const resposta = await request(app).post('/usuarios').send(CADASTRO);
 

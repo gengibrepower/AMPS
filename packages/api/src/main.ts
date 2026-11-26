@@ -20,6 +20,6 @@ const app = montarApp({
 	motorDeGrafo: new MerlianMotorDeGrafo(loadMerlianConfig().baseUrl),
 });
 
-app.listen(server.port, () => {
-	console.log(`api ouvindo na porta ${server.port}`);
+app.listen(server.port, server.host, () => {
+	console.log(`api ouvindo em ${server.host}:${server.port}`);
 });
