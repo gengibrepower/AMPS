@@ -1,0 +1,22 @@
+9a09e21209e9: Pull complete
+Digest: sha256:34a1e5cc4ac7bb2527b806bcf1c3aa7f747db51930540f648521ba927a58c0bc
+Status: Downloaded newer image for crazymax/fail2ban:latest
+Running tests
+=============
+Use      filter file : /f/amps-auth.conf
+Use      datepattern : ^%Y-%m-%dT%H:%M:%S : ^Year-Month-DayT24hour:Minute:Second
+Use         log file : /logs/seguranca.log
+Use         encoding : UTF-8
+Results
+=======
+Failregex: 17 total
+|-  #) [# of hits] regular expression
+|   1) [17] ^\S+ (?:AUTH_FAIL|RATE_LIMIT) ip=<HOST>
+`-
+Ignoreregex: 0 total
+Date template hits:
+|- [# of hits] date format
+|  [17] ^Year-Month-DayT24hour:Minute:Second
+`-
+Lines: 17 lines, 0 ignored, 17 matched, 0 missed
+[processed in 0.00 sec]

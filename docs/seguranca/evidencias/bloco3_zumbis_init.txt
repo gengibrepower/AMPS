@@ -1,0 +1,13 @@
+=== Problema encontrado no hardening: zumbis esgotando o pids_limit (Caddy) — 2026-11-26 ===
+ANTES (sem init):
+  amps-caddy pids=251 (pids_limit=256) · health streak de falhas=3
+  ps --ppid <caddy>:  231 Z  ssl_client <defunct>
+  docker exec amps-caddy ... -> "OCI runtime exec failed: procReady not received"
+  Causa: o healthcheck (busybox wget https) cria ssl_client; o wget sai, o filho órfão é
+  reparentado ao PID 1 (caddy), que não recolhe filhos -> zumbi a cada 30 s.
+CORREÇÃO: docker-compose.yml -> init: true (docker-init/tini como PID 1)
+DEPOIS (3 ciclos de healthcheck):
+  PID1 do container: docker-init
+  zumbis sob o init: 0
+  pids=20
+  health=healthy streak=0

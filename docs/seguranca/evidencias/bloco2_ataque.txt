@@ -1,0 +1,34 @@
+[*] Atacando https://localhost:8443/auth/login (usuário teste@demo.local) — 30 tentativas
+  tentativa   1: 401
+  tentativa   2: 401
+  tentativa   3: 401
+  tentativa   4: 401
+  tentativa   5: 401
+  tentativa   6: 401
+  tentativa   7: 401
+  tentativa   8: 401
+  tentativa   9: 401
+  tentativa  10: 429  <- rate limit
+  tentativa  11: 429  <- rate limit
+  tentativa  12: 429  <- rate limit
+  tentativa  13: 429  <- rate limit
+  tentativa  14: 429  <- rate limit
+  tentativa  15: 429  <- rate limit
+  tentativa  16: 429  <- rate limit
+  tentativa  17: 429  <- rate limit
+  tentativa  18: 429  <- rate limit
+  tentativa  19: 429  <- rate limit
+  tentativa  20: 429  <- rate limit
+  tentativa  21: 429  <- rate limit
+  tentativa  22: 429  <- rate limit
+  tentativa  23: 429  <- rate limit
+  tentativa  24: 429  <- rate limit
+  tentativa  25: 429  <- rate limit
+  tentativa  26: 429  <- rate limit
+  tentativa  27: 429  <- rate limit
+  tentativa  28: 429  <- rate limit
+  tentativa  29: 429  <- rate limit
+  tentativa  30: 429  <- rate limit
+
+[*] Resumo em 0.2s: 401=9, 429=21
+[*] Veja o log: logs/seguranca.log  ·  ban: sudo fail2ban-client status amps-auth

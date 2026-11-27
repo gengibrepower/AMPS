@@ -1,0 +1,13 @@
+=== Bloco 4 — CPF criptografado em repouso (AES-256-GCM) — 2026-11-26 14:48:09 ===
+
+Usuário de teste: cripto_demo_1795715271@amps.local   (CPF informado: 529.982.247-25)
+
+[1] Como o CPF está GRAVADO no MySQL (SELECT direto na tabela):
+    enc:v1:yAPx88nz4rqCtAm4daiZImKLa0D8g6xHYgIPVsRaOnkNwxDvI/VsaCD0
+    -> texto cifrado (prefixo enc:v1: + base64 de IV+tag+ciphertext). CPF NÃO fica em claro.
+
+[2] A aplicação decifra de volta com a chave (módulo security/cripto):
+    decifrado: 529.982.247-25
+
+[3] Os 141 testes de integração leem o CPF pela API e batem com o original
+    (prova o ciclo cifra-no-INSERT / decifra-no-SELECT ponta a ponta).

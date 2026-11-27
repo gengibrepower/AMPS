@@ -1,0 +1,10 @@
+=== RA1 + robustez — 2026-11-26 16:39:03 ===
+[T01] login de common_user -> JWT emitido (164 chars, alg: {"alg":"HS256"})
+[T02] GET /perfil sem token           -> 401
+[T03] GET /perfil com token válido     -> 200
+[T04] GET /perfil com token adulterado -> {"erro":"token invalido"} (401)
+[T05] common_user cria estacionamento   -> {"erro":"usuario nao e dono"} (403)
+[T06] senha errada                      -> {"erro":"credenciais invalidas"} (401)
+[T07] cadastro sem campos obrigatórios  -> {"erro":"campos obrigatorios ausentes","campos":["nome","cpf","senha"]} (400)
+[T08] JSON malformado                   -> {"erro":"json invalido"} (400)   [antes da correção: 500 "erro interno"]
+[T09] senha em repouso (Argon2id)       -> $argon2id$v=19$m=19456,t=2,p=1$+dZLskV8i

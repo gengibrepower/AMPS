@@ -1,0 +1,48 @@
+==============================================================
+ Bloco 3 — Scan de segurança (Trivy) — 2026-11-26 14:42:36
+==============================================================
+
+### 1) Misconfiguration do Dockerfile endurecido (trivy config) ###
+packages/api/Dockerfile: 0 misconfigurations HIGH/CRITICAL (limpo).
+  -> base mínima, multi-stage, USER node (não-root), sem npm/npx no runtime.
+
+### 2) CVEs das imagens em uso (trivy image, HIGH/CRITICAL) ###
+---------- caddy:2.8 ----------
+Report Summary
+│ caddy:2.8 (alpine 3.20.4) │  alpine  │       28        │
+│ usr/bin/caddy             │ gobinary │       70        │
+Total: 28 (HIGH: 26, CRITICAL: 2)
+Total: 70 (HIGH: 65, CRITICAL: 5)
+│                                   │ CVE-2026-45135      │          │          │                   │ 2.11.3                                                    │ caddy: github.com/caddyserver/caddy/v2: Caddy: Remote Code   │
+
+---------- mysql:8.0 ----------
+Report Summary
+│ mysql:8.0 (oracle 9.7)                                                           │   oracle   │       113       │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/antlr4_python3_runtime-4.13.2.dist- │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/bcrypt-5.0.0.dist-info/METADATA     │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/certifi-2026.2.25.dist-info/METADA- │ python-pkg │        1        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/cffi-2.0.0.dist-info/METADATA       │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/circuitbreaker-2.1.3.dist-info/MET- │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/cryptography-46.0.5.dist-info/META- │ python-pkg │        3        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/invoke-2.2.1.dist-info/METADATA     │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/oci-2.168.2.dist-info/METADATA      │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/paramiko-4.0.0.dist-info/METADATA   │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/pip-25.3.dist-info/METADATA         │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/pycparser-3.0.dist-info/METADATA    │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/pynacl-1.6.2.dist-info/METADATA     │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/pyopenssl-25.3.0.dist-info/METADATA │ python-pkg │        1        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/python_dateutil-2.9.0.post0.dist-i- │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/pytz-2026.1.post1.dist-info/METADA- │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/pyyaml-6.0.2.dist-info/METADATA     │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/six-1.17.0.dist-info/METADATA       │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/svg_py-1.6.0.dist-info/METADATA     │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/typing_extensions-4.15.0.dist-info- │ python-pkg │        0        │
+│ usr/lib/mysqlsh/lib/python3.13/site-packages/urllib3-2.6.3.dist-info/METADATA    │ python-pkg │        4        │
+│ usr/local/bin/gosu                                                               │  gobinary  │       26        │
+Total: 113 (HIGH: 113, CRITICAL: 0)
+Total: 9 (HIGH: 8, CRITICAL: 1)
+Total: 26 (HIGH: 25, CRITICAL: 1)
+
+Leitura: as imagens base acumulam CVEs HIGH/CRITICAL -> por isso o hardening
+em runtime (no-new-privileges, cap_drop ALL, read_only, loopback, limites) e o
+plano de atualizar as tags base. O Dockerfile próprio da API já nasce limpo.

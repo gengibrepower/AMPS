@@ -1,0 +1,5 @@
+=== API presa ao loopback — 2026-11-26 16:41:17 ===
+ANTES: ss mostrava  *:3001  (API em HTTP claro alcançável por qualquer interface)
+DEPOIS: 127.0.0.1:3001
+via borda TLS (https://localhost:8443/modelos)  -> 200
+direto pelo IP da LAN (http://192.168.1.75:3001/modelos) -> conexão recusada (000)
