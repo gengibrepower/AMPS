@@ -1,0 +1,23 @@
+
+== 1) Cabeçalhos de segurança (helmet) ==
+  content-security-policy: default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests
+  cross-origin-opener-policy: same-origin
+  cross-origin-resource-policy: same-origin
+  referrer-policy: no-referrer
+  strict-transport-security: max-age=31536000; includeSubDomains
+  x-content-type-options: nosniff
+  x-frame-options: SAMEORIGIN
+
+== 2) Rate limiting no login (10/min -> 429) ==
+  1:401  2:401  3:401  4:401  5:401  6:401  7:401  8:401  9:401  10:401  11:429  12:429
+
+== 3) Brute-force (Atividade 05 adaptada) -> alimenta o log ==
+  [*] Resumo em 0.1s: 429=30
+  [*] Veja o log: logs/seguranca.log  ·  ban: sudo fail2ban-client status amps-auth
+
+== 4) Filtro do Fail2ban casando o log ==
+  linhas no log: 30  (AUTH_FAIL=0, RATE_LIMIT=30)
+  filtro amps-auth casou 30 linhas; Fail2ban banaria: ['::1']
+
+[i] Ban real (requer root): sudo dnf install fail2ban && instalar infra/fail2ban/* 
+    -> sudo fail2ban-client status amps-auth

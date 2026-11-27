@@ -1,0 +1,16 @@
+=== T02 — confidencialidade em trânsito (tcpdump no loopback) — 2026-11-26 16:40:23 ===
+Mesma requisição de login (senha marcadora: SenhaSecreta-DEMO) enviada:
+  (a) em claro, direto à porta interna da API (127.0.0.1:3001)
+  (b) pela borda TLS do Caddy (localhost:8443)
+
+--- (a) HTTP em claro: t02_http_claro.pcap
+   .t....>.POST /auth/login HTTP/1.1
+   {"email":"maria@amps.local","senha":"SenhaSecreta-DEMO"}
+   {"erro":"credenciais invalidas"}
+   ocorrências da senha no pcap: 1
+
+--- (b) HTTPS/TLS: t02_https_tls.pcap
+   pacotes capturados: 41
+   ocorrências da senha no pcap: 0
+   handshake (SNI em claro, conteúdo cifrado):
+     SNI: localhost

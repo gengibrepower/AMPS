@@ -1,0 +1,21 @@
+=== Hardening ATIVO nos containers (docker inspect) — 2026-11-26 14:42:51 ===
+---- amps-mysql ----
+  SecurityOpt : [no-new-privileges:true]
+  ReadonlyRootfs: false
+  CapDrop     : []
+  CapAdd      : []
+  PidsLimit   : 512
+  Memory(bytes): 1073741824
+  PortBindings: map[3306/tcp:[{127.0.0.1 3307}]]
+  Health      : healthy
+
+---- amps-caddy ----
+  SecurityOpt : [no-new-privileges:true]
+  ReadonlyRootfs: true
+  CapDrop     : [ALL]
+  CapAdd      : [CAP_NET_BIND_SERVICE]
+  PidsLimit   : 256
+  Memory(bytes): 268435456
+  PortBindings: map[]
+  Health      : healthy
+

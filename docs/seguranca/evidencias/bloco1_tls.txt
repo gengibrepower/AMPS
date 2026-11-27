@@ -1,0 +1,25 @@
+
+== 1) Cadeia de certificados (CA própria -> servidor) ==
+subject=C=BR, ST=PR, L=Curitiba, O=AMPS Lab, OU=Seguranca, CN=amps.local
+issuer=C=BR, ST=PR, L=Curitiba, O=AMPS Lab, OU=Seguranca, CN=AMPS Root CA
+X509v3 Subject Alternative Name: 
+    DNS:amps.local, DNS:localhost, DNS:api.amps.local, DNS:merlian.amps.local, IP Address:127.0.0.1, IP Address:0:0:0:0:0:0:0:1
+verificação:
+infra/tls/out/server.crt: OK
+
+== 2) HTTPS na borda da API (cadeia verificada pelo cliente) ==
+subject=C=BR, ST=PR, L=Curitiba, O=AMPS Lab, OU=Seguranca, CN=amps.local
+issuer=C=BR, ST=PR, L=Curitiba, O=AMPS Lab, OU=Seguranca, CN=AMPS Root CA
+Verify return code: 0 (ok)
+    Verify return code: 0 (ok)
+login via HTTPS:
+  HTTP 200 · TLS 0 (0=ok)
+
+== 3) MySQL exige TLS ==
+  sem TLS  -> RECUSADA (ERROR 3159 (HY000): Connections using insecure transport are prohibited while --require_secure_transport=ON.)
+  com TLS  -> cipher: TLS_AES_256_GCM_SHA384
+
+== 4) API -> Merlian por HTTPS (Node confia na CA própria) ==
+  HTTPS status 200 (CA propria aceita)
+
+[OK] TLS demonstrado nos três canais: cliente↔API, API↔MySQL, API↔Merlian.
